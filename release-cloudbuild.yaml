@@ -1,0 +1,15 @@
+# Config for google cloud build to be run every time a git tag is created
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', '${_REPO_URL}/db-migrate:$TAG_NAME', '-t', '${_REPO_URL}/db-migrate:latest', './db' ]
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', '${_REPO_URL}/ui:$TAG_NAME', '-t', '${_REPO_URL}/ui:latest', './ui' ]
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', '${_REPO_URL}/api:$TAG_NAME', '-t', '${_REPO_URL}/api:latest', './api' ]
+images:
+- '${_REPO_URL}/db-migrate:$TAG_NAME'
+- '${_REPO_URL}/db-migrate:latest'
+- '${_REPO_URL}/ui:$TAG_NAME'
+- '${_REPO_URL}/ui:latest'
+- '${_REPO_URL}/api:$TAG_NAME'
+- '${_REPO_URL}/api:latest'

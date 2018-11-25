@@ -1,0 +1,202 @@
+/**
+ * Copyright (c) AnyMessage.io. All rights reserved. http://www.anymessage.io
+ *
+ * The software in this package is published under the terms of the CPAL v1.0
+ * license, a copy of which has been included with this distribution in the
+ * LICENSE.md file.
+ */
+/* eslint-disable jsx-a11y/anchor-is-valid */
+
+import React from 'react';
+import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
+import EditIcon from '@material-ui/icons/Edit';
+import CloseIcon from '@material-ui/icons/Close';
+import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@material-ui/core/styles';
+import Router from 'next/router';
+import Head from 'next/head';
+import getConfig from 'next/config';
+
+import { withAuth } from '../src/util/authContext';
+import { get } from '../src/util/api';
+
+import Header from '../src/components/Header';
+import ConversationList from '../src/components/messages/ConversationList';
+import Conversation from '../src/components/messages/Conversation';
+import ConversationView from '../src/components/messages/ConversationView';
+
+const { publicRuntimeConfig } = getConfig();
+const { UI_HOSTNAME } = publicRuntimeConfig;
+
+const styles = theme => ({
+  root: {},
+  create: {
+    position: 'absolute',
+    top: 40,
+    right: 32,
+  },
+  conversation: {
+    paddingRight: 108,
+  },
+});
+
+class Messages extends React.Component {
+  state = {
+    newConversation: false,
+    currentConversation: null,
+    conversationList: null,
+    mobileOpen: false,
+  }
+
+  // get conversations or redirect unauthed user to "/"
+  componentDidMount() {
+    const { user } = this.props;
+
+    if (user) {
+      get('/conversation/list', user.id_token).then((data) => {
+        this.setState({
+          conversationList: data, // update conversation list
+          // todo go directly to conversation based on hash/route
+        });
+      }).catch((error) => {
+        console.error(error); // todo pretty error message
+        if (error.status === 403) {
+          window.location = `http://www.${UI_HOSTNAME}`; // todo handle ssl
+        }
+      });
+
+      // update conversation list every 3 seconds
+      // todo make this a websocket subscription
+      try {
+        this.interval = setInterval(this.getConversationList, 1000);
+      } catch (e) {
+        console.log(e);
+      }
+
+      return true;
+    }
+
+    Router.push('/');
+    return false;
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  setConversation = async (conversationID) => {
+    await this.getConversationList();
+    this.setState({
+      newConversation: false,
+      currentConversation: conversationID,
+    });
+  }
+
+  getConversationList = async () => {
+    const { user } = this.props;
+    const data = await get('/conversation/list', user.id_token);
+    this.setState({
+      conversationList: data, // todo, tell the user when there's new messages
+    });
+  }
+
+  findConversationByID = (id) => {
+    const { conversationList } = this.state;
+    for (let i = 0; i < conversationList.length; i += 1) {
+      if (conversationList[i].id && conversationList[i].id === id) {
+        return conversationList[i];
+      }
+    }
+    return null;
+  }
+
+  handleClick = () => {
+    const { newConversation } = this.state;
+    if (newConversation) {
+      this.setState({
+        newConversation: false,
+        currentConversation: null,
+      });
+    } else {
+      this.setState({
+        newConversation: true,
+        currentConversation: null,
+      });
+    }
+  };
+
+  onMenuClick = () => {
+    this.setState(state => ({ mobileOpen: !state.mobileOpen }));
+  }
+
+  render() {
+    const { classes } = this.props;
+    const {
+      newConversation, currentConversation, conversationList, mobileOpen,
+    } = this.state;
+
+    let messagesTitle = 'Messages';
+    if (currentConversation) {
+      messagesTitle = `Messages: ${this.findConversationByID(currentConversation).from}`;
+    }
+    if (newConversation) {
+      messagesTitle = 'Messages: New Conversation';
+    }
+
+    return (
+      <div className={classes.root}>
+        <Head>
+          <title>{messagesTitle}</title>
+        </Head>
+        <Header currentPage="messages" withButton onMenuClick={this.onMenuClick} />
+        <Button onClick={this.handleClick} variant="fab" color="secondary" aria-label="Edit" className={classes.create}>
+          {newConversation ? <CloseIcon /> : <EditIcon />}
+        </Button>
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="flex-start"
+        >
+          <Grid item xs={3}>
+            <ConversationList
+              selectedConvo={currentConversation}
+              setConversation={this.setConversation}
+              conversationList={conversationList}
+              mobileOpen={mobileOpen}
+              handleDrawerToggle={this.onMenuClick}
+            />
+          </Grid>
+          <Grid item xs={12} md={9} className={classes.conversation}>
+            {currentConversation
+              ? (
+                <ConversationView
+                  conversation={this.findConversationByID(currentConversation)}
+                  setConversation={this.setConversation}
+                />
+              )
+              : (
+                <Conversation
+                  newConversation={newConversation}
+                  setConversation={this.setConversation}
+                />
+              )
+                      }
+          </Grid>
+        </Grid>
+      </div>
+    );
+  }
+}
+
+Messages.defaultProps = {
+  user: null,
+};
+
+Messages.propTypes = {
+  classes: PropTypes.object.isRequired,
+  user: PropTypes.object,
+};
+
+export default withAuth(withStyles(styles)(Messages));

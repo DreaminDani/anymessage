@@ -1,0 +1,8 @@
+%syntax-version=1.0.0
+%project=anymessage
+
+appschema 2018-10-04T02:24:34Z Daniel Sandoval <daniel@anymessage.io> # Adds anymessage schema
+conversations [appschema] 2018-10-10T21:16:49Z Daniel Sandoval <daniel@anymessage.io> # first conversations table
+users [appschema] 2018-11-08T16:07:38Z Daniel Sandoval <daniel@anymessage.io> # Create user records foundation
+teams [users conversations] 2018-11-11T02:00:47Z Daniel Sandoval <daniel@anymessage.io> # Adds team identification to users and conversations
+providers [teams] 2018-11-15T16:01:36Z Daniel Sandoval <daniel@anymessage.io> # Adds providers to database

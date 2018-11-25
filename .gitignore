@@ -1,0 +1,7 @@
+ui/.next
+ui/out
+api/dist
+api/coverage
+*node_modules*
+*.env
+*.log

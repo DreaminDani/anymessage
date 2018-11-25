@@ -1,0 +1,36 @@
+{
+  "name": "@anymessage/ui",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^3.4.0",
+    "@material-ui/icons": "^3.0.1",
+    "auth0-js": "^9.8.1",
+    "babel-plugin-transform-define": "^1.3.0",
+    "dotenv": "^6.1.0",
+    "js-cookie": "^2.2.0",
+    "jss": "latest",
+    "next": "^7.0.2",
+    "prop-types": "^15.6.2",
+    "react": "^16.6.1",
+    "react-dom": "^16.6.1",
+    "react-jss": "latest",
+    "styled-jsx": "^3.1.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1"
+  },
+  "scripts": {
+    "dev": "next",
+    "dev:80": "next -p 80",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint --ext .js ./",
+    "lint:fix": "eslint --ext .js ./ --fix"
+  }
+}
