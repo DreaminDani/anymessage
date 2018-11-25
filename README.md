@@ -47,7 +47,13 @@ Each subdirectory has its own linting rules. They are specified via `tslint.json
 
 ## Deployment
 
-You can deploy using the included `docker-compose.yml` file or create a custom configuration on any hosted container service. AnyMessage.io runs on Google Kubernetes Engine but should work anywhere docker containers are supported. If you need help with deployment, feel free to reach out!
+You can deploy using the included `docker-compose.yml` file or create a custom configuration on any hosted container service. If you're not making any changes, it is recommended that you use the pre-built docker-containers:
+```
+docker-compose pull
+docker-compose up
+```
+
+AnyMessage.io runs on Google Kubernetes Engine but should work anywhere docker containers are supported. If you need help with deployment, feel free to reach out!
 
 ## Built With
 
