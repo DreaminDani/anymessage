@@ -5,65 +5,33 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.md file.
  */
-import { json, Request, Response, Router, urlencoded } from "express";
-import { Database, Entity } from "massive";
-import { Result } from "range-parser";
+import { Request, Response, Router } from "express";
 import helpers = require("../helpers");
+import { UserModel } from "../models";
 
 const router: Router = Router();
 
-router.get("/login", helpers.checkJwt, (req: Request, res: Response) => {
-    // look up user by email (TODO generalize to more than auth0)
-    req.app.get("db").users.find({
-        email: req.user.email,
-    }).then((result: any[]) => {
-        if (result.length === 1) {
-            // TODO verify user is using the same auth provider
-            const currentUser = result[0];
-            if (currentUser.team_id) {
-                // if found, return return tenant url
-                // TODO replace this with a join query
-                req.app.get("db").teams.findOne({
-                    id: currentUser.team_id,
-                }).then((team: any) => {
-                        res.status(200);
-                        res.json({
-                            // todo handle SSL
-                            redirectURI: `http://${team.subdomain}.${process.env.UI_HOSTNAME}/messages`,
-                            teamURL: team.subdomain,
-                        });
-                    }).catch((err: string) => {
-                        console.error(err);
-                        res.status(500);
-                    });
-            } else {
-                // if no tenant URL, redirect to setup (settings for now)
-                res.status(200);
-                res.json({redirectURI: "/settings"});
-            }
-        } else if (result.length === 0) {
-            // if not found, create user
-            // return OK (TODO return setup url)
-            req.app.get("db").users.insert({
-                auth_metadata: req.user,
-                auth_provider: req.user.iss,
-                email: req.user.email,
-                name: req.user.name,
-            }).then((userData: Entity) => {
-                res.status(200);
-                res.json({redirectURI: "/settings"});
-            })
-            .catch((err: string) => {
-                console.error(err);
-                res.status(500);
-            });
+router.get("/login", helpers.checkJwt, async (req: Request, res: Response) => {
+    const userModel = new UserModel(req.app.get("db"), req.user.email);
+    try {
+        const existingUser = await userModel.login();
+        if (existingUser) {
+            res.status(200);
+            res.json(existingUser);
         } else {
-            res.status(500);
+            const newUser = await userModel.create(req.user);
+            if (newUser) {
+                res.status(200);
+                res.json({redirectURI: "/settings"});
+            } else {
+                throw new Error(newUser); // unknown error, throw the object
+            }
         }
-    }).catch((error: string) => {
-        console.error(error);
-        res.status(500);
-    });
+    } catch (e) {
+        console.error(e);
+        res.status(e.status || 500);
+        res.send(e.message || "");
+    }
 });
 
 export const UserController: Router = router;

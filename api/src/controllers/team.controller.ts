@@ -8,38 +8,33 @@
 import { json, Request, Response, Router, urlencoded } from "express";
 import { ITeamRequest } from "../custom";
 import helpers = require("../helpers");
+import { TeamModel } from "../models";
+import { UserModel } from "../models";
 
 const router: Router = Router();
 
 // get users's team URL
-router.get("/url", helpers.checkJwt, helpers.verifySubdomain, (req: ITeamRequest, res: Response) => {
-    req.app.get("db").users.findOne({
-        email: req.user.email,
-    }).then((user: any) => {
-        if (user.team_id) {
-            // if user has team_id, update its URL
-            req.app.get("db").teams.findOne({
-                id: user.team_id,
-            }).then((team: any) => { // TODO real types
-                if (team) {
-                    res.status(200);
-                    res.send({teamURL: team.subdomain});
-                } else {
-                    res.status(200);
-                    res.send({teamURL: ""});
-                }
-            }).catch((err: string) => {
-                console.error(err);
-                res.send(500);
-            });
-        } else {
-            res.status(200);
-            res.send({teamURL: ""});
+router.get("/url", helpers.checkJwt, helpers.verifySubdomain, async (req: ITeamRequest, res: Response) => {
+    try {
+        const user = new UserModel(req.app.get("db"), req.user.email);
+        await user.init();
+        const teamId = user.getTeamId();
+
+        let subdomain: string;
+        if (teamId) {
+            const team = new TeamModel(req.app.get("db"), teamId);
+            await team.init();
+
+            subdomain = team.getSubdomain();
         }
-    }).catch((error: string) => {
-        console.error(error);
-        res.sendStatus(500);
-    });
+
+        res.status(200);
+        res.send({teamURL: subdomain || ""});
+    } catch (e) {
+        console.error(e);
+        res.status(e.status || 500);
+        res.send(e.message || "");
+    }
 });
 
 router.post("/url/available", helpers.checkJwt, json(), (req: Request, res: Response) => {
