@@ -42,6 +42,9 @@ class Index extends React.Component {
         // if not authed, redirect to login for auto-login loop
         window.location = `http://www.${UI_HOSTNAME}?unauthed`;
       }
+    } else if (subdomain === UI_HOSTNAME.split('.')[0]) {
+      // redirect root to "www"
+      window.location = `http://www.${UI_HOSTNAME}`;
     }
 
     // check if redirect to unauthed
