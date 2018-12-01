@@ -8,7 +8,7 @@
 import { json, Response, Router } from "express";
 import { Database, Entity } from "massive";
 import helpers = require("../helpers");
-import { ITeamRequest, verifySubdomain } from "../models";
+import { ITeamRequest, verifyOutboundMessage, verifySubdomain } from "../models";
 import twilioProvider = require("../providers/twilio");
 
 const router: Router = Router();
@@ -27,15 +27,10 @@ router.get("/list", helpers.checkJwt, verifySubdomain, (req: ITeamRequest, res: 
     });
 });
 
-router.post("/add", helpers.checkJwt, verifySubdomain, json(), (req: ITeamRequest, res: Response) => {
-    helpers.verifyOutboundMessage(req, (err: string, body: any) => {
-        if (err) {
-            res.statusCode = 400;
-            res.json({errors: err});
-        }
+router.post("/add", helpers.checkJwt, verifySubdomain, json(), verifyOutboundMessage, (req: ITeamRequest, res: Response) => {
 
         // todo check if user has access to this number
-        add(body, req.user, req.team.id, body.provider, req.app.get("db"), (error: string, message: string) => {
+        add(req.body, req.user, req.team.id, req.body.provider, req.app.get("db"), (error: string, message: string) => {
             if (error) {
                 console.error(error);
                 res.status(500).send();
@@ -43,7 +38,6 @@ router.post("/add", helpers.checkJwt, verifySubdomain, json(), (req: ITeamReques
 
             res.json(message);
         });
-    });
 });
 
 export function add(

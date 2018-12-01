@@ -9,3 +9,4 @@ export class ModelError extends Error {
 
 export * from "./user.model";
 export * from "./team.model";
+export * from "./conversation.model";

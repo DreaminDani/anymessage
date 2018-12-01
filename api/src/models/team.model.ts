@@ -119,7 +119,7 @@ export class TeamModel {
 interface ITeamURLRequestBody {
     newURL?: string;
 }
-interface ITeamURLRequest {
+interface ITeamURLRequest extends Request {
     body: ITeamURLRequestBody;
 }
 
