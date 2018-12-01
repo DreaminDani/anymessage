@@ -8,7 +8,7 @@
 import * as Express from "express";
 import jwt = require("express-jwt");
 import jwksRsa = require("jwks-rsa");
-import { ITeamRequest } from "./custom";
+import { ITeamRequest } from "./models";
 
 // tslint:disable-next-line
 const jwtAuthz = require("express-jwt-authz");
@@ -69,33 +69,3 @@ export const checkJwt = jwt({
     audience: process.env.AUTH0_CLIENTID,
     issuer: `https://${process.env.AUTH0_DOMAIN}/`,
 });
-
-export const verifySubdomain = (req: ITeamRequest, res: Express.Response, next: Express.NextFunction) => {
-    const subdomain = (req.headers.origin as string).split("://")[1].split(".")[0];
-    if (subdomain && subdomain !== "www") {
-        // look up subdomain and check if id matches user team_id
-        req.app.get("db").query(
-            `SELECT teams.id FROM users
-                LEFT JOIN teams
-                ON users.team_id = teams.id
-                WHERE teams.subdomain = $1
-                AND users.email = $2`,
-            [subdomain, req.user.email],
-        ).then((data: any[]) => {
-            // return an unauthorized if user is not found
-            if (data.length === 0) {
-                res.status(403).end();
-            } else {
-                // set team.id and team.subdomain for future requests to use
-                const id = data[0].id;
-                req.team = { id, subdomain };
-                next();
-            }
-        }).catch((err: string) => {
-            console.error(err);
-            res.status(500).end();
-        });
-    } else {
-        next();
-    }
-};

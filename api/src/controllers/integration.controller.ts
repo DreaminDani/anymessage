@@ -8,12 +8,12 @@
 import { json, Request, Response, Router, urlencoded } from "express";
 import { Database, Entity } from "massive";
 import { Result } from "range-parser";
-import { ITeamRequest } from "../custom";
 import helpers = require("../helpers");
+import { ITeamRequest, verifySubdomain } from "../models";
 
 const router: Router = Router();
 
-router.get("/providers", helpers.checkJwt, helpers.verifySubdomain, (req: ITeamRequest, res: Response) => {
+router.get("/providers", helpers.checkJwt, verifySubdomain, (req: ITeamRequest, res: Response) => {
     req.app.get("db").query(
         `SELECT providers FROM integrations
             WHERE team_id = $1`,
@@ -32,7 +32,7 @@ router.get("/providers", helpers.checkJwt, helpers.verifySubdomain, (req: ITeamR
 });
 
 // get specific integration for a given team
-router.get("/", helpers.checkJwt, helpers.verifySubdomain, (req: ITeamRequest, res: Response) => {
+router.get("/", helpers.checkJwt, verifySubdomain, (req: ITeamRequest, res: Response) => {
     const parsedURL = req.url.split("?");
     if (parsedURL.length > 1) {
         const integration = parsedURL[1];
@@ -64,7 +64,7 @@ router.get("/", helpers.checkJwt, helpers.verifySubdomain, (req: ITeamRequest, r
     }
 });
 
-router.post("/save", helpers.checkJwt, helpers.verifySubdomain, json(), (req: ITeamRequest, res: Response) => {
+router.post("/save", helpers.checkJwt, verifySubdomain, json(), (req: ITeamRequest, res: Response) => {
     // todo verify and inject-protect integration
     // { accountSID: '123', authToken: 'abc', name: 'twilio' }
     req.app.get("db").integrations.findOne({

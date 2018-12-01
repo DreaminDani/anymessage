@@ -8,7 +8,7 @@
 import getConfig from 'next/config';
 
 const { publicRuntimeConfig } = getConfig();
-const { API_ENDPOINT } = publicRuntimeConfig;
+const { API_ENDPOINT, UI_HOSTNAME } = publicRuntimeConfig;
 
 function FetchErrorException(status, message) {
   this.status = status;
@@ -44,6 +44,10 @@ export function post(url = '', token, data = {}) {
     if (response.ok) {
       return '';
     }
+
+    if (response.status === 403) {
+      window.location = `http://www.${UI_HOSTNAME}?unauthorized`; // todo handle ssl
+    }
     throw new FetchErrorException(response.status, err.message || response.statusText);
   }));
 }
@@ -73,6 +77,11 @@ export function get(url = '', token) {
     if (response.ok) {
       return '';
     }
+
+    if (response.status === 403) {
+      window.location = `http://www.${UI_HOSTNAME}?unauthorized`; // todo handle ssl
+    }
+
     throw new FetchErrorException(response.status, err.message || response.statusText);
   }));
 }

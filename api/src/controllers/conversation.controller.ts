@@ -7,13 +7,13 @@
  */
 import { json, Response, Router } from "express";
 import { Database, Entity } from "massive";
-import { ITeamRequest } from "../custom";
 import helpers = require("../helpers");
+import { ITeamRequest, verifySubdomain } from "../models";
 import twilioProvider = require("../providers/twilio");
 
 const router: Router = Router();
 
-router.get("/list", helpers.checkJwt, helpers.verifySubdomain, (req: ITeamRequest, res: Response) => {
+router.get("/list", helpers.checkJwt, verifySubdomain, (req: ITeamRequest, res: Response) => {
     req.app.get("db").conversations.find({team_id: req.team.id}, {
         order: [{
             direction: "desc",
@@ -27,7 +27,7 @@ router.get("/list", helpers.checkJwt, helpers.verifySubdomain, (req: ITeamReques
     });
 });
 
-router.post("/add", helpers.checkJwt, helpers.verifySubdomain, json(), (req: ITeamRequest, res: Response) => {
+router.post("/add", helpers.checkJwt, verifySubdomain, json(), (req: ITeamRequest, res: Response) => {
     helpers.verifyOutboundMessage(req, (err: string, body: any) => {
         if (err) {
             res.statusCode = 400;

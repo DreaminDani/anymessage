@@ -61,9 +61,6 @@ class Messages extends React.Component {
         });
       }).catch((error) => {
         console.error(error); // todo pretty error message
-        if (error.status === 403) {
-          window.location = `http://www.${UI_HOSTNAME}`; // todo handle ssl
-        }
       });
 
       // update conversation list every 3 seconds

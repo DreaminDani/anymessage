@@ -18,6 +18,9 @@ import Header from '../src/components/Header';
 import CustomIndex from '../customization/index';
 import AuthService from '../src/util/AuthService';
 
+// message
+import SnackbarMessage from '../src/components/SnackbarMessage';
+
 // marketing content
 import Hero from '../src/components/marketing/Hero';
 
@@ -29,6 +32,10 @@ const styles = theme => ({
 });
 
 class Index extends React.Component {
+  state = {
+    snackbar: null,
+  }
+
   componentDidMount = () => {
     this.auth = new AuthService();
 
@@ -40,27 +47,44 @@ class Index extends React.Component {
         Router.push('/messages');
       } else {
         // if not authed, redirect to login for auto-login loop
-        window.location = `http://www.${UI_HOSTNAME}?unauthed`;
+        window.location = `http://www.${UI_HOSTNAME}?needsauth`;
       }
     } else if (subdomain === UI_HOSTNAME.split('.')[0]) {
       // redirect root to "www"
       window.location = `http://www.${UI_HOSTNAME}`;
     }
 
-    // check if redirect to unauthed
-    if (window.location.search === '?unauthed') {
+    // check if user needsauth
+    if (window.location.search === '?needsauth') {
       this.auth.login();
     }
+
+    // check if user 403'd
+    if (window.location.search === '?unauthorized') {
+      this.setState({
+        snackbar: {
+          message: 'You tried to access a URL that you do not have access to.',
+          buttonText: 'Get Help',
+          buttonLink: 'mailto:help@anymessage.io',
+        },
+      });
+    }
+  }
+
+  handleSnackbarClose = () => {
+    this.setState({ snackbar: null });
   }
 
   render() {
     const { classes } = this.props;
+    const { snackbar } = this.state;
     const hasCustomized = CustomIndex(this.props);
     return (
       <div className={classes.root}>
         <Head>
           <title>AnyMessage.io</title>
         </Head>
+        {snackbar ? <SnackbarMessage {...snackbar} handleClose={this.handleSnackbarClose} /> : ''}
         <Header />
         {hasCustomized ? <CustomIndex {...this.props} /> : (
           <React.Fragment>

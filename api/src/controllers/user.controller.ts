@@ -7,30 +7,45 @@
  */
 import { Request, Response, Router } from "express";
 import helpers = require("../helpers");
-import { UserModel } from "../models";
+import { TeamModel, UserModel } from "../models";
 
 const router: Router = Router();
 
 router.get("/login", helpers.checkJwt, async (req: Request, res: Response) => {
-    const userModel = new UserModel(req.app.get("db"), req.user.email);
     try {
-        const existingUser = await userModel.login();
-        if (existingUser) {
+        const user = new UserModel(req.app.get("db"), req.user.email);
+        await user.init();
+        if (user.exists()) {
+            let result: {};
+            const teamId = user.getTeamId();
+            if (teamId) {
+                const team = new TeamModel(req.app.get("db"), teamId);
+                await team.init();
+
+                const subdomain = team.getSubdomain();
+                if (subdomain) {
+                    result = {
+                        // todo handle SSL
+                        redirectURI: `http://${subdomain}.${process.env.UI_HOSTNAME}/messages`,
+                        teamURL: subdomain,
+                    };
+                }
+            }
             res.status(200);
-            res.json(existingUser);
+            res.json(result || {redirectURI: "/settings"});
         } else {
-            const newUser = await userModel.create(req.user);
+            const newUser = await user.create(req.user);
             if (newUser) {
                 res.status(200);
                 res.json({redirectURI: "/settings"});
             } else {
-                throw new Error(newUser); // unknown error, throw the object
+                throw new Error(newUser as unknown as string); // unknown error, throw the object
             }
         }
     } catch (e) {
         console.error(e);
         res.status(e.status || 500);
-        res.send(e.message || "");
+        (e.status && e.message) ? res.json({error: e.message}) : res.send();
     }
 });
 
