@@ -34,12 +34,6 @@ export class TeamModel {
     private id: number;
     private subdomain: string;
 
-    /**
-     * Creates an instance of TeamModel.
-     * @param  {Database} db
-     * @param  {number} id
-     * @memberof TeamModel
-     */
     constructor(db: Database, id?: number) {
         this.db = db;
         this.id = id;
@@ -49,6 +43,7 @@ export class TeamModel {
     /**
      * Simple factory function to get team from database
      * Must be called before any other getters/setters
+     * @return {number} ID of team, if found
      */
     public async init() {
         try {
@@ -62,13 +57,14 @@ export class TeamModel {
             }
 
             this.initialized = true;
+            return this.id;
         } catch (e) {
             throw new ModelError(e);
         }
     }
 
     /**
-     * Alternative to init if you want to create the team
+     * Alternative to init if you need to create the team
      * @return {number} ID of new team, if created
      */
     public async create(newURL: string) {
@@ -114,7 +110,7 @@ export class TeamModel {
 }
 
 /*
-* Middelware for use in controllers
+* Middleware for use in controllers
 */
 interface ITeamURLRequestBody {
     newURL?: string;

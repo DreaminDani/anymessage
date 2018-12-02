@@ -6,14 +6,15 @@
  * LICENSE.md file.
  */
 import { Request, Response, Router, urlencoded } from "express";
-import {add} from "./conversation.controller";
+import { add } from "./conversation.controller";
 
 const router: Router = Router();
 
-router.post("/inbound/:provider", urlencoded(), (req: Request, res: Response) => {
+// todo rename this inbound controller?
+router.post("/inbound/:integration", urlencoded(), (req: Request, res: Response) => {
     // TODO actually get Destination number from twilio request
     const toNumber = req.body.To.replace(/\D/g, "");
-    if (req.params.provider) {
+    if (req.params.integration) {
         // look up team_id from "To" number
         req.app.get("db").query(
             `SELECT team_id
@@ -25,11 +26,11 @@ router.post("/inbound/:provider", urlencoded(), (req: Request, res: Response) =>
                 )
             ) AS arr_elem
             WHERE arr_elem = $2`,
-            [req.params.provider, toNumber],
+            [req.params.integration, toNumber],
         ).then((result: any) => {
             if (result) {
                 const team_id = result[0].team_id;
-                add(req.body, req.params.provider, team_id, toNumber, req.app.get("db"),
+                add(req.body, req.params.integration, team_id, toNumber, req.app.get("db"),
                     (error: string, message: string) => {
                         if (error) {
                             console.error(error);

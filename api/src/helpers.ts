@@ -16,9 +16,11 @@ export function getAllowedExpression(hostname: string) {
     return new RegExp(`${pieces[0]}\.${pieces[1]}$`); // /anymessage\.io$/
 }
 
-// Authentication middleware. When used, the
-// Access Token must exist and be verified against
-// the Auth0 JSON Web Key Set
+/**
+ * Auth0 Authentication middleware. When used, the Access Token must exist
+ * and be verified against the Auth0 JSON Web Key Set
+ * see: https://auth0.com/docs/quickstart/backend/nodejs/01-authorization
+ */
 export const checkJwt = jwt({
     // Dynamically provide a signing key
     // based on the kid in the header and

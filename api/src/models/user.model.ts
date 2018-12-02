@@ -27,9 +27,10 @@ export class UserModel {
         this.initialized = false;
     }
 
-    /*
-     * Simple factory function to get team from database
+    /**
+     * Simple factory function to get user from database
      * Must be called before any other getters/setters
+     * @return {number} ID of user, if found
      */
     public async init() {
         try {
@@ -42,13 +43,14 @@ export class UserModel {
             }
 
             this.initialized = true;
+            return this.id;
         } catch (e) {
             throw new ModelError(e);
         }
     }
 
     /**
-     * Alternative to init if you want to create the user
+     * Alternative to init if you need to create the user
      * @return {number} ID of new user, if created
      */
     public async create(userInfo: IUserInfo) {
@@ -73,6 +75,17 @@ export class UserModel {
         }
     }
 
+    /**
+     * Use after init to check if user already exists
+     */
+    public exists() {
+        if (this.initialized) {
+            return typeof this.id !== "undefined";
+        }
+
+        throw new ModelError(ModelError.NO_INIT);
+    }
+
     public getTeamId() {
         if (this.initialized) {
             return this.teamId;
@@ -92,14 +105,6 @@ export class UserModel {
             } catch (e) {
                 throw new ModelError(e);
             }
-        }
-
-        throw new ModelError(ModelError.NO_INIT);
-    }
-
-    public exists() {
-        if (this.initialized) {
-            return typeof this.id !== "undefined";
         }
 
         throw new ModelError(ModelError.NO_INIT);

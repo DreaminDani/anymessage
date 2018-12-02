@@ -6,12 +6,12 @@
  * LICENSE.md file.
  */
 import { Request, Response, Router } from "express";
-import helpers = require("../helpers");
+import { checkJwt } from "../helpers";
 import { TeamModel, UserModel } from "../models";
 
 const router: Router = Router();
 
-router.get("/login", helpers.checkJwt, async (req: Request, res: Response) => {
+router.get("/login", checkJwt, async (req: Request, res: Response) => {
     try {
         const user = new UserModel(req.app.get("db"), req.user.email);
         await user.init();

@@ -10,3 +10,5 @@ export class ModelError extends Error {
 export * from "./user.model";
 export * from "./team.model";
 export * from "./conversation.model";
+export * from "./integration.model";
+export * from "./provider.model";

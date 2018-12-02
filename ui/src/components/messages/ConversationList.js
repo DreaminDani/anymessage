@@ -76,6 +76,7 @@ class ConversationList extends React.Component {
       const {
         classes, selectedConvo, conversationList, mobileOpen, handleDrawerToggle,
       } = this.props;
+
       let list = (
         <div className={classes.emptyList}>
           <Typography variant="subtitle2" gutterBottom>No conversations yet...</Typography>
@@ -103,40 +104,36 @@ class ConversationList extends React.Component {
         );
       }
 
-
-      if (conversationList) {
-        return (
-          <React.Fragment>
-            <Hidden mdUp>
-              <Drawer
-                variant="temporary"
-                open={mobileOpen}
-                onClose={handleDrawerToggle}
-                classes={{
-                  paper: classes.drawerPaper,
-                }}
-                ModalProps={{
-                  keepMounted: true, // Better open performance on mobile.
-                }}
-              >
-                {list}
-              </Drawer>
-            </Hidden>
-            <Hidden smDown implementation="css">
-              <Drawer
-                variant="permanent"
-                open
-                classes={{
-                  paper: classes.drawerPaper,
-                }}
-              >
-                {list}
-              </Drawer>
-            </Hidden>
-          </React.Fragment>
-        );
-      }
-      return '';
+      return (
+        <React.Fragment>
+          <Hidden mdUp>
+            <Drawer
+              variant="temporary"
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+              classes={{
+                paper: classes.drawerPaper,
+              }}
+              ModalProps={{
+                keepMounted: true, // Better open performance on mobile.
+              }}
+            >
+              {list}
+            </Drawer>
+          </Hidden>
+          <Hidden smDown implementation="css">
+            <Drawer
+              variant="permanent"
+              open
+              classes={{
+                paper: classes.drawerPaper,
+              }}
+            >
+              {list}
+            </Drawer>
+          </Hidden>
+        </React.Fragment>
+      );
     }
 }
 
