@@ -6,7 +6,6 @@
  * LICENSE.md file.
  */
 import { json, Response, Router } from "express";
-import { Database, Entity } from "massive";
 import { checkJwt } from "../helpers";
 import {
     ConversationModel,
@@ -20,7 +19,10 @@ import {
 
 const router: Router = Router();
 
-router.get("/list", checkJwt, verifySubdomain, async (req: ITeamRequest, res: Response) => {
+router.get("/list",
+checkJwt,
+verifySubdomain,
+async (req: ITeamRequest, res: Response) => {
     try {
         const conversations = await ConversationModel.getConversationsByTeam(req.app.get("db"), req.team.id);
         res.status(200);
@@ -32,184 +34,53 @@ router.get("/list", checkJwt, verifySubdomain, async (req: ITeamRequest, res: Re
     }
 });
 
-router.post(
-    "/add",
-    checkJwt,
-    verifySubdomain,
-    json(),
-    verifyOutboundMessage,
-    async (req: IConversationRequest, res: Response) => {
-        const user = new UserModel(req.app.get("db"), req.user.email);
-        const userId = await user.init();
+router.post("/add",
+checkJwt,
+verifySubdomain,
+json(),
+verifyOutboundMessage,
+async (req: IConversationRequest, res: Response) => {
+    const user = new UserModel(req.app.get("db"), req.user.email);
+    const userId = await user.init();
 
-        if (user.exists()) {
-            try {
-                // TODO make client send integration name with provider
-                const provider = new ProviderModel(req.app.get("db"), req.body.provider, "twilio", req.team.id);
-                await provider.init();
-                const conversation = new ConversationModel(req.app.get("db"), req.body.phoneNumber.toString());
-                await conversation.init();
+    if (user.exists()) {
+        try {
+            // TODO make client send integration name with provider
+            const provider = new ProviderModel(req.app.get("db"), req.body.provider, "twilio", req.team.id);
+            await provider.init();
 
-                // update conversation
-                let updatedConversation = [];
-                if (conversation.exists()) {
-                    updatedConversation = await conversation.update(req.body.message, provider.getType(), userId);
-                } else {
-                    updatedConversation = await conversation.create(
-                        req.body.provider,
-                        req.body.message,
-                        provider.getType(),
-                        userId,
-                        req.team.id,
-                    );
-                }
+            // send message via provider
+            await provider.outbound(req.body.phoneNumber.toString(), req.body.message);
 
-                // send message via provider
-                await provider.outbound(req.body.phoneNumber.toString(), req.body.message);
+            const conversation = new ConversationModel(req.app.get("db"), req.body.phoneNumber.toString(), req.team.id);
+            await conversation.init();
 
-                res.status(200);
-
-                res.json(updatedConversation);
-            } catch (e) {
-                console.error(e);
-                res.status(e.status || 500);
-                (e.status && e.message) ? res.json({error: e.message}) : res.send();
+            // update conversation
+            let updatedConversation = [];
+            if (conversation.exists()) {
+                updatedConversation = await conversation.update(req.body.message, provider.getType(), userId);
+            } else {
+                updatedConversation = await conversation.create(
+                    req.body.provider,
+                    req.body.message,
+                    provider.getType(),
+                    userId,
+                    req.team.id,
+                );
             }
-        } else {
-            res.status(400);
-            res.json({error: "Requesting user does not exist. Please try logging in again."});
+
+            res.status(200);
+
+            res.json(updatedConversation);
+        } catch (e) {
+            console.error(e);
+            res.status(e.status || 500);
+            (e.status && e.message) ? res.json({error: e.message}) : res.send();
         }
+    } else {
+        res.status(400);
+        res.json({error: "Requesting user does not exist. Please try logging in again."});
+    }
 });
-
-export function add(
-    body: any,
-    user: string | any,
-    teamID: number,
-    serviceNumber: number | null,
-    db: Database,
-    callback: (err: string, body?: any) => void,
-) {
-    console.log("here");
-    // // these must be normalized between api users (/providers)
-    // let phoneNumber: string; // conversation "recipient"
-    // let who: string | number; // user name (0 if from provider)
-    // let message: string;
-    // let outbound: boolean; // true for UI users
-    // let authToken: string;
-    // let accountSID: string;
-    // switch (user) {
-    // case "twilio":
-    //     phoneNumber = body.From.replace(/\D/g, "");
-    //     who = 0;
-    //     message = body.Body;
-    //     outbound = false;
-    //     break;
-    // default:
-    //     // todo split into multiple providers
-    //     db.integrations.findOne({
-    //         name: "twilio",
-    //         team_id: teamID,
-    //     }).then((integration: any) => {
-    //         if (integration) {
-    //             authToken = integration.authentication.authToken;
-    //             accountSID = integration.authentication.accountSID;
-    //         } else {
-    //             callback("you must setup an integration first");
-    //         }
-    //     }).catch((err: string) => {
-    //         callback(err);
-    //     });
-    //     phoneNumber = body.phoneNumber.toString();
-    //     who = user.sub; // TODO a better user id
-    //     message = body.message;
-    //     outbound = true;
-    // }
-    // db.conversations.find({
-    //     to: phoneNumber,
-    // }).then((result: any[]) => {
-    //     // if found, update
-    //     if (result.length === 1) {
-    //         // copy history
-    //         const history = result[0].history;
-
-    //         // add message to history
-    //         // todo replace this with updateDoc?
-    //         history.push({
-    //             message,
-    //             timestamp: Math.floor(Date.now() / 1000),
-    //             type: "sms", // TODO pass into function
-    //             who,
-    //         });
-
-    //         // save message
-    //         db.conversations.update({
-    //             id: result[0].id,
-    //         }, {
-    //             history: JSON.stringify(history),
-    //         }).then((conversation: Entity) => {
-    //             // added to database, now send via provider
-    //             if (outbound) {
-    //                 twilioProvider.outbound(
-    //                     phoneNumber,
-    //                     message,
-    //                     result[0].from,
-    //                     accountSID,
-    //                     authToken,
-    //                     (providerError: string) => {
-    //                         if (providerError) {
-    //                             callback(providerError);
-    //                         }
-    //                         callback(null, conversation);
-    //                     });
-    //             } else {
-    //                 callback(null, conversation);
-    //             }
-    //         }).catch((error: string) => {
-    //             callback(error);
-    //         });
-
-    //     } else if (result.length === 0) {
-    //         // if not found, create new one
-    //         db.conversations.insert({
-    //             from: serviceNumber,
-    //             history: JSON.stringify([{
-    //                 message,
-    //                 timestamp: Date.now() / 1000,
-    //                 type: "sms", // TODO pass into function
-    //                 who,
-    //             }]),
-    //             team_id: teamID,
-    //             to: phoneNumber,
-    //         }).then((conversation: Entity) => {
-    //             // added to database, now send via provider
-    //             if (outbound) {
-    //                 twilioProvider.outbound(
-    //                     phoneNumber.toString(),
-    //                     message,
-    //                     serviceNumber.toString(),
-    //                     accountSID,
-    //                     authToken,
-    //                     (providerError: string) => {
-    //                         if (providerError) {
-    //                             callback(providerError); // todo actually tell the user about this
-    //                         }
-    //                         callback(null, [conversation]);
-    //                     });
-    //             } else {
-    //                 callback(null, [conversation]);
-    //             }
-    //         }).catch((error: string) => {
-    //             callback(error);
-    //         });
-    //     } else {
-    //         // there's too many conversations for this phone number... bail!
-    //         console.error("too many conversations for this user");
-    //         callback(body);
-    //     }
-
-    // }).catch((error: string) => {
-    //     callback(error);
-    // });
-}
 
 export const ConversationController: Router = router;

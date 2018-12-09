@@ -76,10 +76,10 @@ class Conversation extends React.Component {
     componentDidMount = () => {
       const { user } = this.props;
       get('/integration/providers', user.id_token).then((data) => {
-        if (data.providers) {
+        if (data) {
           this.setState({
             loaded: true,
-            providers: data.providers,
+            providers: data,
           });
         }
       }).catch(err => console.error(err));

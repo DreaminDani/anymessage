@@ -11,7 +11,9 @@ import { TeamModel, UserModel } from "../models";
 
 const router: Router = Router();
 
-router.get("/login", checkJwt, async (req: Request, res: Response) => {
+router.get("/login",
+checkJwt,
+async (req: Request, res: Response) => {
     try {
         const user = new UserModel(req.app.get("db"), req.user.email);
         await user.init();

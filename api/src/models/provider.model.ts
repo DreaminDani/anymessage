@@ -25,7 +25,54 @@ const providerTypeMap: any = {
  */
 export class ProviderModel {
 
-    // TODO GetAll (static method)
+    /**
+     * @return a list of all providers for a given teamId
+     * @return an empty list, if not found
+     */
+    public static async findAllByTeam(db: Database, teamId: number) {
+        try {
+            const providers = await db.query(
+                `SELECT providers FROM integrations
+                    WHERE team_id = $1`,
+                [teamId as unknown as string],
+            );
+            if (providers) {
+                return providers[0].providers;
+            } else {
+                return [];
+            }
+        } catch (e) {
+            throw new ModelError(e);
+        }
+    }
+
+    /**
+     * @return a teamId for a given integration provider.
+     * @return null, if not found
+     */
+    public static async findTeamByProvider(db: Database, integrationName: string, provider: string) {
+        try {
+            const result = await db.query(
+                `SELECT team_id
+                FROM integrations AS tt, jsonb_array_elements(
+                    (
+                      SELECT providers
+                      FROM integrations
+                      WHERE name = $1 AND id = tt.id
+                    )
+                ) AS arr_elem
+                WHERE arr_elem = $2`,
+                [integrationName, provider],
+            );
+            if (result) {
+                return result[0].team_id;
+            } else {
+                return null;
+            }
+        } catch (e) {
+            throw new ModelError(e);
+        }
+    }
 
     private initialized: boolean;
     private db: Database;

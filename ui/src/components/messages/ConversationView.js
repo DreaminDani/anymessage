@@ -111,6 +111,7 @@ class ConversationView extends React.Component {
           user.id_token, {
             phoneNumber: conversation.to,
             message,
+            provider: conversation.from,
           }).then((data) => {
           this.setState({ message: '', messageHeight: INIT_MESSAGE_HEIGHT + LINE_HEIGHT });
         }).catch(error => console.error(error)); // TODO show error using Snackbar

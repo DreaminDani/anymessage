@@ -17,8 +17,8 @@ import { getAllowedExpression } from "./helpers";
 // helpers and controllers
 import {
     ConversationController,
+    InboundController,
     IntegrationController,
-    ProviderController,
     TeamController,
     UserController,
 } from "./controllers";
@@ -52,7 +52,7 @@ massive({
     app.use("/integration", cors(corsOptions), IntegrationController);
     app.use("/team", cors(corsOptions), TeamController);
     app.use("/user", cors(corsOptions), UserController);
-    app.use("/provider", ProviderController);
+    app.use("/inbound", InboundController);
 
     http.createServer(app).listen(process.env.API_PORT, () => {
         console.info(`API listening on ${process.env.API_PORT}`);

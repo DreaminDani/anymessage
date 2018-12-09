@@ -5,7 +5,7 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.md file.
  */
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import { Database } from "massive";
 import { ModelError } from "./index";
 import { ITeamRequest } from "./team.model";
@@ -41,11 +41,13 @@ export class ConversationModel {
     private db: Database;
     private id: number;
     private recipient: string;
+    private teamId: number;
     private history: IConversationHistory[];
 
-    constructor(db: Database, recipient: string) {
+    constructor(db: Database, recipient: string, teamId: number) {
         this.db = db;
         this.recipient = recipient;
+        this.teamId = teamId;
         this.initialized = false;
     }
 
@@ -56,6 +58,7 @@ export class ConversationModel {
     public async init() {
         try {
             const conversation = await this.db.conversations.findOne({
+                team_id: this.teamId,
                 to: this.recipient,
             });
             if (conversation) {

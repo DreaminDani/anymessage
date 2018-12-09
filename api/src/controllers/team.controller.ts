@@ -5,7 +5,7 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.md file.
  */
-import { json, Request, Response, Router, urlencoded } from "express";
+import { json, Request, Response, Router } from "express";
 import { checkJwt } from "../helpers";
 import { ITeamRequest, verifySubdomain } from "../models";
 import { TeamModel } from "../models";
@@ -14,7 +14,10 @@ import { UserModel } from "../models";
 const router: Router = Router();
 
 // get users's team URL
-router.get("/url", checkJwt, verifySubdomain, async (req: ITeamRequest, res: Response) => {
+router.get("/url",
+checkJwt,
+verifySubdomain,
+async (req: ITeamRequest, res: Response) => {
     try {
         const user = new UserModel(req.app.get("db"), req.user.email);
         await user.init();
@@ -37,7 +40,10 @@ router.get("/url", checkJwt, verifySubdomain, async (req: ITeamRequest, res: Res
     }
 });
 
-router.post("/url/available", checkJwt, json(), async (req: Request, res: Response) => {
+router.post("/url/available",
+checkJwt,
+json(),
+async (req: Request, res: Response) => {
     try {
         const available = await TeamModel.available(req.app.get("db"), req.body.newURL);
         res.status(200);
@@ -49,7 +55,10 @@ router.post("/url/available", checkJwt, json(), async (req: Request, res: Respon
     }
 });
 
-router.post("/url/set", checkJwt, json(), async (req: Request, res: Response) => {
+router.post("/url/set",
+checkJwt,
+json(),
+async (req: Request, res: Response) => {
     try {
         // look up user by email (TODO generalize to more than auth0)
         const user = new UserModel(req.app.get("db"), req.user.email);

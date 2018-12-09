@@ -107,8 +107,8 @@ class TwilioSettings extends React.Component {
       if (integrationData) {
         this.setState({
           loaded: true,
-          savedaccountSID: integrationData.accountSID,
-          savedauthToken: integrationData.authToken,
+          savedaccountSID: integrationData.authentication.accountSID,
+          savedauthToken: integrationData.authentication.authToken,
           phoneNumbers: integrationData.providers,
         });
       }
@@ -121,8 +121,10 @@ class TwilioSettings extends React.Component {
         accountSID, authToken, savedaccountSID, savedauthToken, phoneNumbers,
       } = this.state;
       post('/integration/save', user.id_token, {
-        accountSID: accountSID || savedaccountSID,
-        authToken: authToken || savedauthToken,
+        authentication: {
+          accountSID: accountSID || savedaccountSID,
+          authToken: authToken || savedauthToken,
+        },
         name: 'twilio',
         providers: phoneNumbers,
       }).then(() => {

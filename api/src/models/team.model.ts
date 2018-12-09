@@ -93,6 +93,7 @@ export class TeamModel {
 
     public async setSubdomain(newURL: string) {
         if (this.initialized) {
+            this.subdomain = newURL;
             try {
                 return await this.db.teams.update({
                     id: this.id,

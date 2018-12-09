@@ -14,6 +14,11 @@ interface IUserInfo {
     name: string;
 }
 
+/**
+ * Interact with the users database
+ * @export
+ * @class UserModel
+ */
 export class UserModel {
     private initialized: boolean;
     private db: Database;

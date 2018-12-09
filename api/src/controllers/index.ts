@@ -7,6 +7,6 @@
  */
 export * from "./conversation.controller";
 export * from "./integration.controller";
-export * from "./provider.controller";
+export * from "./inbound.controller";
 export * from "./team.controller";
 export * from "./user.controller";

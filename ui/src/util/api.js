@@ -74,6 +74,7 @@ export function get(url = '', token) {
     }
     throw new FetchErrorException(response.status, json.error || response.statusText);
   }).catch((err) => {
+    console.error(err);
     if (response.ok) {
       return '';
     }
