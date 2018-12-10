@@ -1,7 +1,13 @@
+# ignore build/runtime stuff
 ui/.next
 ui/out
 api/dist
 api/coverage
 *node_modules*
+
+# ignore prod-stuff
 *.env
 *.log
+/*.prod*
+/nginx
+/postgres

@@ -1,28 +1,21 @@
+# copy this to your root directory along with the sample nginx directory
+# .gitingore will ignore them to prevent you from accidentally committing
+# then run docker-compose up to pull the images
 version: '3.1'
 services:
   ui:
     image: us.gcr.io/anymessage-219921/ui:latest
-    build: ./ui
-    command: npm run dev:80
-    volumes:
-      - ./ui:/usr/ui/
-      - /usr/ui/node_modules
-      # - /usr/ui/.next # need this for non-dev
+    restart: always
     environment:
-      - API_ENDPOINT=http://localhost:${API_PORT}
-    ports:
-      - "3000:3000"
-      - "80:80"
+      - API_ENDPOINT=http://api.anymessage.io # replace with your api domain
+    expose:
+      - "3000"
     env_file: .env
   api:
     image: us.gcr.io/anymessage-219921/api:latest
-    build: ./api
-    command: npm run dev
-    volumes:
-      - ./api:/usr/api
-      - /usr/api/node_modules
-    ports:
-      - "1337:1337"
+    restart: always
+    expose:
+      - ${API_PORT}
     depends_on:
       - db
     env_file: .env
@@ -30,11 +23,10 @@ services:
     image: postgres
     restart: always
     volumes:
-      - database:/var/lib/postgresql/data
+      - ./postgres/data:/var/lib/postgresql/data
     env_file: .env
   db-migrate:
     image: us.gcr.io/anymessage-219921/db-migrate:latest
-    build: ./db
     restart: on-failure
     environment:
       - TARGET_URI=db:postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DATABASE}
@@ -44,10 +36,11 @@ services:
     depends_on:
       - db
     env_file: .env
-  adminer:
-    image: adminer
+  nginx:
+    build: nginx/
     restart: always
     ports:
-      - 8080:8080
-volumes:
-  database:
+      - "80:80"
+    depends_on:
+      - ui
+      - api
