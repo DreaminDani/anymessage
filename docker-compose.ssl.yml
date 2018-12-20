@@ -1,0 +1,65 @@
+# runs a local nginx instance with a self signed cert
+# DO NOT USE IN PRODUCTION
+version: '3.1'
+services:
+  nginx:
+    image: nginx
+    restart: always
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - ui
+      - api
+  ui:
+    image: us.gcr.io/anymessage-219921/ui:latest
+    build: ./ui
+    command: npm run dev
+    volumes:
+      - ./ui:/usr/ui/
+      - /usr/ui/node_modules
+      # - /usr/ui/.next # need this for non-dev
+    environment:
+      - API_ENDPOINT=https://api.anymessage.io # replace with your api domain
+    ports:
+      - "3000:3000"
+    env_file: .env
+  api:
+    image: us.gcr.io/anymessage-219921/api:latest
+    build: ./api
+    command: npm run dev
+    volumes:
+      - ./api:/usr/api
+      - /usr/api/node_modules
+    ports:
+      - "1337:1337"
+    depends_on:
+      - db
+    env_file: .env
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - database:/var/lib/postgresql/data
+    env_file: .env
+  db-migrate:
+    image: us.gcr.io/anymessage-219921/db-migrate:latest
+    build: ./db
+    restart: on-failure
+    environment:
+      - TARGET_URI=db:postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DATABASE}
+      - SQITCH_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./db:/work
+    depends_on:
+      - db
+    env_file: .env
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+volumes:
+  database:

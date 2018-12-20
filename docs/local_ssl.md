@@ -1,0 +1,62 @@
+Steps mostly borrowed from: https://medium.com/@oliver.zampieri/self-signed-ssl-reverse-proxy-with-docker-dbfc78c05b41
+```
+mkdir nginx
+cd nginx
+```
+
+Create a new cert
+```
+openssl req -subj '/CN=localhost' -x509 -newkey rsa:4096 -nodes -keyout key.pem -out cert.pem -days 365
+```
+
+make a file "proxy_ssl.conf", using your local IP in the proxy_pass lines
+```
+server {
+    listen 80;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    ssl_certificate /etc/nginx/conf.d/cert.pem;
+    ssl_certificate_key /etc/nginx/conf.d/key.pem;
+    server_name api.anymessage.io # your api domain
+    proxy_pass_header Server;
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+
+        proxy_pass http://api:1337/; # your API_PORT
+    }
+}
+
+server {
+    listen 443 ssl default_server;
+    ssl_certificate /etc/nginx/conf.d/cert.pem;
+    ssl_certificate_key /etc/nginx/conf.d/key.pem;
+    proxy_pass_header Server;
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+
+        proxy_pass http://ui:3000/;
+    }
+}
+```
+
+run the ssl version of docker-compose:
+```
+cd .. # get back into the root directory of this project
+docker-compose -f docker-compose.ssl.yml up
+```
+
+In order to access the proxied webservice via the url you used in your .env file, you'll have to update your hosts file to look something like:
+```
+127.0.0.1 www.anymessage.io anymessage.io test.anymessage.io example.anymessage.io api.anymessage.io
+```
+where `www` and `api` are the only required ones, the naked domain is for convenience/testing while the other domains are what you'll use as teamURLs. This is because `/etc/hosts` doesn't support wild card entries.
+
+When you first access the app, you'll get a warning from your browser about the self-signed cert. You can ignore it by clicking the "advanced options" somewhere. *In order for API requests to work, you'll have to navigate to your api domain and allow its cert as well*. If you don't do this, API requests (like logging in) will silently fail due to a CORS issue. See: https://stackoverflow.com/a/29342094
+- Every time you change a teamURL, your browser will ask again to trust the self-signed cert.
