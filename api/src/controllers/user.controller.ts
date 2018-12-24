@@ -27,8 +27,7 @@ async (req: Request, res: Response) => {
                 const subdomain = team.getSubdomain();
                 if (subdomain) {
                     result = {
-                        // todo handle SSL
-                        redirectURI: `http://${subdomain}.${process.env.UI_HOSTNAME}/messages`,
+                        redirectURI: `//${subdomain}.${process.env.UI_HOSTNAME}/messages`,
                         teamURL: subdomain,
                     };
                 }

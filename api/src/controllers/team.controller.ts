@@ -80,7 +80,7 @@ async (req: Request, res: Response) => {
 
         res.status(200);
         res.send({
-            redirectHost: `http://${req.body.newURL}.${process.env.UI_HOSTNAME}`, // todo handle ssl
+            redirectHost: `//${req.body.newURL}.${process.env.UI_HOSTNAME}`,
         });
     } catch (e) {
         console.error(e);

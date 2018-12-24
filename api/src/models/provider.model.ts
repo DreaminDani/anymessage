@@ -36,7 +36,7 @@ export class ProviderModel {
                     WHERE team_id = $1`,
                 [teamId as unknown as string],
             );
-            if (providers) {
+            if (providers && providers[0]) {
                 return providers[0].providers;
             } else {
                 return [];

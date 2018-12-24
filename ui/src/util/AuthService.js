@@ -24,7 +24,8 @@ export default class AuthService {
       clientID: this.clientId,
       scope: 'openid email profile',
       responseType: 'token id_token',
-      redirectUri: `http://www.${UI_HOSTNAME}/callback`, // todo make this work with https
+      redirectUri: `http://www.${UI_HOSTNAME}/callback`,
+      // if using SSL, all http traffic must be redirected to https
     });
   }
 
@@ -104,7 +105,7 @@ export default class AuthService {
     Cookie.remove('id_token', { domain: `.${UI_HOSTNAME}` });
     Cookie.remove('expires_at', { domain: `.${UI_HOSTNAME}` });
     if (redirect) {
-      window.location = `http://www.${UI_HOSTNAME}`; // TODO handle SSL
+      window.location = `//www.${UI_HOSTNAME}`;
     }
   }
 }

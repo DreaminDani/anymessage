@@ -76,7 +76,7 @@ class Header extends React.Component {
     if (teamURL === window.location.hostname) {
       Router.push(route.path);
     } else {
-      window.location = `http://${teamURL}${route.path}`; // todo handle ssl
+      window.location = `//${teamURL}${route.path}`;
     }
   }
 

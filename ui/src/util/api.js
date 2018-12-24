@@ -46,7 +46,7 @@ export function post(url = '', token, data = {}) {
     }
 
     if (response.status === 403) {
-      window.location = `http://www.${UI_HOSTNAME}?unauthorized`; // todo handle ssl
+      window.location = `//www.${UI_HOSTNAME}?unauthorized`;
     }
     throw new FetchErrorException(response.status, err.message || response.statusText);
   }));
@@ -74,13 +74,12 @@ export function get(url = '', token) {
     }
     throw new FetchErrorException(response.status, json.error || response.statusText);
   }).catch((err) => {
-    console.error(err);
     if (response.ok) {
       return '';
     }
 
     if (response.status === 403) {
-      window.location = `http://www.${UI_HOSTNAME}?unauthorized`; // todo handle ssl
+      window.location = `//www.${UI_HOSTNAME}?unauthorized`;
     }
 
     throw new FetchErrorException(response.status, err.message || response.statusText);
