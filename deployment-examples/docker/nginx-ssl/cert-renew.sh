@@ -12,7 +12,7 @@ for domain in $RENEWED_DOMAINS; do
                 # we're copying them into daemon_cert_root.
                 umask 077
 
-                cp "$RENEWED_LINEAGE/cert.pem" "$daemon_cert_root/cert.pem"
+                cp "$RENEWED_LINEAGE/fullchain.pem" "$daemon_cert_root/cert.pem"
                 cp "$RENEWED_LINEAGE/privkey.pem" "$daemon_cert_root/key.pem"
 
                 # Apply the proper file ownership and permissions for
