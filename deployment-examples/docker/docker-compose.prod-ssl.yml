@@ -1,6 +1,6 @@
 # copy this to your root directory along with the nginx-ssl directory
 # rename nginx-ssl to nginx so .gitingore can ignore them and prevent accidental committing
-# copy/create your SSL certs (cert.pem and key.pem) into the new nginx directory
+# copy/create your SSL certs (cert.pem and key.pem) in the new nginx/certs directory
 # then run docker-compose -f docker-compose.prod-ssl.yml up to pull the images
 version: '3.1'
 services:
@@ -40,6 +40,8 @@ services:
   nginx:
     build: nginx/
     restart: always
+    volumes:
+      - ./nginx/certs:/etc/nginx/certs
     ports:
       - "80:80"
     depends_on:
