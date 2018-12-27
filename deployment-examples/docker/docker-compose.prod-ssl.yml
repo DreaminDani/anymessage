@@ -1,6 +1,7 @@
-# copy this to your root directory along with the sample nginx directory
-# .gitingore will ignore them to prevent you from accidentally committing
-# then run docker-compose -f docker-compose.prod.yml up to pull the images
+# copy this to your root directory along with the nginx-ssl directory
+# rename nginx-ssl to nginx so .gitingore can ignore them and prevent accidental committing
+# copy/create your SSL certs (cert.pem and key.pem) into the new nginx directory
+# then run docker-compose -f docker-compose.prod-ssl.yml up to pull the images
 version: '3.1'
 services:
   ui:
