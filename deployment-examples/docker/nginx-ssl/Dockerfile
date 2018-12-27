@@ -1,2 +1,2 @@
 FROM nginx:alpine
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY proxy_ssl.conf /etc/nginx/conf.d/proxy_ssl.conf

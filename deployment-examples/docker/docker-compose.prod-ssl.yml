@@ -1,6 +1,10 @@
 # copy this to your root directory along with the nginx-ssl directory
 # rename nginx-ssl to nginx so .gitingore can ignore them and prevent accidental committing
-# copy/create your SSL certs (cert.pem and key.pem) in the new nginx/certs directory
+# 1. Install Certbot
+# 2. Run this command `sudo certbot certonly --manual --preferred-challenges=dns --email example@yourdomain.tld --agree-tos -d *.yourdomain.tld`
+# 3. follow the instructions to create a DNS record
+# 4. copy/create your SSL certs (cert.pem and key.pem) in the new nginx/certs directory
+# 5. create a cronjob that will auto-update the certs `certbot renew --deploy-hook /your/anymessage/directory/nginx/cert-renew.sh
 # then run docker-compose -f docker-compose.prod-ssl.yml up to pull the images
 version: '3.1'
 services:
