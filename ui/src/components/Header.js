@@ -13,14 +13,12 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import CommentIcon from '@material-ui/icons/Comment';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { withAuth } from '../util/authContext';
 import AuthService from '../util/AuthService';
+
+import UserMenu from './header/UserMenu';
 
 const styles = theme => ({
   root: {
@@ -39,9 +37,6 @@ const styles = theme => ({
     marginLeft: -12,
     marginRight: 12,
   },
-  loginButton: {
-    marginLeft: -12,
-  },
 });
 
 const tabs = [
@@ -54,11 +49,6 @@ function getRoute(routeName) {
 }
 
 class Header extends React.Component {
-  state = {
-    loaded: false,
-    anchorEl: null,
-  }
-
   componentDidMount() {
     this.auth = new AuthService();
     this.setState({ loaded: true });
@@ -80,42 +70,10 @@ class Header extends React.Component {
     }
   }
 
-  handleLogoutMenuClick = (event) => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
-
-  handleLogoutMenuClose = () => {
-    this.setState({ anchorEl: null });
-  };
-
   render() {
     const {
       classes, user, onMenuClick,
     } = this.props;
-    const { loaded, anchorEl } = this.state;
-
-    const loginButton = (user)
-      ? (
-        <div className={classes.loginButton}>
-          <Button
-            color="inherit"
-            aria-owns={anchorEl ? 'logout-menu' : undefined}
-            aria-haspopup="true"
-            onClick={this.handleLogoutMenuClick}
-          >
-            <MoreVertIcon />
-          </Button>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={this.handleLogoutMenuClose}
-          >
-            <MenuItem onClick={loaded ? this.auth.logout : null}>Logout</MenuItem>
-          </Menu>
-        </div>
-      )
-      : <Button className={classes.loginButton} onClick={loaded ? this.auth.login : null} color="inherit">Login</Button>;
 
     const currentTab = this.getTab();
     return (
@@ -139,7 +97,7 @@ class Header extends React.Component {
             {tabs.map(route => <Tab key={route.name} label={route.name} />)}
           </Tabs>
           )}
-          { loginButton }
+          <UserMenu />
         </Toolbar>
       </AppBar>
     );
@@ -147,6 +105,7 @@ class Header extends React.Component {
 }
 
 Header.defaultProps = {
+  width: 'sm',
   currentPage: '',
   user: null,
   onMenuClick: null,
@@ -154,6 +113,7 @@ Header.defaultProps = {
 
 Header.propTypes = {
   classes: PropTypes.object.isRequired,
+  width: PropTypes.string,
   currentPage: PropTypes.string,
   user: PropTypes.object,
   onMenuClick: PropTypes.func,
