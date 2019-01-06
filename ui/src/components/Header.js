@@ -16,7 +16,6 @@ import Tab from '@material-ui/core/Tab';
 import IconButton from '@material-ui/core/IconButton';
 import CommentIcon from '@material-ui/icons/Comment';
 import { withAuth } from '../util/authContext';
-import AuthService from '../util/AuthService';
 
 import UserMenu from './header/UserMenu';
 
@@ -49,11 +48,6 @@ function getRoute(routeName) {
 }
 
 class Header extends React.Component {
-  componentDidMount() {
-    this.auth = new AuthService();
-    this.setState({ loaded: true });
-  }
-
   getTab = () => {
     const { currentPage } = this.props;
     const index = tabs.indexOf(getRoute(currentPage));
@@ -61,8 +55,10 @@ class Header extends React.Component {
   }
 
   handleTabClick = (event, value) => {
+    const { user } = this.props;
+    const { teamURL } = user;
     const route = tabs[value];
-    const teamURL = this.auth.getTeamURL();
+
     if (teamURL === window.location.hostname) {
       Router.push(route.path);
     } else {

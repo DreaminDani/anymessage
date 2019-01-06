@@ -7,14 +7,17 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import withWidth from '@material-ui/core/withWidth';
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import {
+  Button, Drawer, withWidth, withStyles,
+} from '@material-ui/core';
+// import Menu from '@material-ui/core/Menu';
+// import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import { withAuth } from '../../util/authContext';
+import AuthService from '../../util/AuthService';
+
+import UserNameGroup from './UserNameGroup';
 
 const styles = theme => ({
   loginButton: {
@@ -25,46 +28,52 @@ const styles = theme => ({
 class UserMenu extends React.Component {
     state = {
       loaded: false,
-      anchorEl: null,
+      open: false,
     }
 
-    handleLogoutMenuClick = (event) => {
-      this.setState({ anchorEl: event.currentTarget });
+    componentDidMount() {
+      this.auth = new AuthService();
+      this.setState({ loaded: true });
+    }
+
+    handleMenuClick = () => {
+      this.setState({ open: true });
     };
 
-      handleLogoutMenuClose = () => {
-        this.setState({ anchorEl: null });
-      };
+    handleMenuClose = () => {
+      this.setState({ open: false });
+    };
 
-      render() {
-        const { classes, width, user } = this.props;
-        const { loaded, anchorEl } = this.state;
+    render() {
+      const { classes, width, user } = this.props;
+      const { loaded, open } = this.state;
 
-        if (user) {
-          return (
-            // @WIP - todo show user name and dropdown instead of ellipses
-            <div className={classes.loginButton}>
-              <Button
-                color="inherit"
-                aria-owns={anchorEl ? 'logout-menu' : undefined}
-                aria-haspopup="true"
-                onClick={this.handleLogoutMenuClick}
+      if (user) {
+        return (
+          // @WIP - todo show user name and dropdown instead of ellipses
+          <div className={classes.loginButton}>
+            <Button
+              color="inherit"
+              aria-haspopup="true"
+              onClick={this.handleMenuClick}
+            >
+              <UserNameGroup />
+            </Button>
+            <Drawer anchor="right" open={open} onClose={this.handleMenuClose}>
+              <div
+                tabIndex={0}
+                role="button"
+                onClick={this.handleMenuClose}
+                onKeyDown={this.handleMenuClose}
               >
-                <MoreVertIcon />
-              </Button>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={this.handleLogoutMenuClose}
-              >
-                <MenuItem onClick={loaded ? this.auth.logout : null}>Logout</MenuItem>
-              </Menu>
-            </div>
-          );
-        }
-        return <Button className={classes.loginButton} onClick={loaded ? this.auth.login : null} color="inherit">Login</Button>;
+                <Button onClick={loaded ? this.auth.logout : null}>Logout</Button>
+              </div>
+            </Drawer>
+          </div>
+        );
       }
+      return <Button className={classes.loginButton} onClick={loaded ? this.auth.login : null} color="inherit">Login</Button>;
+    }
 }
 
 UserMenu.defaultProps = {

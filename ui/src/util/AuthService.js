@@ -9,6 +9,7 @@
 import auth0 from 'auth0-js';
 import Cookie from 'js-cookie';
 import getConfig from 'next/config';
+import { get } from './api';
 
 const { publicRuntimeConfig } = getConfig();
 const { AUTH0_CLIENTID, AUTH0_DOMAIN, UI_HOSTNAME } = publicRuntimeConfig;
@@ -66,6 +67,13 @@ export default class AuthService {
     return expiresAt ? (new Date().getTime() < JSON.parse(expiresAt)) : false;
   }
 
+  async getUser(cookie) {
+    const tokens = this.getToken(cookie);
+    const teamURL = this.getTeamURL(cookie);
+    const details = await get('/user/details', tokens.id_token);
+    return { ...tokens, ...details, ...teamURL };
+  }
+
   setToken(authResult) {
     // Set the time that the Access Token will expire at
     const expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
@@ -94,8 +102,17 @@ export default class AuthService {
     Cookie.set('team_url', `${teamURL}.${UI_HOSTNAME}`, { domain: `.${UI_HOSTNAME}` });
   }
 
-  getTeamURL() {
-    return Cookie.get('team_url');
+  getTeamURL = (cookie) => {
+    if (cookie && this.loggedIn(cookie)) {
+      return {
+        teamURL: this.parseCookie(cookie, 'team_url'),
+      };
+    }
+    if (this.loggedIn()) {
+      return {
+        teamURL: Cookie.get('team_url'),
+      };
+    }
   }
 
   logout(redirect) {

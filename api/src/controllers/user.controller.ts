@@ -18,6 +18,9 @@ async (req: Request, res: Response) => {
         const user = new UserModel(req.app.get("db"), req.user.email);
         await user.init();
         if (user.exists()) {
+            // update stored metadata
+            await user.updateMetadata(req.user);
+            // get team_id to return it
             let result: {};
             const teamId = user.getTeamId();
             if (teamId) {
@@ -47,6 +50,20 @@ async (req: Request, res: Response) => {
         console.error(e);
         res.status(e.status || 500);
         (e.status && e.message) ? res.json({error: e.message}) : res.send();
+    }
+});
+
+router.get("/details",
+checkJwt,
+(req: Request, res: Response) => {
+    console.log(req.user);
+    if (req.user) {
+        res.status(200);
+        res.json(req.user);
+    } else {
+        console.error("req.user is not defined");
+        res.status(500);
+        res.send();
     }
 });
 

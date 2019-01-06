@@ -6,9 +6,13 @@
  * LICENSE.md file.
  */
 import getConfig from 'next/config';
+import fetch from 'isomorphic-unfetch';
 
 const { publicRuntimeConfig } = getConfig();
 const { API_ENDPOINT, UI_HOSTNAME } = publicRuntimeConfig;
+
+// shim for server side fetch
+const api = (process.browser) ? API_ENDPOINT : 'http://api:1337';
 
 function FetchErrorException(status, message) {
   this.status = status;
@@ -35,7 +39,7 @@ export function post(url = '', token, data = {}) {
     options.headers.Authorization = `Bearer ${token}`;
   }
 
-  return fetch(API_ENDPOINT + url, options).then(response => response.json().then((json) => {
+  return fetch(api + url, options).then(response => response.json().then((json) => {
     if (response.ok) {
       return json;
     }
@@ -68,7 +72,7 @@ export function get(url = '', token) {
     }
     options.headers.Authorization = `Bearer ${token}`;
   }
-  return fetch(API_ENDPOINT + url, options).then(response => response.json().then((json) => {
+  return fetch(api + url, options).then(response => response.json().then((json) => {
     if (response.ok) {
       return json;
     }
