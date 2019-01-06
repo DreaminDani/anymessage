@@ -22,7 +22,7 @@ const styles = theme => ({
   },
 });
 
-class TeamURL extends React.Component {
+class UserMenu extends React.Component {
     state = {
       loaded: false,
       anchorEl: null,
@@ -67,14 +67,14 @@ class TeamURL extends React.Component {
       }
 }
 
-TeamURL.defaultProps = {
+UserMenu.defaultProps = {
   width: 'sm',
   user: null,
 };
-TeamURL.propTypes = {
+UserMenu.propTypes = {
   classes: PropTypes.object.isRequired,
   width: PropTypes.string,
   user: PropTypes.object,
 };
 
-export default withAuth(withWidth()(withStyles(styles)(TeamURL)));
+export default withAuth(withWidth()(withStyles(styles)(UserMenu)));
