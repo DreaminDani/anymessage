@@ -10,14 +10,13 @@ import PropTypes from 'prop-types';
 import {
   Button, Drawer, withWidth, withStyles,
 } from '@material-ui/core';
-// import Menu from '@material-ui/core/Menu';
-// import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { ExpandMore, Menu } from '@material-ui/icons';
 
 import { withAuth } from '../../util/authContext';
 import AuthService from '../../util/AuthService';
 
 import UserNameGroup from './UserNameGroup';
+import UserMenuOptions from './UserMenuOptions';
 
 const styles = theme => ({
   loginButton: {
@@ -57,7 +56,14 @@ class UserMenu extends React.Component {
               aria-haspopup="true"
               onClick={this.handleMenuClick}
             >
-              <UserNameGroup />
+              {(width === 'sm')
+                ? <Menu />
+                : (
+                  <UserNameGroup
+                    rightIcon={<ExpandMore />}
+                  />
+                )}
+
             </Button>
             <Drawer anchor="right" open={open} onClose={this.handleMenuClose}>
               <div
@@ -66,7 +72,7 @@ class UserMenu extends React.Component {
                 onClick={this.handleMenuClose}
                 onKeyDown={this.handleMenuClose}
               >
-                <Button onClick={loaded ? this.auth.logout : null}>Logout</Button>
+                <UserMenuOptions authLink={loaded ? this.auth.logout : null} />
               </div>
             </Drawer>
           </div>

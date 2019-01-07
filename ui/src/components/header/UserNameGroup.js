@@ -7,14 +7,16 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, Avatar, Typography } from '@material-ui/core';
+import {
+  withStyles, Avatar, Typography, Grid,
+} from '@material-ui/core';
 
 import { withAuth } from '../../util/authContext';
 
 const styles = {
   username: {
-    textTransform: 'none',
     marginLeft: 8,
+    textTransform: 'none',
   },
 }; // @todo decide on a bg-color for the initials
 
@@ -27,24 +29,33 @@ class UserNameGroup extends React.Component {
     }
 
     render() {
-      const { classes, user } = this.props;
+      const { classes, user, rightIcon } = this.props;
       return (
-        <React.Fragment>
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+
           {user.picture
             ? <Avatar alt={user.name} src={user.picture} />
             : <Avatar alt={user.name}>{this.getInitials()}</Avatar>}
           <Typography variant="body2" color="inherit" className={classes.username}>{user.email}</Typography>
-        </React.Fragment>
+          {rightIcon}
+        </Grid>
       );
     }
 }
 
 UserNameGroup.defaultProps = {
   user: null,
+  rightIcon: null,
 };
 UserNameGroup.propTypes = {
   classes: PropTypes.object.isRequired,
   user: PropTypes.object,
+  rightIcon: PropTypes.element,
 };
 
 export default withAuth(withStyles(styles)(UserNameGroup));

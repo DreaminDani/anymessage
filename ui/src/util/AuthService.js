@@ -68,7 +68,7 @@ export default class AuthService {
   }
 
   async getUser(cookie) {
-    if (this.loggedIn()) {
+    if (this.loggedIn(cookie)) {
       const tokens = this.getToken(cookie);
       const teamURL = this.getTeamURL(cookie);
       const details = await get('/user/details', tokens.id_token);
