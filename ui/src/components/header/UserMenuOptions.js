@@ -7,9 +7,11 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import Link from 'next/link';
 import { withStyles, Button, Grid } from '@material-ui/core';
-import { ChevronRight } from '@material-ui/icons';
+import { ChevronRight, Settings } from '@material-ui/icons';
 import UserNameGroup from './UserNameGroup';
+import UserMenuItem from './UserMenuItem';
 
 const styles = theme => ({
   root: {
@@ -39,6 +41,9 @@ class UserMenuOptions extends React.Component {
             rightIcon={<ChevronRight className={classes.collapseIcon} />}
           />
         </Grid>
+        <UserMenuItem title="Settings" link="/settings">
+          <Settings />
+        </UserMenuItem>
         <Button onClick={authLink}>Logout</Button>
       </Grid>
     );
