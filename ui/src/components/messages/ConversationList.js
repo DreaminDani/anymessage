@@ -75,6 +75,7 @@ class ConversationList extends React.Component {
           <MailboxEmpty width={200} height="100%" />
         </div>
       );
+      console.log(conversationList);
       if (conversationList && conversationList.length > 0) {
         list = (
           <List>
@@ -84,7 +85,7 @@ class ConversationList extends React.Component {
                 return (
                   <ListItem className={classes.item} selected={conversation.id === selectedConvo} key={conversation.id} onClick={() => this.handleClick(conversation.id)}>
                     <Avatar>
-                      {getIcon(lastMessage.type)}
+                      {() => getIcon(lastMessage.type)}
                     </Avatar>
                     <ListItemText primary={`+${conversation.to}`} secondary={lastMessage.message} className={classes.messagePreview} />
                   </ListItem>
@@ -113,7 +114,7 @@ class ConversationList extends React.Component {
               <Button
                 style={newConversation ? { backgroundColor: theme.palette.error.main } : { backgroundColor: theme.palette.secondary.main }}
                 onClick={newConversationClick}
-                variant="raised"
+                variant="contained"
                 color="inherit"
               >
                 {newConversation ? 'Cancel' : 'New Message'}
@@ -132,7 +133,7 @@ class ConversationList extends React.Component {
               <Button
                 style={newConversation ? { backgroundColor: theme.palette.error.main } : { backgroundColor: theme.palette.secondary.main }}
                 onClick={newConversationClick}
-                variant="raised"
+                variant="contained"
                 color="inherit"
               >
                 {newConversation ? 'Cancel' : 'New Message'}

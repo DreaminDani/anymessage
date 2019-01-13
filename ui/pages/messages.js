@@ -145,7 +145,7 @@ class Messages extends React.Component {
 
     let messagesTitle = 'Messages';
     if (currentConversation) {
-      messagesTitle = `Messages: ${this.findConversationByID(currentConversation).from}`;
+      messagesTitle = `Messages: ${this.findConversationByID(currentConversation).to}`;
     }
     if (newConversation) {
       messagesTitle = 'Messages: New Conversation';
@@ -157,9 +157,6 @@ class Messages extends React.Component {
           <title>{messagesTitle}</title>
         </Head>
         <Header currentPage="messages" title={messagesTitle} onMenuClick={this.onMenuClick} />
-        {/* <Button onClick={this.handleClick} variant="fab" color="secondary" aria-label="Edit" className={classes.create}>
-          {newConversation ? <CloseIcon /> : <EditIcon />}
-        </Button> */}
         <Grid
           container
           direction="row"

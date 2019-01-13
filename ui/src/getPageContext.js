@@ -12,6 +12,7 @@ import { createMuiTheme, createGenerateClassName } from '@material-ui/core/style
 import blue from '@material-ui/core/colors/blue';
 import amber from '@material-ui/core/colors/amber';
 import green from '@material-ui/core/colors/green';
+import yellow from '@material-ui/core/colors/yellow';
 
 // A theme with custom primary and secondary color.
 // https://material.io/tools/color/#!/?view.left=0&view.right=0&primary.color=1976D2&secondary.color=FFC400
@@ -28,7 +29,14 @@ const theme = createMuiTheme({
       main: amber.A400,
       dark: '#c79400',
     },
-    success: green.A400,
+    success: {
+      light: green.A400,
+      main: green['600'],
+      dark: green['800'],
+    },
+    warning: {
+      main: yellow['400'],
+    },
   },
   header: {
     height: 64,

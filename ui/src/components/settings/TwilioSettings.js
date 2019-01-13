@@ -43,7 +43,7 @@ const styles = theme => ({
   savedMessage: {
     paddingLeft: 16,
     fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.success,
+    color: theme.palette.light,
     '& [class^="MuiSvgIcon"]': {
       marginBottom: -6,
     },
