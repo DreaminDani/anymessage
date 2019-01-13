@@ -10,7 +10,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
@@ -54,6 +53,17 @@ class Messages extends React.Component {
     const { user } = this.props;
 
     if (user) {
+      // make sure user has a team url
+      if (!user.teamURL) {
+        window.location = `${window.location.protocol}//${user.teamURL}/settings`; // todo, navigate user to setup instead
+      }
+
+      // make sure user is accessing messages from their team url
+      if (window.location.hostname !== user.teamURL) {
+        window.location = `${window.location.protocol}//${user.teamURL}/messages`;
+      }
+
+      // fetch initial conversations for user
       get('/conversation/list', user.id_token).then((data) => {
         this.setState({
           conversationList: data, // update conversation list
@@ -108,7 +118,7 @@ class Messages extends React.Component {
     return null;
   }
 
-  handleClick = () => {
+  newConversationClick = () => {
     const { newConversation } = this.state;
     if (newConversation) {
       this.setState({
@@ -146,10 +156,10 @@ class Messages extends React.Component {
         <Head>
           <title>{messagesTitle}</title>
         </Head>
-        <Header currentPage="messages" withButton onMenuClick={this.onMenuClick} />
-        <Button onClick={this.handleClick} variant="fab" color="secondary" aria-label="Edit" className={classes.create}>
+        <Header currentPage="messages" title={messagesTitle} onMenuClick={this.onMenuClick} />
+        {/* <Button onClick={this.handleClick} variant="fab" color="secondary" aria-label="Edit" className={classes.create}>
           {newConversation ? <CloseIcon /> : <EditIcon />}
-        </Button>
+        </Button> */}
         <Grid
           container
           direction="row"
@@ -158,6 +168,8 @@ class Messages extends React.Component {
         >
           <Grid item xs={3}>
             <ConversationList
+              newConversation={newConversation}
+              newConversationClick={this.newConversationClick}
               selectedConvo={currentConversation}
               setConversation={this.setConversation}
               conversationList={conversationList}

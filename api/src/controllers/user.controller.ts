@@ -56,7 +56,6 @@ async (req: Request, res: Response) => {
 router.get("/details",
 checkJwt,
 (req: Request, res: Response) => {
-    console.log(req.user);
     if (req.user) {
         res.status(200);
         res.json(req.user);

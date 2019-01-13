@@ -56,6 +56,11 @@ class Settings extends React.Component {
       Router.push('/');
       return false;
     }
+
+    if (window.location.hostname !== user.teamURL) {
+      window.location = `${window.location.protocol}//${user.teamURL}/settings`;
+    }
+
     return true;
   }
 
