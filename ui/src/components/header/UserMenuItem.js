@@ -12,18 +12,15 @@ import {
   withStyles, Typography, Grid, Button,
 } from '@material-ui/core';
 
-const styles = {
-  root: {
+const styles = theme => ({
+  active: {
+    color: theme.palette.primary.light,
+  },
+  inactive: {
     paddingTop: 8,
     paddingBottom: 8,
-    textTransform: 'none',
   },
-  text: {
-    textAlign: 'left',
-    marginLeft: 16,
-    paddingTop: 2, // adjustment to vertically align text with icon
-  },
-};
+});
 
 class UserMenuItem extends React.Component {
     onClickHandler = () => {
@@ -32,32 +29,23 @@ class UserMenuItem extends React.Component {
     }
 
     render() {
-      const { classes, title, children } = this.props;
+      const { classes, title, active } = this.props;
       return (
-        <Button onClick={this.onClickHandler} className={classes.root}>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-            <Grid item xs={1}>
-              {children}
-            </Grid>
-            <Grid item xs={10}>
-              <Typography variant="body1" color="inherit" className={classes.text}>{title}</Typography>
-            </Grid>
-
-          </Grid>
+        <Button onClick={this.onClickHandler} className={active ? classes.active : classes.inactive}>
+          {title}
         </Button>
       );
     }
 }
 
+UserMenuItem.defaultProps = {
+  active: false,
+};
+
 UserMenuItem.propTypes = {
   classes: PropTypes.object.isRequired,
+  active: PropTypes.bool,
   title: PropTypes.string.isRequired,
-  children: PropTypes.element.isRequired,
 };
 
 export default withStyles(styles)(UserMenuItem);

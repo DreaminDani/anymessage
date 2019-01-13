@@ -44,7 +44,9 @@ class UserMenu extends React.Component {
     };
 
     render() {
-      const { classes, width, user } = this.props;
+      const {
+        classes, width, user, currentPage,
+      } = this.props;
       const { loaded, open } = this.state;
 
       if (user) {
@@ -66,14 +68,11 @@ class UserMenu extends React.Component {
 
             </Button>
             <Drawer anchor="right" open={open} onClose={this.handleMenuClose}>
-              <div
-                tabIndex={0}
-                role="button"
-                onClick={this.handleMenuClose}
-                onKeyDown={this.handleMenuClose}
-              >
-                <UserMenuOptions authLink={loaded ? this.auth.logout : null} />
-              </div>
+              <UserMenuOptions
+                authLink={loaded ? this.auth.logout : null}
+                closeLink={this.handleMenuClose}
+                currentPage={currentPage}
+              />
             </Drawer>
           </div>
         );
@@ -85,11 +84,13 @@ class UserMenu extends React.Component {
 UserMenu.defaultProps = {
   width: 'sm',
   user: null,
+  currentPage: null,
 };
 UserMenu.propTypes = {
   classes: PropTypes.object.isRequired,
   width: PropTypes.string,
   user: PropTypes.object,
+  currentPage: PropTypes.string,
 };
 
 export default withAuth(withWidth()(withStyles(styles)(UserMenu)));

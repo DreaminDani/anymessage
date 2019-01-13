@@ -20,7 +20,7 @@ import Header from '../src/components/Header';
 import TeamURL from '../src/components/settings/TeamURL';
 import TwilioSettings from '../src/components/settings/TwilioSettings';
 
-const styles = theme => ({
+const styles = {
   container: {
     marginTop: 40,
     marginLeft: 80,
@@ -36,7 +36,7 @@ const styles = theme => ({
   nextHeading: {
     marginTop: 32,
   },
-});
+};
 
 class Settings extends React.Component {
   constructor(props) {
@@ -54,7 +54,9 @@ class Settings extends React.Component {
 
     if (!user) {
       Router.push('/');
+      return false;
     }
+    return true;
   }
 
   registerSubmitHandler = (fieldID, submitHandler) => {
@@ -125,10 +127,13 @@ class Settings extends React.Component {
   }
 }
 
-Settings.defaultProps = {};
+Settings.defaultProps = {
+  user: null,
+};
 
 Settings.propTypes = {
   classes: PropTypes.object.isRequired,
+  user: PropTypes.object,
 };
 
 export default withStyles(styles)(Settings);

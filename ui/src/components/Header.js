@@ -7,14 +7,11 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import Router from 'next/router';
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import IconButton from '@material-ui/core/IconButton';
+import {
+  AppBar, IconButton, Toolbar, Typography, withStyles,
+} from '@material-ui/core';
 import CommentIcon from '@material-ui/icons/Comment';
+import Router from 'next/router';
 import { withAuth } from '../util/authContext';
 
 import UserMenu from './header/UserMenu';
@@ -31,69 +28,45 @@ const styles = theme => ({
   },
   menuButton: {
     [theme.breakpoints.up('md')]: {
-      visibility: 'hidden',
+      display: 'none',
     },
     marginLeft: -12,
     marginRight: 12,
   },
 });
 
-const tabs = [
-  { name: 'messages', path: '/messages' },
-  { name: 'settings', path: '/settings' },
-];
-
-function getRoute(routeName) {
-  return tabs.find(tabRoute => tabRoute.name === routeName);
+function goToMessages() {
+  Router.push('/messages');
 }
 
 class Header extends React.Component {
-  getTab = () => {
-    const { currentPage } = this.props;
-    const index = tabs.indexOf(getRoute(currentPage));
-    return (index > -1) ? index : false;
-  }
-
-  handleTabClick = (event, value) => {
-    const { user } = this.props;
-    const { teamURL } = user;
-    const route = tabs[value];
-
-    if (teamURL === window.location.hostname) {
-      Router.push(route.path);
-    } else {
-      window.location = `//${teamURL}${route.path}`;
-    }
-  }
-
   render() {
     const {
-      classes, user, onMenuClick,
+      classes, user, onMenuClick, currentPage, title,
     } = this.props;
 
-    const currentTab = this.getTab();
+    let headerTitle = '';
+    if (currentPage) {
+      headerTitle = (title) || currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
+    }
+
     return (
       <AppBar position="static" className={classes.root}>
         <Toolbar style={onMenuClick ? null : { marginLeft: 48 }} disableGutters>
-          {onMenuClick // only render menu icon if there's a click to go with it
-                    && (
-                      <IconButton
-                        className={classes.menuButton}
-                        color="inherit"
-                        aria-label="Menu"
-                        onClick={onMenuClick}
-                      >
-                        <CommentIcon />
-                      </IconButton>
-                    )
-          }
-          {user // only show tabs if user is logged in
-          && (
-          <Tabs className={classes.grow} value={currentTab} onChange={this.handleTabClick}>
-            {tabs.map(route => <Tab key={route.name} label={route.name} />)}
-          </Tabs>
-          )}
-          <UserMenu />
+          <IconButton
+            className={classes.menuButton}
+            style={(currentPage !== 'messages') ? { display: 'block' } : {}}
+            color="inherit"
+            aria-label="Menu"
+            onClick={onMenuClick}
+          >
+            {/* TODO make this actually show messages (and # unread) */}
+            <CommentIcon />
+          </IconButton>
+          <Typography variant="h6" color="inherit" className={classes.grow}>
+            {headerTitle}
+          </Typography>
+          {user && <UserMenu currentPage={currentPage} />}
         </Toolbar>
       </AppBar>
     );
@@ -101,18 +74,18 @@ class Header extends React.Component {
 }
 
 Header.defaultProps = {
-  width: 'sm',
-  currentPage: '',
   user: null,
-  onMenuClick: null,
+  onMenuClick: goToMessages,
+  currentPage: null,
+  title: null,
 };
 
 Header.propTypes = {
   classes: PropTypes.object.isRequired,
-  width: PropTypes.string,
-  currentPage: PropTypes.string,
   user: PropTypes.object,
   onMenuClick: PropTypes.func,
+  currentPage: PropTypes.string,
+  title: PropTypes.string,
 };
 
 export default withAuth(withStyles(styles)(Header));

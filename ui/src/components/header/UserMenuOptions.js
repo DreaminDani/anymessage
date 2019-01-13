@@ -13,21 +13,29 @@ import { ChevronRight, Settings } from '@material-ui/icons';
 import UserNameGroup from './UserNameGroup';
 import UserMenuItem from './UserMenuItem';
 
-const styles = theme => ({
+const styles = {
   root: {
     width: 300,
     marginTop: 12,
   },
   collapseIcon: {
-    cursor: 'pointer',
     position: 'absolute',
     right: 12,
   },
-});
+  userMenu: {
+    cursor: 'pointer',
+    marginBottom: 16,
+  },
+};
 
 class UserMenuOptions extends React.Component {
+  isCurrentPage = (option) => {
+    const { currentPage } = this.props;
+    return currentPage === option;
+  }
+
   render() {
-    const { classes, authLink } = this.props;
+    const { classes, authLink, closeLink } = this.props;
     return (
       <Grid
         container
@@ -36,23 +44,35 @@ class UserMenuOptions extends React.Component {
         alignItems="stretch"
         className={classes.root}
       >
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+          tabIndex={0}
+          role="button"
+          className={classes.userMenu}
+          onClick={closeLink}
+          onKeyDown={closeLink}
+        >
           <UserNameGroup
             rightIcon={<ChevronRight className={classes.collapseIcon} />}
           />
         </Grid>
-        <UserMenuItem title="Settings" link="/settings">
-          <Settings />
-        </UserMenuItem>
+        <UserMenuItem title="Settings" link="/settings" active={this.isCurrentPage('settings')} />
         <Button onClick={authLink}>Logout</Button>
       </Grid>
     );
   }
 }
 
+UserMenuOptions.defaultProps = {
+  currentPage: null,
+};
+
 UserMenuOptions.propTypes = {
   classes: PropTypes.object.isRequired,
   authLink: PropTypes.func.isRequired,
+  closeLink: PropTypes.func.isRequired,
+  currentPage: PropTypes.string,
 };
 
 export default withStyles(styles)(UserMenuOptions);
