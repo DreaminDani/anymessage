@@ -44,6 +44,7 @@ const styles = theme => ({
   },
 });
 
+// @todo fix icon list so it's actually useful
 function getIcon(type) {
   switch (type) {
     case 'sms':
@@ -75,7 +76,6 @@ class ConversationList extends React.Component {
           <MailboxEmpty width={200} height="100%" />
         </div>
       );
-      console.log(conversationList);
       if (conversationList && conversationList.length > 0) {
         list = (
           <List>

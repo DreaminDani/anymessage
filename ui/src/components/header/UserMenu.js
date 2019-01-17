@@ -51,7 +51,6 @@ class UserMenu extends React.Component {
 
       if (user) {
         return (
-          // @WIP - todo show user name and dropdown instead of ellipses
           <div className={classes.loginButton}>
             <Button
               color="inherit"
