@@ -5,6 +5,8 @@ services:
   nginx:
     image: nginx
     restart: always
+    logging:
+      driver: none
     ports:
       - "443:443"
       - "80:80"

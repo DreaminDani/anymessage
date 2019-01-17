@@ -7,20 +7,14 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import Router from 'next/router';
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import IconButton from '@material-ui/core/IconButton';
+import {
+  AppBar, IconButton, Toolbar, Typography, withStyles,
+} from '@material-ui/core';
 import CommentIcon from '@material-ui/icons/Comment';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Router from 'next/router';
 import { withAuth } from '../util/authContext';
-import AuthService from '../util/AuthService';
+
+import UserMenu from './header/UserMenu';
 
 const styles = theme => ({
   root: {
@@ -34,112 +28,45 @@ const styles = theme => ({
   },
   menuButton: {
     [theme.breakpoints.up('md')]: {
-      visibility: 'hidden',
+      display: 'none',
     },
     marginLeft: -12,
     marginRight: 12,
   },
-  loginButton: {
-    marginLeft: -12,
-  },
 });
 
-const tabs = [
-  { name: 'messages', path: '/messages' },
-  { name: 'settings', path: '/settings' },
-];
-
-function getRoute(routeName) {
-  return tabs.find(tabRoute => tabRoute.name === routeName);
+function goToMessages() {
+  Router.push('/messages');
 }
 
 class Header extends React.Component {
-  state = {
-    loaded: false,
-    anchorEl: null,
-  }
-
-  componentDidMount() {
-    this.auth = new AuthService();
-    this.setState({ loaded: true });
-  }
-
-  getTab = () => {
-    const { currentPage } = this.props;
-    const index = tabs.indexOf(getRoute(currentPage));
-    return (index > -1) ? index : false;
-  }
-
-  handleTabClick = (event, value) => {
-    const route = tabs[value];
-    const teamURL = this.auth.getTeamURL();
-    if (teamURL === window.location.hostname) {
-      Router.push(route.path);
-    } else {
-      window.location = `//${teamURL}${route.path}`;
-    }
-  }
-
-  handleLogoutMenuClick = (event) => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
-
-  handleLogoutMenuClose = () => {
-    this.setState({ anchorEl: null });
-  };
-
   render() {
     const {
-      classes, user, onMenuClick,
+      classes, user, onMenuClick, currentPage, title,
     } = this.props;
-    const { loaded, anchorEl } = this.state;
 
-    const loginButton = (user)
-      ? (
-        <div className={classes.loginButton}>
-          <Button
-            color="inherit"
-            aria-owns={anchorEl ? 'logout-menu' : undefined}
-            aria-haspopup="true"
-            onClick={this.handleLogoutMenuClick}
-          >
-            <MoreVertIcon />
-          </Button>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={this.handleLogoutMenuClose}
-          >
-            <MenuItem onClick={loaded ? this.auth.logout : null}>Logout</MenuItem>
-          </Menu>
-        </div>
-      )
-      : <Button className={classes.loginButton} onClick={loaded ? this.auth.login : null} color="inherit">Login</Button>;
+    let headerTitle = '';
+    if (currentPage) {
+      headerTitle = (title) || currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
+    }
 
-    const currentTab = this.getTab();
     return (
       <AppBar position="static" className={classes.root}>
         <Toolbar style={onMenuClick ? null : { marginLeft: 48 }} disableGutters>
-          {onMenuClick // only render menu icon if there's a click to go with it
-                    && (
-                      <IconButton
-                        className={classes.menuButton}
-                        color="inherit"
-                        aria-label="Menu"
-                        onClick={onMenuClick}
-                      >
-                        <CommentIcon />
-                      </IconButton>
-                    )
-          }
-          {user // only show tabs if user is logged in
-          && (
-          <Tabs className={classes.grow} value={currentTab} onChange={this.handleTabClick}>
-            {tabs.map(route => <Tab key={route.name} label={route.name} />)}
-          </Tabs>
-          )}
-          { loginButton }
+          <IconButton
+            className={classes.menuButton}
+            style={(currentPage !== 'messages') ? { display: 'block' } : {}}
+            color="inherit"
+            aria-label="Menu"
+            onClick={onMenuClick}
+          >
+            {/* TODO make this actually show messages (and # unread) */}
+            <CommentIcon />
+          </IconButton>
+          <Typography variant="h6" color="inherit" className={classes.grow}>
+            {headerTitle}
+          </Typography>
+          {user && <UserMenu currentPage={currentPage} />}
         </Toolbar>
       </AppBar>
     );
@@ -147,16 +74,18 @@ class Header extends React.Component {
 }
 
 Header.defaultProps = {
-  currentPage: '',
   user: null,
-  onMenuClick: null,
+  onMenuClick: goToMessages,
+  currentPage: null,
+  title: null,
 };
 
 Header.propTypes = {
   classes: PropTypes.object.isRequired,
-  currentPage: PropTypes.string,
   user: PropTypes.object,
   onMenuClick: PropTypes.func,
+  currentPage: PropTypes.string,
+  title: PropTypes.string,
 };
 
 export default withAuth(withStyles(styles)(Header));

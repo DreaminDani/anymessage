@@ -11,24 +11,18 @@ import Router from 'next/router';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Head from 'next/head';
-import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
 import Divider from '@material-ui/core/Divider';
 
 import Header from '../src/components/Header';
 
 import TeamURL from '../src/components/settings/TeamURL';
 import TwilioSettings from '../src/components/settings/TwilioSettings';
+import UnsavedBar from '../src/components/settings/UnsavedBar';
 
-const styles = theme => ({
+const styles = {
   container: {
     marginTop: 40,
     marginLeft: 80,
-  },
-  save: {
-    position: 'absolute',
-    top: 40,
-    left: 8,
   },
   divider: {
     marginBottom: 16,
@@ -36,7 +30,7 @@ const styles = theme => ({
   nextHeading: {
     marginTop: 32,
   },
-});
+};
 
 class Settings extends React.Component {
   constructor(props) {
@@ -54,7 +48,14 @@ class Settings extends React.Component {
 
     if (!user) {
       Router.push('/');
+      return false;
     }
+
+    if (window.location.hostname !== user.teamURL) {
+      window.location = `${window.location.protocol}//${user.teamURL}/settings`;
+    }
+
+    return true;
   }
 
   registerSubmitHandler = (fieldID, submitHandler) => {
@@ -91,15 +92,18 @@ class Settings extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const { changedSettings } = this.state;
     return (
       <React.Fragment>
         <Head>
           <title>Settings</title>
         </Head>
         <Header currentPage="settings" />
-        <Button onClick={this.handleSaveClick} variant="fab" color="secondary" aria-label="Save" className={classes.save}>
-          <SaveIcon />
-        </Button>
+        <UnsavedBar
+          saveClick={this.handleSaveClick}
+          discardClick={() => window.location.reload}
+          isUnsaved={changedSettings.size > 0}
+        />
         <div className={classes.container}>
           <Typography variant="h3" gutterBottom>
             Team Settings
@@ -125,10 +129,13 @@ class Settings extends React.Component {
   }
 }
 
-Settings.defaultProps = {};
+Settings.defaultProps = {
+  user: null,
+};
 
 Settings.propTypes = {
   classes: PropTypes.object.isRequired,
+  user: PropTypes.object,
 };
 
 export default withStyles(styles)(Settings);

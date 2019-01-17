@@ -7,18 +7,10 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import ImageIcon from '@material-ui/icons/Image';
-import WorkIcon from '@material-ui/icons/Work';
-import BeachAccessIcon from '@material-ui/icons/BeachAccess';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
-
-import { Typography } from '@material-ui/core';
+import {
+  withStyles, List, ListItem, ListItemText, Avatar, Drawer, Hidden, Typography, Button,
+} from '@material-ui/core';
+import { ImageIcon, WorkIcon, BeachAccessIcon } from '@material-ui/icons/Image';
 import MailboxEmpty from '../illustrations/mailbox-empty';
 
 const styles = theme => ({
@@ -52,6 +44,7 @@ const styles = theme => ({
   },
 });
 
+// @todo fix icon list so it's actually useful
 function getIcon(type) {
   switch (type) {
     case 'sms':
@@ -74,7 +67,7 @@ class ConversationList extends React.Component {
 
     render() {
       const {
-        classes, selectedConvo, conversationList, mobileOpen, handleDrawerToggle,
+        classes, theme, selectedConvo, conversationList, mobileOpen, handleDrawerToggle, newConversation, newConversationClick,
       } = this.props;
 
       let list = (
@@ -92,7 +85,7 @@ class ConversationList extends React.Component {
                 return (
                   <ListItem className={classes.item} selected={conversation.id === selectedConvo} key={conversation.id} onClick={() => this.handleClick(conversation.id)}>
                     <Avatar>
-                      {getIcon(lastMessage.type)}
+                      {() => getIcon(lastMessage.type)}
                     </Avatar>
                     <ListItemText primary={`+${conversation.to}`} secondary={lastMessage.message} className={classes.messagePreview} />
                   </ListItem>
@@ -118,6 +111,14 @@ class ConversationList extends React.Component {
                 keepMounted: true, // Better open performance on mobile.
               }}
             >
+              <Button
+                style={newConversation ? { backgroundColor: theme.palette.error.main } : { backgroundColor: theme.palette.secondary.main }}
+                onClick={newConversationClick}
+                variant="contained"
+                color="inherit"
+              >
+                {newConversation ? 'Cancel' : 'New Message'}
+              </Button>
               {list}
             </Drawer>
           </Hidden>
@@ -129,6 +130,14 @@ class ConversationList extends React.Component {
                 paper: classes.drawerPaper,
               }}
             >
+              <Button
+                style={newConversation ? { backgroundColor: theme.palette.error.main } : { backgroundColor: theme.palette.secondary.main }}
+                onClick={newConversationClick}
+                variant="contained"
+                color="inherit"
+              >
+                {newConversation ? 'Cancel' : 'New Message'}
+              </Button>
               {list}
             </Drawer>
           </Hidden>
@@ -140,6 +149,7 @@ class ConversationList extends React.Component {
 ConversationList.defaultProps = {
   conversationList: [],
   selectedConvo: null,
+  newConversation: false,
 };
 
 ConversationList.propTypes = {
@@ -149,6 +159,8 @@ ConversationList.propTypes = {
   selectedConvo: PropTypes.number,
   mobileOpen: PropTypes.bool.isRequired,
   handleDrawerToggle: PropTypes.func.isRequired,
+  newConversation: PropTypes.bool,
+  newConversationClick: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(ConversationList);
+export default withStyles(styles, { withTheme: true })(ConversationList);

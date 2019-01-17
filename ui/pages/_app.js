@@ -27,10 +27,10 @@ class MyApp extends App {
       const { cookie } = req.headers;
 
       if (cookie) {
-        pageProps.user = await this.auth.getToken(cookie);
+        pageProps.user = await this.auth.getUser(cookie);
       }
     } else {
-      pageProps.user = await this.auth.getToken();
+      pageProps.user = await this.auth.getUser();
     }
 
     if (Component.getInitialProps) {
