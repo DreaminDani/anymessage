@@ -57,7 +57,7 @@ class UserMenu extends React.Component {
               aria-haspopup="true"
               onClick={this.handleMenuClick}
             >
-              {(width === 'sm')
+              {(width === 'sm' || width === 'xs')
                 ? <Menu />
                 : (
                   <UserNameGroup

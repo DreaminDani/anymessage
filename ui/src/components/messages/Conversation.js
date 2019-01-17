@@ -133,7 +133,7 @@ class Conversation extends React.Component {
           {newConversation ? (
             <div className={classes.create}>
               <Typography variant="h6">
-                New conversation...
+                Send a new message...
               </Typography>
               <TextField
                 id="outlined-number"
