@@ -50,26 +50,30 @@ class Header extends React.Component {
       headerTitle = (title) || currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
     }
 
-    return (
-      <AppBar position="static" className={classes.root}>
-        <Toolbar style={onMenuClick ? null : { marginLeft: 48 }} disableGutters>
-          <IconButton
-            className={classes.menuButton}
-            style={(currentPage !== 'messages') ? { display: 'block' } : {}}
-            color="inherit"
-            aria-label="Menu"
-            onClick={onMenuClick}
-          >
-            {/* TODO make this actually show messages (and # unread) */}
-            <CommentIcon />
-          </IconButton>
-          <Typography variant="h6" color="inherit" className={classes.grow}>
-            {headerTitle}
-          </Typography>
-          {user && <UserMenu currentPage={currentPage} />}
-        </Toolbar>
-      </AppBar>
-    );
+    if (user) { // remove when we want login to actually appear on the home page
+      return (
+        <AppBar position="static" className={classes.root}>
+          <Toolbar style={onMenuClick ? null : { marginLeft: 48 }} disableGutters>
+            <IconButton
+              className={classes.menuButton}
+              style={(currentPage !== 'messages') ? { display: 'block' } : {}}
+              color="inherit"
+              aria-label="Menu"
+              onClick={onMenuClick}
+            >
+              {/* TODO make this actually show messages (and # unread) */}
+              <CommentIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" className={classes.grow}>
+              {headerTitle}
+            </Typography>
+            {user && <UserMenu currentPage={currentPage} />}
+          </Toolbar>
+        </AppBar>
+      );
+    } else {
+      return null;
+    }
   }
 }
 

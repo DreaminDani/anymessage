@@ -36,7 +36,7 @@ const styles = theme => ({
     right: 32,
   },
   conversation: {
-    paddingRight: 108,
+    paddingRight: 24,
   },
 });
 

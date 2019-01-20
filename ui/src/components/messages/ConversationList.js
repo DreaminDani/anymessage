@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import {
   withStyles, List, ListItem, ListItemText, Avatar, Drawer, Hidden, Typography, Button,
 } from '@material-ui/core';
-import { ImageIcon, WorkIcon, BeachAccessIcon } from '@material-ui/icons/Image';
+import { Image, Work, BeachAccess } from '@material-ui/icons';
 import MailboxEmpty from '../illustrations/mailbox-empty';
 
 const styles = theme => ({
@@ -44,17 +44,17 @@ const styles = theme => ({
   },
 });
 
-// @todo fix icon list so it's actually useful
+// @todo use provider icons in list so it's actually useful
 function getIcon(type) {
   switch (type) {
     case 'sms':
-      return <ImageIcon />;
+      return <Image />;
     case 'whatsapp':
-      return <WorkIcon />;
+      return <Work />;
     case 'signal':
-      return <BeachAccessIcon />;
+      return <BeachAccess />;
     default:
-      return <ImageIcon />;
+      return <Image />;
   }
 }
 
@@ -85,7 +85,7 @@ class ConversationList extends React.Component {
                 return (
                   <ListItem className={classes.item} selected={conversation.id === selectedConvo} key={conversation.id} onClick={() => this.handleClick(conversation.id)}>
                     <Avatar>
-                      {() => getIcon(lastMessage.type)}
+                      {getIcon(lastMessage.type)}
                     </Avatar>
                     <ListItemText primary={`+${conversation.to}`} secondary={lastMessage.message} className={classes.messagePreview} />
                   </ListItem>
