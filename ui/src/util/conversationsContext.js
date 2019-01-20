@@ -10,7 +10,7 @@ import React from 'react';
 export const Conversations = React.createContext({
   conversationList: [],
   // updateConversationList: () => { },
-  // login: () => {},
+  conversationsLoaded: false,
 });
 
 // This function takes a component...
@@ -21,10 +21,11 @@ export function withConversations(Component) {
     // Notice that we pass through any additional props as well
     return (
       <Conversations.Consumer>
-        {({ conversationList }) => (
+        {({ conversationList, conversationsLoaded }) => (
           <Component
             {...props}
             conversationList={conversationList}
+            conversationsLoaded={conversationsLoaded}
           />
         )}
       </Conversations.Consumer>

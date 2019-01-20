@@ -8,7 +8,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  withStyles, List, ListItem, ListItemText, Avatar, Drawer, Hidden, Typography, Button,
+  withStyles,
+  List,
+  ListItem,
+  ListItemText,
+  Avatar,
+  Drawer,
+  Hidden,
+  Typography,
+  Button,
+  CircularProgress,
 } from '@material-ui/core';
 import { Image, Work, BeachAccess } from '@material-ui/icons';
 import MailboxEmpty from '../illustrations/mailbox-empty';
@@ -18,6 +27,11 @@ const styles = theme => ({
     width: '100%',
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
+  },
+  loading: {
+    paddingTop: 24,
+    margin: '0 auto',
+    textAlign: 'center',
   },
   drawerPaper: {
     position: 'relative',
@@ -59,91 +73,108 @@ function getIcon(type) {
 }
 
 class ConversationList extends React.Component {
-    handleClick = (conversationID) => {
-      const { setConversation, handleDrawerToggle } = this.props;
-      setConversation(conversationID);
-      handleDrawerToggle();
-    }
+  handleClick = (conversationID) => {
+    const { setConversation, handleDrawerToggle } = this.props;
+    setConversation(conversationID);
+    handleDrawerToggle();
+  }
 
-    render() {
-      const {
-        classes, theme, selectedConvo, conversationList, mobileOpen, handleDrawerToggle, newConversation, newConversationClick,
-      } = this.props;
+  render() {
+    const {
+      classes,
+      theme,
+      loaded,
+      selectedConvo,
+      conversationList,
+      mobileOpen,
+      handleDrawerToggle,
+      newConversation,
+      newConversationClick,
+    } = this.props;
 
-      let list = (
-        <div className={classes.emptyList}>
-          <Typography variant="subtitle2" gutterBottom>No conversations yet...</Typography>
-          <MailboxEmpty width={200} height="100%" />
+    let list = (
+      <div className={classes.emptyList}>
+        <Typography variant="subtitle2" gutterBottom>No conversations yet...</Typography>
+        <MailboxEmpty width={200} height="100%" />
+      </div>
+    );
+    if (conversationList && conversationList.length > 0) {
+      list = (
+        <List>
+          {conversationList.map((conversation) => {
+            if (conversation) {
+              const lastMessage = (conversation) ? conversation.history[conversation.history.length - 1] : { type: '', message: '' };
+              return (
+                <ListItem className={classes.item} selected={conversation.id === selectedConvo} key={conversation.id} onClick={() => this.handleClick(conversation.id)}>
+                  <Avatar>
+                    {getIcon(lastMessage.type)}
+                  </Avatar>
+                  <ListItemText primary={`+${conversation.to}`} secondary={lastMessage.message} className={classes.messagePreview} />
+                </ListItem>
+              );
+            }
+            return '';
+          })}
+        </List>
+      );
+    } else if (!loaded) {
+      list = (
+        <div className={classes.loading}>
+          <Typography variant="body2" gutterBottom><strong>Loading Messages</strong></Typography>
+          <CircularProgress />
         </div>
-      );
-      if (conversationList && conversationList.length > 0) {
-        list = (
-          <List>
-            {conversationList.map((conversation) => {
-              if (conversation) {
-                const lastMessage = (conversation) ? conversation.history[conversation.history.length - 1] : { type: '', message: '' };
-                return (
-                  <ListItem className={classes.item} selected={conversation.id === selectedConvo} key={conversation.id} onClick={() => this.handleClick(conversation.id)}>
-                    <Avatar>
-                      {getIcon(lastMessage.type)}
-                    </Avatar>
-                    <ListItemText primary={`+${conversation.to}`} secondary={lastMessage.message} className={classes.messagePreview} />
-                  </ListItem>
-                );
-              }
-              return '';
-            })}
-          </List>
-        );
-      }
-
-      return (
-        <React.Fragment>
-          <Hidden mdUp>
-            <Drawer
-              variant="temporary"
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-              ModalProps={{
-                keepMounted: true, // Better open performance on mobile.
-              }}
-            >
-              <Button
-                style={newConversation ? { backgroundColor: theme.palette.error.main } : { backgroundColor: theme.palette.secondary.main }}
-                onClick={newConversationClick}
-                variant="contained"
-                color="inherit"
-              >
-                {newConversation ? 'Cancel' : 'New Message'}
-              </Button>
-              {list}
-            </Drawer>
-          </Hidden>
-          <Hidden smDown implementation="css">
-            <Drawer
-              variant="permanent"
-              open
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-            >
-              <Button
-                style={newConversation ? { backgroundColor: theme.palette.error.main } : { backgroundColor: theme.palette.secondary.main }}
-                onClick={newConversationClick}
-                variant="contained"
-                color="inherit"
-              >
-                {newConversation ? 'Cancel' : 'New Message'}
-              </Button>
-              {list}
-            </Drawer>
-          </Hidden>
-        </React.Fragment>
-      );
+      )
     }
+
+    return (
+      <React.Fragment>
+        <Hidden mdUp>
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+          >
+            <Button
+              style={newConversation ? { backgroundColor: theme.palette.error.main } : { backgroundColor: theme.palette.secondary.main }}
+              onClick={newConversationClick}
+              variant="contained"
+              color="inherit"
+              disabled={!loaded}
+            >
+              {newConversation ? 'Cancel' : 'New Message'}
+            </Button>
+            {list}
+          </Drawer>
+        </Hidden>
+        <Hidden smDown implementation="css">
+          <Drawer
+            variant="permanent"
+            open
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <Button
+              style={newConversation ? { backgroundColor: theme.palette.error.main } : { backgroundColor: theme.palette.secondary.main }}
+              onClick={newConversationClick}
+              variant="contained"
+              color="inherit"
+              disabled={!loaded}
+            >
+              {newConversation ? 'Cancel' : 'New Message'}
+            </Button>
+            {list}
+          </Drawer>
+        </Hidden>
+      </React.Fragment>
+    );
+  }
 }
 
 ConversationList.defaultProps = {

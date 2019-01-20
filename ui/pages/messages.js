@@ -21,6 +21,7 @@ import Header from '../src/components/Header';
 import ConversationList from '../src/components/messages/ConversationList';
 import Conversation from '../src/components/messages/Conversation';
 import ConversationView from '../src/components/messages/ConversationView';
+import { getHashAsObject } from '../src/util';
 
 const styles = theme => ({
   root: {},
@@ -42,7 +43,7 @@ class Messages extends React.Component {
   }
 
   // get conversations or redirect unauthed user to "/"
-  componentDidMount() {
+  componentDidMount = () => {
     const { user } = this.props;
 
     if (user) {
@@ -61,6 +62,21 @@ class Messages extends React.Component {
 
     Router.push('/');
     return false;
+  }
+
+  componentDidUpdate = () => {
+    const { conversationsLoaded } = this.props;
+    const { currentConversation } = this.state;
+    // check if message id in URL, if so, attempt to show message
+    if (window.location.hash && conversationsLoaded) {
+      const hashObject = getHashAsObject(window.location.hash);
+      const hashedId = parseInt(hashObject.id);
+      if (hashedId > -1 && hashedId !== currentConversation) {
+        this.setState({
+          currentConversation: hashedId,
+        })
+      }
+    }
   }
 
   setConversation = async (conversationID) => {
@@ -100,7 +116,7 @@ class Messages extends React.Component {
   }
 
   render() {
-    const { classes, conversationList } = this.props;
+    const { classes, conversationList, conversationsLoaded } = this.props;
     const {
       newConversation, currentConversation, mobileOpen,
     } = this.state;
@@ -134,6 +150,7 @@ class Messages extends React.Component {
               conversationList={conversationList}
               mobileOpen={mobileOpen}
               handleDrawerToggle={this.onMenuClick}
+              loaded={conversationsLoaded}
             />
           </Grid>
           <Grid item xs={12} md={9} className={classes.conversation}>

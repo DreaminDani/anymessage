@@ -48,6 +48,7 @@ class MyApp extends App {
     this.pageContext = getPageContext();
     this.state = {
       conversationList: [],
+      loaded: false,
     }
   }
 
@@ -61,6 +62,7 @@ class MyApp extends App {
       // fetch initial conversations for user
       get('/conversation/list', user.id_token).then((data) => {
         this.setState({
+          loaded: true,
           conversationList: data, // update conversation list
           // todo go directly to conversation based on hash/route
         });
@@ -117,7 +119,7 @@ class MyApp extends App {
 
   render() {
     const { Component, pageProps } = this.props;
-    const { conversationList } = this.state;
+    const { conversationList, loaded } = this.state;
     return (
       <Container>
         {/* Wrap every page in Jss and Theme providers */}
@@ -139,6 +141,7 @@ class MyApp extends App {
             >
               <Conversations.Provider value={{
                 conversationList,
+                conversationsLoaded: loaded
               }}>
                 {/* Pass pageContext to the _document though the renderPage enhancer
                         to render collected styles on server side. */}
