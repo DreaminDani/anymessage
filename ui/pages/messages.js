@@ -9,24 +9,18 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
-import Button from '@material-ui/core/Button';
-import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Router from 'next/router';
 import Head from 'next/head';
-import getConfig from 'next/config';
 
 import { withAuth } from '../src/util/authContext';
-import { get } from '../src/util/api';
+import { withConversations } from '../src/util/conversationsContext';
 
 import Header from '../src/components/Header';
 import ConversationList from '../src/components/messages/ConversationList';
 import Conversation from '../src/components/messages/Conversation';
 import ConversationView from '../src/components/messages/ConversationView';
-
-// const EventSource = NativeEventSource || EventSourcePolyfill;
 
 const styles = theme => ({
   root: {},
@@ -44,7 +38,6 @@ class Messages extends React.Component {
   state = {
     newConversation: false,
     currentConversation: null,
-    conversationList: [],
     mobileOpen: false,
   }
 
@@ -63,27 +56,6 @@ class Messages extends React.Component {
         window.location = `${window.location.protocol}//${user.teamURL}/messages`;
       }
 
-      // fetch initial conversations for user
-      get('/conversation/list', user.id_token).then((data) => {
-        this.setState({
-          conversationList: data, // update conversation list
-          // todo go directly to conversation based on hash/route
-        });
-      }).catch((error) => {
-        console.error(error); // todo pretty error message
-      });
-
-      // update conversation list on EventSource update
-      this.sse = new EventSource("https://api.anymessage.io/conversation/subscribe", { withCredentials: true });
-      this.sse.onmessage = (e) => {
-        if (e.data) {
-          this.updateConversationList(JSON.parse(e.data));
-        }
-      }
-      this.sse.onerror = (e) => {
-        console.error(e); // todo pretty error message
-      };
-
       return true;
     }
 
@@ -91,51 +63,15 @@ class Messages extends React.Component {
     return false;
   }
 
-  componentWillUnmount() {
-    this.sse.close();
-    // clearInterval(this.interval);
-  }
-
-  updateConversationList = (newConversation) => {
-    let found = false;
-    this.setState(state => {
-      let conversationList = state.conversationList.map((item) => {
-        if (item.id === newConversation.id) {
-          found = true;
-          return newConversation;
-        } else {
-          return item;
-        }
-      });
-
-      if (!found) {
-        conversationList.unshift(newConversation);
-      }
-
-      return {
-        conversationList
-      }
-    })
-  }
-
   setConversation = async (conversationID) => {
-    await this.getConversationList();
     this.setState({
       newConversation: false,
       currentConversation: conversationID,
     });
   }
 
-  getConversationList = async () => {
-    const { user } = this.props;
-    const data = await get('/conversation/list', user.id_token);
-    this.setState({
-      conversationList: data, // todo, tell the user when there's new messages
-    });
-  }
-
   findConversationByID = (id) => {
-    const { conversationList } = this.state;
+    const { conversationList } = this.props;
     for (let i = 0; i < conversationList.length; i += 1) {
       if (conversationList[i].id && conversationList[i].id === id) {
         return conversationList[i];
@@ -164,9 +100,9 @@ class Messages extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, conversationList } = this.props;
     const {
-      newConversation, currentConversation, conversationList, mobileOpen,
+      newConversation, currentConversation, mobileOpen,
     } = this.state;
 
     let messagesTitle = 'Messages';
@@ -231,4 +167,4 @@ Messages.propTypes = {
   user: PropTypes.object,
 };
 
-export default withAuth(withStyles(styles)(Messages));
+export default withConversations(withAuth(withStyles(styles)(Messages)));

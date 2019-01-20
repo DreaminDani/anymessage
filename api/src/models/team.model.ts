@@ -22,7 +22,7 @@ export class TeamModel {
      */
     public static async available(db: Database, subdomain: string) {
         try {
-            const found = await db.teams.findOne({subdomain});
+            const found = await db.teams.findOne({ subdomain });
             return (found) ? false : true;
         } catch (e) {
             throw new ModelError(e);
@@ -69,7 +69,7 @@ export class TeamModel {
      */
     public async create(newURL: string) {
         try {
-            const newTeam = await this.db.teams.insert({subdomain: newURL});
+            const newTeam = await this.db.teams.insert({ subdomain: newURL });
             if (newTeam) {
                 this.id = newTeam.id;
                 this.initialized = true;
@@ -98,8 +98,8 @@ export class TeamModel {
                 return await this.db.teams.update({
                     id: this.id,
                 }, {
-                    subdomain: newURL,
-                });
+                        subdomain: newURL,
+                    });
             } catch (e) {
                 throw new ModelError(e);
             }
@@ -129,13 +129,13 @@ export function verifyTeamName(req: ITeamURLRequest, res: Response, next: NextFu
     if (!req.body.newURL) {
         passed = false;
         res.status(400);
-        res.json({error: "newURL is required"});
+        res.json({ error: "newURL is required" });
     }
 
     if (!/^[0-9a-z\-]+$/.test(req.body.newURL)) {
         passed = false;
         res.status(400);
-        res.json({error: "newURL can only conatain lowercase letters, numbers and dashes"});
+        res.json({ error: "newURL can only conatain lowercase letters, numbers and dashes" });
     }
 
     if (passed) {
@@ -148,7 +148,7 @@ interface ITeam {
     subdomain: string;
 }
 export interface ITeamRequest extends Request {
-  team: ITeam;
+    team: ITeam;
 }
 
 /**
