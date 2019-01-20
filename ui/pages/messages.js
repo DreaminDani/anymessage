@@ -9,6 +9,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+// import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
@@ -25,8 +26,7 @@ import ConversationList from '../src/components/messages/ConversationList';
 import Conversation from '../src/components/messages/Conversation';
 import ConversationView from '../src/components/messages/ConversationView';
 
-const { publicRuntimeConfig } = getConfig();
-const { UI_HOSTNAME } = publicRuntimeConfig;
+// const EventSource = NativeEventSource || EventSourcePolyfill;
 
 const styles = theme => ({
   root: {},
@@ -63,23 +63,33 @@ class Messages extends React.Component {
         window.location = `${window.location.protocol}//${user.teamURL}/messages`;
       }
 
-      // fetch initial conversations for user
-      get('/conversation/list', user.id_token).then((data) => {
-        this.setState({
-          conversationList: data, // update conversation list
-          // todo go directly to conversation based on hash/route
-        });
-      }).catch((error) => {
-        console.error(error); // todo pretty error message
-      });
-
-      // update conversation list every 3 seconds
-      // todo make this a websocket subscription
-      try {
-        this.interval = setInterval(this.getConversationList, 1000);
-      } catch (e) {
-        console.log(e);
+      this.sse = new EventSource("https://api.anymessage.io/update-stream");
+      this.sse.onmessage = function(e) {
+        console.log(e.data);
       }
+      this.sse.onerror = function(e) {
+        console.error(e);
+      };
+
+      // get messages with an event stream
+
+      // fetch initial conversations for user
+      // get('/conversation/list', user.id_token).then((data) => {
+      //   this.setState({
+      //     conversationList: data, // update conversation list
+      //     // todo go directly to conversation based on hash/route
+      //   });
+      // }).catch((error) => {
+      //   console.error(error); // todo pretty error message
+      // });
+
+      // // update conversation list every 3 seconds
+      // // todo make this a websocket subscription
+      // try {
+      //   this.interval = setInterval(this.getConversationList, 1000);
+      // } catch (e) {
+      //   console.log(e);
+      // }
 
       return true;
     }
@@ -89,7 +99,8 @@ class Messages extends React.Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    this.sse.close();
+    // clearInterval(this.interval);
   }
 
   setConversation = async (conversationID) => {

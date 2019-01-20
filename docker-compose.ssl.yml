@@ -15,6 +15,10 @@ services:
     depends_on:
       - ui
       - api
+  redis:
+    image: redis
+    expose:
+      - 6379
   ui:
     image: us.gcr.io/anymessage-219921/ui:latest
     build: ./ui
@@ -25,8 +29,8 @@ services:
       # - /usr/ui/.next # need this for non-dev
     environment:
       - API_ENDPOINT=https://api.anymessage.io # replace with your api domain
-    ports:
-      - "3000:3000"
+    expose:
+      - 3000
     env_file: .env
   api:
     image: us.gcr.io/anymessage-219921/api:latest
@@ -35,8 +39,8 @@ services:
     volumes:
       - ./api:/usr/api
       - /usr/api/node_modules
-    ports:
-      - "1337:1337"
+    expose:
+      - 1337
     depends_on:
       - db
     env_file: .env
