@@ -53,19 +53,21 @@ export class ProviderModel {
     public static async findTeamByProvider(db: Database, integrationName: string, provider: string) {
         try {
             const result = await db.query(
-                `SELECT team_id
-                FROM integrations AS tt, jsonb_array_elements(
-                    (
-                      SELECT providers
-                      FROM integrations
-                      WHERE name = $1 AND id = tt.id
-                    )
-                ) AS arr_elem
-                WHERE arr_elem = $2`,
+                `SELECT * from teams WHERE id IN (
+                    SELECT team_id
+                    FROM integrations AS tt, jsonb_array_elements(
+                        (
+                            SELECT providers
+                            FROM integrations
+                            WHERE name = $1 AND id = tt.id
+                        )
+                    ) AS arr_elem
+                    WHERE arr_elem = $2
+                )`,
                 [integrationName, provider],
             );
             if (result) {
-                return result[0].team_id;
+                return result[0];
             } else {
                 return null;
             }
@@ -140,7 +142,7 @@ export class ProviderModel {
                             this.id,
                             this.authentication.accountSID,
                             this.authentication.authToken,
-                    );
+                        );
                 }
             } catch (e) {
                 throw new ModelError(e);

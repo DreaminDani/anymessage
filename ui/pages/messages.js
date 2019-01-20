@@ -44,7 +44,7 @@ class Messages extends React.Component {
   state = {
     newConversation: false,
     currentConversation: null,
-    conversationList: null,
+    conversationList: [],
     mobileOpen: false,
   }
 
@@ -63,33 +63,26 @@ class Messages extends React.Component {
         window.location = `${window.location.protocol}//${user.teamURL}/messages`;
       }
 
-      this.sse = new EventSource("https://api.anymessage.io/update-stream");
-      this.sse.onmessage = function(e) {
-        console.log(e.data);
-      }
-      this.sse.onerror = function(e) {
-        console.error(e);
-      };
-
-      // get messages with an event stream
-
       // fetch initial conversations for user
-      // get('/conversation/list', user.id_token).then((data) => {
-      //   this.setState({
-      //     conversationList: data, // update conversation list
-      //     // todo go directly to conversation based on hash/route
-      //   });
-      // }).catch((error) => {
-      //   console.error(error); // todo pretty error message
-      // });
+      get('/conversation/list', user.id_token).then((data) => {
+        this.setState({
+          conversationList: data, // update conversation list
+          // todo go directly to conversation based on hash/route
+        });
+      }).catch((error) => {
+        console.error(error); // todo pretty error message
+      });
 
-      // // update conversation list every 3 seconds
-      // // todo make this a websocket subscription
-      // try {
-      //   this.interval = setInterval(this.getConversationList, 1000);
-      // } catch (e) {
-      //   console.log(e);
-      // }
+      // update conversation list on EventSource update
+      this.sse = new EventSource("https://api.anymessage.io/conversation/subscribe", { withCredentials: true });
+      this.sse.onmessage = (e) => {
+        if (e.data) {
+          this.updateConversationList(JSON.parse(e.data));
+        }
+      }
+      this.sse.onerror = (e) => {
+        console.error(e); // todo pretty error message
+      };
 
       return true;
     }
@@ -101,6 +94,28 @@ class Messages extends React.Component {
   componentWillUnmount() {
     this.sse.close();
     // clearInterval(this.interval);
+  }
+
+  updateConversationList = (newConversation) => {
+    let found = false;
+    this.setState(state => {
+      let conversationList = state.conversationList.map((item) => {
+        if (item.id === newConversation.id) {
+          found = true;
+          return newConversation;
+        } else {
+          return item;
+        }
+      });
+
+      if (!found) {
+        conversationList.unshift(newConversation);
+      }
+
+      return {
+        conversationList
+      }
+    })
   }
 
   setConversation = async (conversationID) => {
@@ -199,7 +214,7 @@ class Messages extends React.Component {
                   setConversation={this.setConversation}
                 />
               )
-                      }
+            }
           </Grid>
         </Grid>
       </div>
