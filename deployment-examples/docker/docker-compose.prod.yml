@@ -44,3 +44,7 @@ services:
     depends_on:
       - ui
       - api
+  redis:
+    image: redis
+    expose:
+      - 6379
