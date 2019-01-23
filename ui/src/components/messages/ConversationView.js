@@ -8,7 +8,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Send from '@material-ui/icons/Send';
-import { Grid, IconButton, InputAdornment, TextField, withStyles } from '@material-ui/core';
+import {
+  Grid, IconButton, InputAdornment, TextField, withStyles,
+} from '@material-ui/core';
 import { post, withAuth } from '../../util';
 import Message from './Message';
 
@@ -108,8 +110,8 @@ class ConversationView extends React.Component {
           message,
           provider: conversation.from,
         }).then((data) => {
-          this.setState({ message: '', messageHeight: INIT_MESSAGE_HEIGHT + LINE_HEIGHT });
-        }).catch(error => console.error(error)); // TODO show error using Snackbar
+        this.setState({ message: '', messageHeight: INIT_MESSAGE_HEIGHT + LINE_HEIGHT });
+      }).catch(error => console.error(error)); // TODO show error using Snackbar
     }
   }
 

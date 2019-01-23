@@ -123,7 +123,7 @@ class ConversationList extends React.Component {
           <Typography variant="body2" gutterBottom><strong>Loading Messages</strong></Typography>
           <CircularProgress />
         </div>
-      )
+      );
     }
 
     return (

@@ -7,10 +7,14 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Typography, TextField, withStyles } from '@material-ui/core';
+import {
+  Grid, Typography, TextField, withStyles,
+} from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
 
-import { post, get, AuthService, withAuth } from '../../util';
+import {
+  post, get, AuthService, withAuth,
+} from '../../util';
 
 const fieldID = 'teamURL';
 
@@ -123,7 +127,7 @@ class TeamURL extends React.Component {
           <Check className={classes.available} />
           {' '}
           Available
-          </React.Fragment>
+        </React.Fragment>
       );
     }
 
@@ -135,7 +139,7 @@ class TeamURL extends React.Component {
       <React.Fragment>
         <Typography variant="overline">
           Team URL:
-          </Typography>
+        </Typography>
         <Grid
           container
           direction="row"
@@ -157,7 +161,7 @@ class TeamURL extends React.Component {
           />
           <span className={classes.domain}>
             .anymessage.io
-            </span>
+          </span>
         </Grid>
       </React.Fragment>
     );

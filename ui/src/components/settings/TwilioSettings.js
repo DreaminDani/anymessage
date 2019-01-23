@@ -7,7 +7,16 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, InputAdornment, Typography, TextField, withStyles } from '@material-ui/core';
+import {
+  Button,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  InputAdornment,
+  Typography,
+  TextField,
+  withStyles,
+} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Check from '@material-ui/icons/Check';
 import AddCircle from '@material-ui/icons/AddCircle';
@@ -214,11 +223,11 @@ class TwilioSettings extends React.Component {
             <img height={24} width={24} src="/static/providers/twilio-logo.png" alt="twilio logo" />
             <Typography className={classes.heading}>
               Twilio
-                <span style={{ visibility: (saved) ? 'visible' : 'hidden' }} className={classes.savedMessage}>
+              <span style={{ visibility: (saved) ? 'visible' : 'hidden' }} className={classes.savedMessage}>
                 <Check />
                 {' '}
                 Saved!
-                </span>
+              </span>
             </Typography>
             <Typography className={classes.secondaryHeading}>{(loaded) ? summary : ''}</Typography>
           </ExpansionPanelSummary>
@@ -274,7 +283,7 @@ class TwilioSettings extends React.Component {
               <Button onClick={this.handleAddPhone} className={classes.addPhone}>
                 <AddCircle className={classes.leftIcon} />
                 Add Phone Number
-                </Button>
+              </Button>
             </div>
           </ExpansionPanelDetails>
         </ExpansionPanel>

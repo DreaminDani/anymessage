@@ -11,7 +11,9 @@ import EventSource from 'eventsource';
 import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
 import JssProvider from 'react-jss/lib/JssProvider';
 import getPageContext from '../src/getPageContext';
-import { Auth, AuthService, Conversations, get } from '../src/util';
+import {
+  Auth, AuthService, Conversations, get,
+} from '../src/util';
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -45,7 +47,7 @@ class MyApp extends App {
     this.state = {
       conversationList: [],
       loaded: false,
-    }
+    };
   }
 
   pageContext = null;
@@ -67,12 +69,12 @@ class MyApp extends App {
       });
 
       // update conversation list on EventSource update
-      this.sse = new EventSource("https://api.anymessage.io/conversation/subscribe", { withCredentials: true });
+      this.sse = new EventSource('https://api.anymessage.io/conversation/subscribe', { withCredentials: true });
       this.sse.onmessage = (e) => {
         if (e.data) {
           this.updateConversationList(JSON.parse(e.data));
         }
-      }
+      };
       this.sse.onerror = (e) => {
         console.error(e); // todo pretty error message
       };
@@ -93,14 +95,13 @@ class MyApp extends App {
 
   updateConversationList = (newConversation) => {
     let found = false;
-    this.setState(state => {
-      let conversationList = state.conversationList.map((item) => {
+    this.setState((state) => {
+      const conversationList = state.conversationList.map((item) => {
         if (item.id === newConversation.id) {
           found = true;
           return newConversation;
-        } else {
-          return item;
         }
+        return item;
       });
 
       if (!found) {
@@ -108,9 +109,9 @@ class MyApp extends App {
       }
 
       return {
-        conversationList
-      }
-    })
+        conversationList,
+      };
+    });
   }
 
   render() {
@@ -137,8 +138,9 @@ class MyApp extends App {
             >
               <Conversations.Provider value={{
                 conversationList,
-                conversationsLoaded: loaded
-              }}>
+                conversationsLoaded: loaded,
+              }}
+              >
                 {/* Pass pageContext to the _document though the renderPage enhancer
                         to render collected styles on server side. */}
                 <Component pageContext={this.pageContext} {...pageProps} />

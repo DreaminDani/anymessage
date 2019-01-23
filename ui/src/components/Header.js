@@ -71,9 +71,8 @@ class Header extends React.Component {
           </Toolbar>
         </AppBar>
       );
-    } else {
-      return null;
     }
+    return null;
   }
 }
 

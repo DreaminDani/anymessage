@@ -71,7 +71,7 @@ class Messages extends React.Component {
       if (hashedId > -1 && hashedId !== currentConversation) {
         this.setState({
           currentConversation: hashedId,
-        })
+        });
       }
     }
   }

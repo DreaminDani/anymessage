@@ -7,7 +7,9 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, InputAdornment, MenuItem, TextField, Typography, withStyles } from '@material-ui/core';
+import {
+  Button, InputAdornment, MenuItem, TextField, Typography, withStyles,
+} from '@material-ui/core';
 
 import { get, post, withAuth } from '../../util';
 import WaitingConversation from '../illustrations/waiting-conversation';
@@ -107,8 +109,8 @@ class Conversation extends React.Component {
           provider: selectedProvider,
           message,
         }).then((data) => {
-          setConversation(data[0].id); // update conversation
-        }).catch(error => console.error(error)); // TODO show error using Snackbar
+        setConversation(data[0].id); // update conversation
+      }).catch(error => console.error(error)); // TODO show error using Snackbar
     }
   }
 
@@ -128,7 +130,7 @@ class Conversation extends React.Component {
           <div className={classes.create}>
             <Typography variant="h6">
               Send a new message...
-              </Typography>
+            </Typography>
             <TextField
               id="outlined-number"
               label="Recipient (Ph. #)"
@@ -184,18 +186,18 @@ class Conversation extends React.Component {
               Create Conversation
 
 
-              </Button>
+            </Button>
           </div>
         ) : (
-            <div className={classes.placeholder}>
-              <Typography variant="h6" gutterBottom>
+          <div className={classes.placeholder}>
+            <Typography variant="h6" gutterBottom>
                 Select a conversation or create a new one
-              </Typography>
-              <div className={classes.waitingConversation}>
-                <WaitingConversation width="100%" height="100%" />
-              </div>
+            </Typography>
+            <div className={classes.waitingConversation}>
+              <WaitingConversation width="100%" height="100%" />
             </div>
-          )}
+          </div>
+        )}
       </div>
     );
   }

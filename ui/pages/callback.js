@@ -7,7 +7,9 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, CircularProgress, Snackbar, withStyles } from '@material-ui/core';
+import {
+  Button, CircularProgress, Snackbar, withStyles,
+} from '@material-ui/core';
 import Router from 'next/router';
 import { AuthService, get } from '../src/util';
 
