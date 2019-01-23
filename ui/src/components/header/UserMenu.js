@@ -12,8 +12,7 @@ import {
 } from '@material-ui/core';
 import { ExpandMore, Menu } from '@material-ui/icons';
 
-import { withAuth } from '../../util/authContext';
-import AuthService from '../../util/AuthService';
+import { AuthService, withAuth } from '../../util';
 
 import UserNameGroup from './UserNameGroup';
 import UserMenuOptions from './UserMenuOptions';
@@ -25,59 +24,59 @@ const styles = theme => ({
 });
 
 class UserMenu extends React.Component {
-    state = {
-      loaded: false,
-      open: false,
+  state = {
+    loaded: false,
+    open: false,
+  }
+
+  componentDidMount() {
+    this.auth = new AuthService();
+    this.setState({ loaded: true });
+  }
+
+  handleMenuClick = () => {
+    this.setState({ open: true });
+  };
+
+  handleMenuClose = () => {
+    this.setState({ open: false });
+  };
+
+  render() {
+    const {
+      classes, width, user, currentPage,
+    } = this.props;
+    const { loaded, open } = this.state;
+
+    if (user) {
+      return (
+        <div className={classes.loginButton}>
+          <Button
+            color="inherit"
+            aria-haspopup="true"
+            onClick={this.handleMenuClick}
+          >
+            {(width === 'sm' || width === 'xs')
+              ? <Menu />
+              : (
+                <UserNameGroup
+                  rightIcon={<ExpandMore />}
+                />
+              )}
+
+          </Button>
+          <Drawer anchor="right" open={open} onClose={this.handleMenuClose}>
+            <UserMenuOptions
+              authLink={loaded ? this.auth.logout : null}
+              closeLink={this.handleMenuClose}
+              currentPage={currentPage}
+            />
+          </Drawer>
+        </div>
+      );
     }
-
-    componentDidMount() {
-      this.auth = new AuthService();
-      this.setState({ loaded: true });
-    }
-
-    handleMenuClick = () => {
-      this.setState({ open: true });
-    };
-
-    handleMenuClose = () => {
-      this.setState({ open: false });
-    };
-
-    render() {
-      const {
-        classes, width, user, currentPage,
-      } = this.props;
-      const { loaded, open } = this.state;
-
-      if (user) {
-        return (
-          <div className={classes.loginButton}>
-            <Button
-              color="inherit"
-              aria-haspopup="true"
-              onClick={this.handleMenuClick}
-            >
-              {(width === 'sm' || width === 'xs')
-                ? <Menu />
-                : (
-                  <UserNameGroup
-                    rightIcon={<ExpandMore />}
-                  />
-                )}
-
-            </Button>
-            <Drawer anchor="right" open={open} onClose={this.handleMenuClose}>
-              <UserMenuOptions
-                authLink={loaded ? this.auth.logout : null}
-                closeLink={this.handleMenuClose}
-                currentPage={currentPage}
-              />
-            </Drawer>
-          </div>
-        );
-      }
-      return <Button className={classes.loginButton} onClick={loaded ? this.auth.login : null} color="inherit">Login</Button>;
-    }
+    return <Button className={classes.loginButton} onClick={loaded ? this.auth.login : null} color="inherit">Login</Button>;
+  }
 }
 
 UserMenu.defaultProps = {

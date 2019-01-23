@@ -1,5 +1,9 @@
 version: '3.1'
 services:
+  redis:
+    image: redis
+    expose:
+      - 6379
   ui:
     image: us.gcr.io/anymessage-219921/ui:latest
     build: ./ui

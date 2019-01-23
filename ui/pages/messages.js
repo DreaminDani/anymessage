@@ -9,24 +9,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
-import CloseIcon from '@material-ui/icons/Close';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
+import { Grid, withStyles } from '@material-ui/core';
 import Router from 'next/router';
 import Head from 'next/head';
-import getConfig from 'next/config';
 
-import { withAuth } from '../src/util/authContext';
-import { get } from '../src/util/api';
+import { getHashAsObject, withAuth, withConversations } from '../src/util';
 
 import Header from '../src/components/Header';
 import ConversationList from '../src/components/messages/ConversationList';
 import Conversation from '../src/components/messages/Conversation';
 import ConversationView from '../src/components/messages/ConversationView';
-
-const { publicRuntimeConfig } = getConfig();
-const { UI_HOSTNAME } = publicRuntimeConfig;
 
 const styles = theme => ({
   root: {},
@@ -44,12 +36,11 @@ class Messages extends React.Component {
   state = {
     newConversation: false,
     currentConversation: null,
-    conversationList: null,
     mobileOpen: false,
   }
 
   // get conversations or redirect unauthed user to "/"
-  componentDidMount() {
+  componentDidMount = () => {
     const { user } = this.props;
 
     if (user) {
@@ -63,24 +54,6 @@ class Messages extends React.Component {
         window.location = `${window.location.protocol}//${user.teamURL}/messages`;
       }
 
-      // fetch initial conversations for user
-      get('/conversation/list', user.id_token).then((data) => {
-        this.setState({
-          conversationList: data, // update conversation list
-          // todo go directly to conversation based on hash/route
-        });
-      }).catch((error) => {
-        console.error(error); // todo pretty error message
-      });
-
-      // update conversation list every 3 seconds
-      // todo make this a websocket subscription
-      try {
-        this.interval = setInterval(this.getConversationList, 1000);
-      } catch (e) {
-        console.log(e);
-      }
-
       return true;
     }
 
@@ -88,28 +61,31 @@ class Messages extends React.Component {
     return false;
   }
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
+  componentDidUpdate = () => {
+    const { conversationsLoaded } = this.props;
+    const { currentConversation } = this.state;
+    // check if message id in URL, if so, attempt to show message
+    if (window.location.hash && conversationsLoaded) {
+      const hashObject = getHashAsObject(window.location.hash);
+      const hashedId = parseInt(hashObject.id);
+      if (hashedId > -1 && hashedId !== currentConversation) {
+        this.setState({
+          currentConversation: hashedId,
+        });
+      }
+    }
   }
 
   setConversation = async (conversationID) => {
-    await this.getConversationList();
+    window.location.hash = `#id=${conversationID}`;
     this.setState({
       newConversation: false,
       currentConversation: conversationID,
     });
   }
 
-  getConversationList = async () => {
-    const { user } = this.props;
-    const data = await get('/conversation/list', user.id_token);
-    this.setState({
-      conversationList: data, // todo, tell the user when there's new messages
-    });
-  }
-
   findConversationByID = (id) => {
-    const { conversationList } = this.state;
+    const { conversationList } = this.props;
     for (let i = 0; i < conversationList.length; i += 1) {
       if (conversationList[i].id && conversationList[i].id === id) {
         return conversationList[i];
@@ -138,9 +114,9 @@ class Messages extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, conversationList, conversationsLoaded } = this.props;
     const {
-      newConversation, currentConversation, conversationList, mobileOpen,
+      newConversation, currentConversation, mobileOpen,
     } = this.state;
 
     let messagesTitle = 'Messages';
@@ -172,6 +148,7 @@ class Messages extends React.Component {
               conversationList={conversationList}
               mobileOpen={mobileOpen}
               handleDrawerToggle={this.onMenuClick}
+              loaded={conversationsLoaded}
             />
           </Grid>
           <Grid item xs={12} md={9} className={classes.conversation}>
@@ -188,7 +165,7 @@ class Messages extends React.Component {
                   setConversation={this.setConversation}
                 />
               )
-                      }
+            }
           </Grid>
         </Grid>
       </div>
@@ -205,4 +182,4 @@ Messages.propTypes = {
   user: PropTypes.object,
 };
 
-export default withAuth(withStyles(styles)(Messages));
+export default withConversations(withAuth(withStyles(styles)(Messages)));

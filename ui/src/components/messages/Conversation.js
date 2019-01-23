@@ -7,15 +7,11 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import {
+  Button, InputAdornment, MenuItem, TextField, Typography, withStyles,
+} from '@material-ui/core';
 
-import { withAuth } from '../../util/authContext';
-import { get, post } from '../../util/api';
+import { get, post, withAuth } from '../../util';
 import WaitingConversation from '../illustrations/waiting-conversation';
 
 const styles = theme => ({
@@ -64,147 +60,147 @@ const styles = theme => ({
 });
 
 class Conversation extends React.Component {
-    state = {
-      phoneNumber: '',
-      message: '',
-      loaded: false,
-      submitted: false,
-      providers: [],
-      selectedProvider: '',
-    };
+  state = {
+    phoneNumber: '',
+    message: '',
+    loaded: false,
+    submitted: false,
+    providers: [],
+    selectedProvider: '',
+  };
 
-    componentDidMount = () => {
-      const { user } = this.props;
-      get('/integration/providers', user.id_token).then((data) => {
-        if (data) {
-          this.setState({
-            loaded: true,
-            providers: data,
-          });
-        }
-      }).catch(err => console.error(err));
-    }
-
-    handleChange = name => (event) => {
-      if (name === 'phoneNumber') {
+  componentDidMount = () => {
+    const { user } = this.props;
+    get('/integration/providers', user.id_token).then((data) => {
+      if (data) {
         this.setState({
-          [name]: parseInt(event.target.value, 10)
-            ? parseInt(event.target.value, 10)
-            : '',
-        });
-      } else {
-        this.setState({
-          [name]: event.target.value,
+          loaded: true,
+          providers: data,
         });
       }
-    };
+    }).catch(err => console.error(err));
+  }
 
-    createConversation = () => {
-      const { phoneNumber, message, selectedProvider } = this.state;
-      const { user, setConversation } = this.props;
-      this.setState({ submitted: true });
-
-      // TODO validate inputs (client side side)
-      if (phoneNumber && message && selectedProvider) {
-        // send message
-        post('/conversation/add',
-          user.id_token, {
-            phoneNumber,
-            provider: selectedProvider,
-            message,
-          }).then((data) => {
-          setConversation(data[0].id); // update conversation
-        }).catch(error => console.error(error)); // TODO show error using Snackbar
-      }
+  handleChange = name => (event) => {
+    if (name === 'phoneNumber') {
+      this.setState({
+        [name]: parseInt(event.target.value, 10)
+          ? parseInt(event.target.value, 10)
+          : '',
+      });
+    } else {
+      this.setState({
+        [name]: event.target.value,
+      });
     }
+  };
 
-    render() {
-      const { classes, newConversation } = this.props;
-      const {
-        submitted,
-        phoneNumber,
-        message,
-        providers,
-        selectedProvider,
-        loaded,
-      } = this.state;
-      return (
-        <div className={classes.root}>
-          {newConversation ? (
-            <div className={classes.create}>
-              <Typography variant="h6">
-                Send a new message...
-              </Typography>
-              <TextField
-                id="outlined-number"
-                label="Recipient (Ph. #)"
-                autoFocus
-                className={classes.phoneNumber}
-                value={phoneNumber}
-                onChange={this.handleChange('phoneNumber')}
-                margin="normal"
-                error={submitted && phoneNumber === ''}
-                variant="outlined"
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">+</InputAdornment>,
-                }}
-                disabled={!loaded}
-              />
-              <TextField
-                id="select-provider"
-                select
-                label="Select provider"
-                className={classes.providerField}
-                value={selectedProvider}
-                onChange={this.handleChange('selectedProvider')}
-                margin="normal"
-                variant="outlined"
-                disabled={!loaded}
-              >
-                {providers.map(provider => (
-                  <MenuItem key={provider} value={provider}>
-                    {provider}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <br />
-              <TextField
-                id="outlined-message"
-                label="Message"
-                multiline
-                rowsMax="4"
-                value={message}
-                error={submitted && message === ''}
-                onChange={this.handleChange('message')}
-                className={classes.message}
-                variant="outlined"
-                disabled={!loaded}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.createButton}
-                onClick={this.createConversation}
-                disabled={!loaded}
-              >
-                Create Conversation
+  createConversation = () => {
+    const { phoneNumber, message, selectedProvider } = this.state;
+    const { user, setConversation } = this.props;
+    this.setState({ submitted: true });
+
+    // TODO validate inputs (client side side)
+    if (phoneNumber && message && selectedProvider) {
+      // send message
+      post('/conversation/add',
+        user.id_token, {
+          phoneNumber,
+          provider: selectedProvider,
+          message,
+        }).then((data) => {
+        setConversation(data[0].id); // update conversation
+      }).catch(error => console.error(error)); // TODO show error using Snackbar
+    }
+  }
+
+  render() {
+    const { classes, newConversation } = this.props;
+    const {
+      submitted,
+      phoneNumber,
+      message,
+      providers,
+      selectedProvider,
+      loaded,
+    } = this.state;
+    return (
+      <div className={classes.root}>
+        {newConversation ? (
+          <div className={classes.create}>
+            <Typography variant="h6">
+              Send a new message...
+            </Typography>
+            <TextField
+              id="outlined-number"
+              label="Recipient (Ph. #)"
+              autoFocus
+              className={classes.phoneNumber}
+              value={phoneNumber}
+              onChange={this.handleChange('phoneNumber')}
+              margin="normal"
+              error={submitted && phoneNumber === ''}
+              variant="outlined"
+              InputProps={{
+                startAdornment: <InputAdornment position="start">+</InputAdornment>,
+              }}
+              disabled={!loaded}
+            />
+            <TextField
+              id="select-provider"
+              select
+              label="Select provider"
+              className={classes.providerField}
+              value={selectedProvider}
+              onChange={this.handleChange('selectedProvider')}
+              margin="normal"
+              variant="outlined"
+              disabled={!loaded}
+            >
+              {providers.map(provider => (
+                <MenuItem key={provider} value={provider}>
+                  {provider}
+                </MenuItem>
+              ))}
+            </TextField>
+            <br />
+            <TextField
+              id="outlined-message"
+              label="Message"
+              multiline
+              rowsMax="4"
+              value={message}
+              error={submitted && message === ''}
+              onChange={this.handleChange('message')}
+              className={classes.message}
+              variant="outlined"
+              disabled={!loaded}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.createButton}
+              onClick={this.createConversation}
+              disabled={!loaded}
+            >
+              Create Conversation
 
 
-              </Button>
-            </div>
-          ) : (
-            <div className={classes.placeholder}>
-              <Typography variant="h6" gutterBottom>
+            </Button>
+          </div>
+        ) : (
+          <div className={classes.placeholder}>
+            <Typography variant="h6" gutterBottom>
                 Select a conversation or create a new one
-              </Typography>
-              <div className={classes.waitingConversation}>
-                <WaitingConversation width="100%" height="100%" />
-              </div>
+            </Typography>
+            <div className={classes.waitingConversation}>
+              <WaitingConversation width="100%" height="100%" />
             </div>
-          )}
-        </div>
-      );
-    }
+          </div>
+        )}
+      </div>
+    );
+  }
 }
 
 Conversation.defaultProps = {

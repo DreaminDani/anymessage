@@ -43,8 +43,9 @@ massive({
     const corsOptions = {
         optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
         origin: (process.env.UI_HOSTNAME)
-                ? getAllowedExpression(process.env.UI_HOSTNAME)
-                : "http://localhost:3000",
+            ? getAllowedExpression(process.env.UI_HOSTNAME)
+            : "http://localhost:3000",
+        credentials: true, // allows us to use cookies from non-api domains
     };
 
     // init controllers

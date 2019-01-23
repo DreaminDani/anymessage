@@ -9,14 +9,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { Typography, withStyles } from '@material-ui/core';
 import Head from 'next/head';
 import Router from 'next/router';
 import getConfig from 'next/config';
-import { Typography } from '@material-ui/core';
 import Header from '../src/components/Header';
 import CustomIndex from '../customization/index';
-import AuthService from '../src/util/AuthService';
+import { AuthService } from '../src/util';
 
 // message
 import SnackbarMessage from '../src/components/SnackbarMessage';
@@ -91,7 +90,7 @@ class Index extends React.Component {
             <Hero />
             <div className={classes.center}>
               <Typography variant="h1">
-              Coming Soon
+                Coming Soon
               </Typography>
               <Typography variant="body1">
                 <a href="mailto:daniel@anymessage.io">More Info</a>

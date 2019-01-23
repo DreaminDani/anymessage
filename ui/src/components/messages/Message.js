@@ -7,10 +7,8 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import Grey from '@material-ui/core/colors/grey';
-import { withStyles } from '@material-ui/core/styles';
+import { Grid, Typography, withStyles } from '@material-ui/core';
 
 const styles = theme => ({
   root: {

@@ -11,7 +11,7 @@ import {
   withStyles, Avatar, Typography, Grid,
 } from '@material-ui/core';
 
-import { withAuth } from '../../util/authContext';
+import { withAuth } from '../../util';
 
 const styles = {
   username: {
@@ -21,31 +21,31 @@ const styles = {
 }; // @todo decide on a bg-color for the initials
 
 class UserNameGroup extends React.Component {
-    getInitials = () => {
-      const { user } = this.props;
-      const { given_name, family_name } = user;
-      const initials = given_name.charAt(0) + family_name.charAt(0);
-      return initials.toUpperCase();
-    }
+  getInitials = () => {
+    const { user } = this.props;
+    const { given_name, family_name } = user;
+    const initials = given_name.charAt(0) + family_name.charAt(0);
+    return initials.toUpperCase();
+  }
 
-    render() {
-      const { classes, user, rightIcon } = this.props;
-      return (
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-        >
+  render() {
+    const { classes, user, rightIcon } = this.props;
+    return (
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
 
-          {user.picture
-            ? <Avatar alt={user.name} src={user.picture} />
-            : <Avatar alt={user.name}>{this.getInitials()}</Avatar>}
-          <Typography variant="body2" color="inherit" className={classes.username}>{user.email}</Typography>
-          {rightIcon}
-        </Grid>
-      );
-    }
+        {user.picture
+          ? <Avatar alt={user.name} src={user.picture} />
+          : <Avatar alt={user.name}>{this.getInitials()}</Avatar>}
+        <Typography variant="body2" color="inherit" className={classes.username}>{user.email}</Typography>
+        {rightIcon}
+      </Grid>
+    );
+  }
 }
 
 UserNameGroup.defaultProps = {
