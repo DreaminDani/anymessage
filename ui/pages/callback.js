@@ -7,13 +7,9 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { Button, CircularProgress, Snackbar, withStyles } from '@material-ui/core';
 import Router from 'next/router';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
-import AuthService from '../src/util/AuthService';
-import { get } from '../src/util/api';
+import { AuthService, get } from '../src/util';
 
 const styles = {
   progress: {

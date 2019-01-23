@@ -8,10 +8,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
-import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import { Divider, Typography, withStyles } from '@material-ui/core';
 import Head from 'next/head';
-import Divider from '@material-ui/core/Divider';
 
 import Header from '../src/components/Header';
 

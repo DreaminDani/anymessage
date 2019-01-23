@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import CommentIcon from '@material-ui/icons/Comment';
 import Router from 'next/router';
-import { withAuth } from '../util/authContext';
+import { withAuth } from '../util';
 
 import UserMenu from './header/UserMenu';
 

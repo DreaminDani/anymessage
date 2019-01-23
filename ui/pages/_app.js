@@ -8,14 +8,10 @@
 import React from 'react';
 import App, { Container } from 'next/app';
 import EventSource from 'eventsource';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
 import JssProvider from 'react-jss/lib/JssProvider';
 import getPageContext from '../src/getPageContext';
-import { Auth } from '../src/util/authContext';
-import { Conversations } from '../src/util/conversationsContext';
-import AuthService from '../src/util/AuthService';
-import { get } from '../src/util/api';
+import { Auth, AuthService, Conversations, get } from '../src/util';
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {

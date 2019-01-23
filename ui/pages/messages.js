@@ -9,19 +9,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
+import { Grid, withStyles } from '@material-ui/core';
 import Router from 'next/router';
 import Head from 'next/head';
 
-import { withAuth } from '../src/util/authContext';
-import { withConversations } from '../src/util/conversationsContext';
+import { getHashAsObject, withAuth, withConversations } from '../src/util';
 
 import Header from '../src/components/Header';
 import ConversationList from '../src/components/messages/ConversationList';
 import Conversation from '../src/components/messages/Conversation';
 import ConversationView from '../src/components/messages/ConversationView';
-import { getHashAsObject } from '../src/util';
 
 const styles = theme => ({
   root: {},
@@ -80,6 +77,7 @@ class Messages extends React.Component {
   }
 
   setConversation = async (conversationID) => {
+    window.location.hash = `#id=${conversationID}`;
     this.setState({
       newConversation: false,
       currentConversation: conversationID,
