@@ -6,8 +6,8 @@
  * LICENSE.md file.
  */
 import { Request, Response, Router, urlencoded } from "express";
-import { ConversationModel, ProviderModel } from "../models";
 import { publisherClient } from "../lib/redis-connection";
+import { ConversationModel, ProviderModel } from "../models";
 
 const router: Router = Router();
 

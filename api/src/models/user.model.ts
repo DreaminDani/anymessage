@@ -79,7 +79,7 @@ export class UserModel {
             throw new ModelError(e);
         }
     }
-    
+
     /**
      * Use after init to update auth_metadata with latest from provider
      */
@@ -87,7 +87,7 @@ export class UserModel {
         if (this.initialized) {
             return await this.db.users.save({
                 id: this.id,
-                auth_metadata: userInfo
+                auth_metadata: userInfo,
             });
         }
 

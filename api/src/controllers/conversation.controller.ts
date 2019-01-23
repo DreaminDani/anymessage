@@ -5,9 +5,10 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.md file.
  */
+import cookieParser = require("cookie-parser");
 import { json, Response, Router } from "express";
-import cookieParser = require('cookie-parser');
 import { checkJwt } from "../helpers";
+import { eventSubscription, publisherClient } from "../lib/redis-connection";
 import {
     ConversationModel,
     IConversationRequest,
@@ -17,7 +18,6 @@ import {
     verifyOutboundMessage,
     verifySubdomain,
 } from "../models";
-import { eventSubscription, publisherClient } from "../lib/redis-connection";
 
 const router: Router = Router();
 
@@ -36,15 +36,15 @@ router.get("/list",
         }
     });
 
-router.get("/subscribe", cookieParser(), function (req, res) {
+router.get("/subscribe", cookieParser(), function(req, res) {
     if (req.cookies.id_token && req.cookies.team_url) {
         const subdomain = req.cookies.team_url.split(".")[0];
         eventSubscription(subdomain, req, res);
     } else {
-        console.log('user is attempting to subscribe to conversations without the proper cookies');
+        console.log("user is attempting to subscribe to conversations without the proper cookies");
         res.send(400);
     }
-})
+});
 
 router.post("/add",
     checkJwt,
