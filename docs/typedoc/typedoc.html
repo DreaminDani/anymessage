@@ -1,0 +1,263 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@anymessage/api</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@anymessage/api</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> @anymessage/api</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="anymessage">AnyMessage</h1>
+				<p>AnyMessage lets anybody send and receive messages across a number of providers in a single, convenient, web interface. It is open source and free to use. A hosted version is available at <a href="http://www.anymessage.io">AnyMessage.io</a>. Support services and custom licenses are available for both hosted and self-hosted customers.</p>
+				<h2 id="getting-started">Getting Started</h2>
+				<p>These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.</p>
+				<h3 id="prerequisites">Prerequisites</h3>
+				<ul>
+					<li><a href="https://www.docker.com/">Docker</a> installed locally</li>
+					<li>An account on <a href="https://auth0.com/">Auth0</a> for user management.</li>
+				</ul>
+				<h3 id="running-the-app">Running the app</h3>
+				<p>If you&#39;re developing a local copy, it is recommend that you build the app using the included <code>Dockerfile</code>s. For convenience, a <code>docker-compose.yml</code> has been included in this repository. It is not guaranteed to work for all configurations and is not recommended for use in production.</p>
+				<ol>
+					<li>Create a <code>.env</code> file in this repository&#39;s root with the following values (<code>[]</code> are placeholders only)</li>
+				</ol>
+				<pre><code><span class="hljs-attr">AUTH0_CLIENTID</span>=[get this from auth0]
+<span class="hljs-attr">AUTH0_DOMAIN</span>=[get this from auth0]
+<span class="hljs-attr">POSTGRES_USER</span>=[user name]
+<span class="hljs-attr">POSTGRES_PASSWORD</span>=[example password]
+<span class="hljs-attr">POSTGRES_DATABASE</span>=[database name]
+<span class="hljs-attr">DB_HOST</span>=db
+<span class="hljs-attr">API_PORT</span>=<span class="hljs-number">1337</span>
+<span class="hljs-attr">UI_HOSTNAME</span>=[myapp.dev]</code></pre><ol start="2">
+					<li><p>Set up your <a href="https://duckduckgo.com/?q=editing+host+files">local hosts file</a> or DNS provider to point <code>www.myapp.dev</code> and <code>*.myapp.dev</code> to <code>127.0.0.1</code> (or whatever IP you&#39;re running the app on)</p>
+						<ul>
+							<li>If your hostfile and/or dns provider does not support wildcard domains, you&#39;ll need to specify the subdomain for each team url you wish to support/test</li>
+						</ul>
+					</li>
+					<li><p>If you have not already, configure your Auth0 settings to allow connections from <code>*.mydev</code>.</p>
+					</li>
+					<li><p>Run <code>docker-compose build &amp;&amp; docker-compose up</code> from the repository&#39;s root.</p>
+					</li>
+				</ol>
+				<h2 id="running-the-tests">Running the tests</h2>
+				<p>Currently, there are very few tests. You can run them via <code>npm run test</code> in the relevant subdirectories.</p>
+				<p>More info will be updated in this section as the testing strategy is built out.</p>
+				<h3 id="linting">Linting</h3>
+				<p>Each subdirectory has its own linting rules. They are specified via <code>tslint.json</code> (in <code>api</code>) and <code>.eslintrc.json</code> (in <code>ui</code>). It is recommended that you set up your editor to lint automatically. In the future, we&#39;ll have CI rules to prevent contributions that break these rules.</p>
+				<h2 id="deployment">Deployment</h2>
+				<p>You can deploy using the included <code>docker-compose.yml</code> file or create a custom configuration on any hosted container service. If you&#39;re not making any changes, it is recommended that you use the pre-built docker-containers:</p>
+				<pre><code><span class="hljs-attribute">docker-compose pull
+docker-compose up</span></code></pre><p>AnyMessage.io runs on Google Kubernetes Engine but should work anywhere docker containers are supported. If you need help with deployment, feel free to reach out!</p>
+				<h2 id="built-with">Built With</h2>
+				<ul>
+					<li><a href="https://nextjs.org/">Next.js</a></li>
+					<li><a href="https://expressjs.com/">Express</a></li>
+					<li><a href="https://www.typescriptlang.org/">TypeScript</a></li>
+					<li><a href="https://www.postgresql.org/">PostgreSQL</a></li>
+					<li><a href="https://sqitch.org/">Sqitch</a></li>
+				</ul>
+				<h2 id="contributing">Contributing</h2>
+				<p>Anybody can <a href="https://github.com/d3sandoval/anymessage/compare">make a pull request</a>! The code you contribute is yours to own, reuse and sell separately. Note that, since AnyMessage offers a hosted service, your code may be used by free (&quot;Self-hosted&quot;) users as well as paying users on <a href="http://www.anymessage.io">AnyMessage.io</a>.</p>
+				<p>For more info see section &quot;2.2 Contributor Grant&quot; of <a href="LICENSE.md">LICENSE.md</a>.</p>
+				<h2 id="versioning">Versioning</h2>
+				<p>We use <a href="http://semver.org/">SemVer</a> for versioning. For the versions available, see the <a href="https://github.com/your/project/tags">tags on this repository</a>. </p>
+				<h2 id="authors">Authors</h2>
+				<ul>
+					<li><strong>Daniel Eric Sandoval</strong> - <a href="https://desandoval.net">DESandoval.net</a></li>
+				</ul>
+				<p>See also the list of <a href="https://github.com/d3sandoval/anymessage/contributors">contributors</a> who participated in this project.</p>
+				<h2 id="license">License</h2>
+				<p>AnyMessage is distributed under the Common Public Attribution License Version 1.0 (CPAL) and is also available under alternative licenses negotiated directly with AnyMessage.io. If you obtained AnyMessage under the CPAL, then the CPAL applies to all running versions of AnyMessage on your local computer or network distribution. The CPAL is included in this source tree in the file <a href="LICENSE.md">LICENSE.md</a>.</p>
+				<p>This software also includes various components that are not part of AnyMessage itself; these components are specified in <code>package.json</code> and <code>docker-compose</code> files and are distributed in accordance with their individual licensing terms.</p>
+				<p>Daniel Eric Sandoval holds copyright and/or sufficient licenses to all components of the AnyMessage software, and therefore can grant, at his sole discretion, the ability for companies, individuals, or organizations to create proprietary or Open Source (even if not CPAL) extensions and contributions.</p>
+				<p>If you wish to use contributions <em>you have made</em> to this code in your own Open Source or Commercial software, you are free to do so under the CPAL.</p>
+				<p>The &#39;AnyMessage&#39; name and logos are owned by Daniel E. Sandoval. If you wish to use these trademarks for purposes other than for the purpose of identifying the source of this code, please contact <a href="mailto:daniel@anymessage.io">daniel@anymessage.io</a> directly.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_controllers_conversation_controller_.html">"controllers/conversation.controller"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_controllers_inbound_controller_.html">"controllers/inbound.controller"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_controllers_index_.html">"controllers/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_controllers_integration_controller_.html">"controllers/integration.controller"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_controllers_team_controller_.html">"controllers/team.controller"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_controllers_user_controller_.html">"controllers/user.controller"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_helpers_.html">"helpers"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_redis_connection_.html">"lib/redis-<wbr>connection"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_conversation_model_.html">"models/conversation.model"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_index_.html">"models/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_integration_model_.html">"models/integration.model"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_provider_model_.html">"models/provider.model"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_team_model_.html">"models/team.model"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_user_model_.html">"models/user.model"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_providers_twilio_.html">"providers/twilio"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_server_.html">"server"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

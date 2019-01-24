@@ -1,0 +1,37 @@
+{
+  "info": {
+    "title": "Hello World",
+    "version": "1.0.0"
+  },
+  "swagger": "2.0",
+  "paths": {
+    "/user/login": {
+      "get": {
+        "summary": "Login user",
+        "description": "Look up thing, return thing",
+        "tags": [
+          "user"
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs in user",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "redirectURI": {
+                  "type": "string",
+                  "default": "//{subdomain}.UI_HOSTNAME/messages"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {},
+  "responses": {},
+  "parameters": {},
+  "securityDefinitions": {},
+  "tags": []
+}
