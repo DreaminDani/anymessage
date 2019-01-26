@@ -12,6 +12,8 @@ LABEL "maintainer"="Daniel Sandoval <daniel@anymessage.io>"
 RUN set -xe \
     && apk add --no-cache bash git openssh
 
+RUN gem install jekyll
+
 ADD entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["run deploy:docs"]
