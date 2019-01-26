@@ -7,8 +7,8 @@
     "gulp": "gulp",
     "start": "npm run build:docs && gulp",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "typedoc --mode modules --out ./temp --module system --tsconfig ./tdconfig.json",
-    "deploy:docs": "gh-pages -d .."
+    "build": "typedoc --mode modules --out ./temp --module system --tsconfig ./tdconfig.json && gulp",
+    "deploy": "gh-pages -d .."
   },
   "author": "d3sandoval",
   "license": "ISC",

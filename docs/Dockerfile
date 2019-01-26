@@ -1,4 +1,4 @@
-FROM starefossen/ruby-node:alpine
+FROM node:alpine
 
 LABEL "com.github.actions.name"="Build AnyMessage docs"
 LABEL "com.github.actions.description"="Builds anymesage docs"
@@ -14,4 +14,4 @@ RUN set -xe \
 
 ADD entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["run deploy:docs"]
+CMD ["run deploy"]
