@@ -1,13 +1,13 @@
-FROM debian:9.5-slim
+FROM node:10-slim
 
-LABEL "com.github.actions.name"="Hello World"
-LABEL "com.github.actions.description"="Write arguments to the standard output"
+LABEL "com.github.actions.name"="Build AnyMessage docs"
+LABEL "com.github.actions.description"="Builds anymesage docs"
 LABEL "com.github.actions.icon"="mic"
 LABEL "com.github.actions.color"="purple"
 
-LABEL "repository"="http://github.com/octocat/hello-world"
-LABEL "homepage"="http://github.com/actions"
-LABEL "maintainer"="Octocat <octocat@github.com>"
+LABEL "repository"="http://github.com/d3sandoval/anymessage"
+LABEL "homepage"="http://www.anymessage.io"
+LABEL "maintainer"="Daniel Sandoval <daniel@anymessage.io>"
 
 ADD entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
