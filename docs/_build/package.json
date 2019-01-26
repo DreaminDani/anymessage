@@ -7,11 +7,13 @@
     "gulp": "gulp",
     "start": "npm run build:docs && gulp",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:docs": "typedoc --mode modules --out ./temp --module system --tsconfig ./tdconfig.json"
+    "build:docs": "typedoc --mode modules --out ./temp --module system --tsconfig ./tdconfig.json",
+    "deploy:docs": "gh-pages --dist ../"
   },
   "author": "d3sandoval",
   "license": "ISC",
   "devDependencies": {
+    "gh-pages": "^2.0.1",
     "gulp": "^4.0.0",
     "gulp-rename": "^1.4.0",
     "gulp-rm-lines": "0.0.9",
