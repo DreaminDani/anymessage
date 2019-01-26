@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM starefossen/ruby-node:alpine
 
 LABEL "com.github.actions.name"="Build AnyMessage docs"
 LABEL "com.github.actions.description"="Builds anymesage docs"
