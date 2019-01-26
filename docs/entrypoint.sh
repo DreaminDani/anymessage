@@ -13,4 +13,6 @@ if [ -n "$NPM_AUTH_TOKEN" ]; then
 fi
 
 cd docs/_build
-npm install && npm build && npm deploy:docs
+npm install
+npm build
+npm deploy:docs
