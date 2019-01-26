@@ -15,4 +15,5 @@ fi
 cd docs/_build
 npm install
 npm build
-npm deploy:docs
+
+sh -c "npm $*"

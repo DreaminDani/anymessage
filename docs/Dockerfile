@@ -10,4 +10,5 @@ LABEL "homepage"="http://www.anymessage.io"
 LABEL "maintainer"="Daniel Sandoval <daniel@anymessage.io>"
 
 ADD entrypoint.sh /entrypoint.sh
-CMD ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["deploy:docs"]
