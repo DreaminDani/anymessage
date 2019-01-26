@@ -15,7 +15,11 @@ fi
 git config --global user.email "info@anymessage.io"
 git config --global user.name "AnyMessage CI"
 
-cd docs/_build
+# install api package
+cd api
+npm install
+
+cd ../docs/_build
 npm install
 npm run build
 
