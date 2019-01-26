@@ -23,4 +23,6 @@ cd ../docs/_build
 npm install
 npm run build
 
+git status
+
 sh -c "npm $*"
