@@ -37,11 +37,47 @@ $grey-color-dark:  darken($grey-color, 25%);
 }
 
 .menu-home {
-        padding-left: 0;
         text-align: left;
         cursor: pointer;
         i {
                 vertical-align: middle;
                 padding-bottom: 6px;
+        }
+}
+
+.post_list_item {
+        a {
+                text-decoration: none;
+                color: inherit;
+
+                &:hover {
+                        background-color: #e0e0e0;
+                }
+        }
+        
+        .action {
+                text-align: right;
+                i {
+                        font-size: 40px;
+                        position: relative;
+                        top: 36%;
+                }
+        }
+}
+
+.developers-grid {
+        text-align: center;
+        img {
+                max-height: 250px;
+                height: 100% !important;
+                width: auto !important;
+        }
+        a {
+                text-decoration: none;
+                color: inherit;
+
+                &:hover {
+                        background-color: #e0e0e0;
+                }
         }
 }

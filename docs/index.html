@@ -8,7 +8,7 @@ layout: default
     {% if page.title and page.category != "docs" and page.highlight == true %}
     {% include page_highlight.html
     image=page.image
-    title="Getting Started"
+    title=page.title
     excerpt=page.excerpt
     url=page.url %}
     {% endif %}
