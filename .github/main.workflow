@@ -1,15 +1,15 @@
 workflow "New workflow" {
   on = "push"
-  resolves = ["GitHub Action for npm-1"]
+  resolves = ["NPM Runner"]
 }
 
-action "GitHub Action for npm" {
+action "Master Branch Filter" {
   uses = "actions/bin/filter@db72a46c8ce298e5d2c3a51861e20c455581524f"
   args = "branch master"
 }
 
-action "GitHub Action for npm-1" {
+action "NPM Runner" {
   uses = "actions/npm@de7a3705a9510ee12702e124482fad6af249991b"
-  needs = ["GitHub Action for npm"]
-  runs = ".github/docs-entrypoint.sh"
+  runs = "./.github/docs-entrypoint.sh"
+  needs = ["Master Branch Filter"]
 }
