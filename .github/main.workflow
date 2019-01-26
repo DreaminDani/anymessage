@@ -11,4 +11,6 @@ action "Master Branch Filter" {
 action "Build and deploy docs" {
   uses = "./docs/"
   needs = ["Master Branch Filter"]
+  args = "deploy:docs"
+  secrets = ["GITHUB_TOKEN"]
 }
