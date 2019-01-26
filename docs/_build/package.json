@@ -8,7 +8,7 @@
     "start": "npm run build:docs && gulp",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:docs": "typedoc --mode modules --out ./temp --module system --tsconfig ./tdconfig.json",
-    "deploy:docs": "gh-pages --dist /docs --repo https://github.com/d3sandoval/anymessage.git"
+    "deploy:docs": "gh-pages --d ../docs"
   },
   "author": "d3sandoval",
   "license": "ISC",
