@@ -12,7 +12,5 @@ if [ -n "$NPM_AUTH_TOKEN" ]; then
   chmod 0600 "$NPM_CONFIG_USERCONFIG"
 fi
 
-echo "here!"
-pwd
 cd docs/_build
-sh -c "npm install && npm build && npm deploy:docs"
+npm install && npm build && npm deploy:docs
