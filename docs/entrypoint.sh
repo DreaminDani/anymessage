@@ -12,8 +12,11 @@ if [ -n "$NPM_AUTH_TOKEN" ]; then
   chmod 0600 "$NPM_CONFIG_USERCONFIG"
 fi
 
+git config --global user.email "info@anymessage.io"
+git config --global user.name "AnyMessage CI"
+
 cd docs/_build
 npm install
-npm build
+npm run build
 
 sh -c "npm $*"
