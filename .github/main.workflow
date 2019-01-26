@@ -8,8 +8,7 @@ action "Master Branch Filter" {
   args = "branch master"
 }
 
-action "NPM Runner" {
-  uses = "actions/npm@de7a3705a9510ee12702e124482fad6af249991b"
+action "Build and deploy docs" {
+  uses = "./docs/"
   needs = ["Master Branch Filter"]
-  runs = "./.github/docs-entrypoint.sh"
 }
