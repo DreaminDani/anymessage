@@ -1,6 +1,6 @@
 workflow "New workflow" {
   on = "push"
-  resolves = ["NPM Runner"]
+  resolves = ["Build and deploy docs"]
 }
 
 action "Master Branch Filter" {
