@@ -11,7 +11,9 @@
     "start-dev": "ts-node src/server.ts",
     "dev": "./node_modules/nodemon/bin/nodemon.js",
     "lint": "tslint --project tsconfig.json",
-    "lint:fix": "tslint --project tsconfig.json --fix"
+    "lint:fix": "tslint --project tsconfig.json --fix",
+    "build:docs": "typedoc --out ../docs/api/typedoc --module system --tsconfig tdconfig.json",
+    "docs": "swagger-jsdoc -d swaggerDef.js -o ../docs/api/swagger.json src/**/*.ts"
   },
   "author": "d3sandoval",
   "license": "ISC",

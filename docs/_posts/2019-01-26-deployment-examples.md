@@ -1,4 +1,11 @@
-# Docker examples
+---
+layout: post
+title:  "Deploying with Docker"
+date:   2019-1-26 12:58:00
+categories: deployment
+image: https://d3nmt5vlzunoa1.cloudfront.net/phpstorm/files/2015/10/large_v-trans.png
+---
+
 These examples use an nginx container and a mounted data volume for postgresql.
 
 Examples include:
@@ -34,3 +41,5 @@ Useful if you want your OS to restart the docker stack on startup. To use:
 sudo systemctl enable anymessage-app.service
 sudy systemctl start anymessage-app.service
 ```
+
+[You can download these examples here](/deployment-examples/docker/)

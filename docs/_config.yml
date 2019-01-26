@@ -1,0 +1,19 @@
+include:
+  - "_*_.html"
+  - "_*_.*.html"
+
+# Site settings
+title: AnyMessage Docs
+email: daniel@anymessage.io
+description: AnyMessage lets anybody send and receive messages across a number of providers in a single, convenient, web interface.
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "https://docs.anymessage.io" # the base hostname & protocol for your site
+twitter_username: d3sandoval
+github_username:  d3sandoval/anymessage
+
+# Layout settings
+header_type: default  # values [ drawer, default ]
+pagination_type: default  # values [ ops, default ]
+
+# Build settings
+markdown: kramdown

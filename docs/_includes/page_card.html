@@ -1,0 +1,14 @@
+<div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-desktop mdl-cell--4-col-tablet mdl-cell--12-col-phone">
+    <div class="mdl-card__title" {% if include.image %} style="background: url('{{ include.image }}') center/cover;" {%
+        endif %}>
+    </div>
+    <div class="mdl-card__supporting-text">
+        <h2 class="mdl-card__title-text">{{ include.title }}</h2>
+        <span>{{ include.date | date: "%b %-d, %Y" }}</span>
+        <p>{{ include.excerpt }}</p>
+    </div>
+    <div class="mdl-card__actions mdl-card--border">
+        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="{{ include.url | prepend: site.baseurl }}">Read
+            More</a>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="section-highlight section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" style="width: 100%">
+
+    <header class="section__play-btn mdl-cell mdl-cell--4-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone" {%
+        if include.image %} style="background: url('{{ include.image }}') center/cover;" {% endif %}></header>
+
+    <div class="mdl-card mdl-cell mdl-cell--8-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+        <div class="mdl-card__supporting-text">
+            <h4>{{ include.title }}</h4>
+            <p>{{ include.excerpt }}</p>
+        </div>
+        <div class="mdl-card__actions">
+            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="{{ include.url | prepend: site.baseurl }}">Read
+                More</a>
+        </div>
+    </div>
+
+</div>
