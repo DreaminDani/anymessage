@@ -22,3 +22,26 @@ $grey-color-dark:  darken($grey-color, 25%);
         "post",
         "search"
 ;
+
+@media (min-width: 900px) {
+        .home-highlights {
+                min-width: 800px;
+        }
+}
+
+@media (max-width: 899px) {
+        .home-highlights {
+                min-width: 400px; // fallback
+                min-width: 90vw;
+        }
+}
+
+.menu-home {
+        padding-left: 0;
+        text-align: left;
+        cursor: pointer;
+        i {
+                vertical-align: middle;
+                padding-bottom: 6px;
+        }
+}

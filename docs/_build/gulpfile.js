@@ -1,9 +1,9 @@
 var gulp = require('gulp');
 const swaggerJSDoc = require('swagger-jsdoc');
 var rmLines = require('gulp-rm-lines');
-var concat = require('gulp-concat-util');
 var fs = require('fs');
 var async = require('async');
+var tap = require('gulp-tap');
 
 const swaggerDefinition = {
     info: {
@@ -21,6 +21,22 @@ const options = {
     apis: ['../../api/src/**/*.ts'], // <-- not in the definition, but in the options
 };
 
+function convertHTML(str) {
+    var entityPairs = [
+        { character: '@', html: '&#64;' },
+        { character: '<', html: '&lt;' },
+        { character: '>', html: '&gt;' },
+        { character: "'", html: '&apos;' },
+        { character: '"', html: '&quot;' },
+    ];
+
+    entityPairs.forEach(function (pair) {
+        var reg = new RegExp(pair.character, 'g');
+        str = str.replace(reg, pair.html);
+    });
+    return str;
+}
+
 gulp.task('swagger', function (cb) {
     const swaggerSpec = swaggerJSDoc(options);
     return fs.writeFile('../api/swagger.json', JSON.stringify(swaggerSpec), cb);
@@ -28,13 +44,20 @@ gulp.task('swagger', function (cb) {
 
 gulp.task('typedoc', function () {
     return gulp.src('./temp/**/*.html')
+        .pipe(tap(function (file, t) {
+            let title = file.contents.toString().match(/<title[^>]*>([^<]+)<\/title>/)[1];
+            file.contents = Buffer.concat([
+                new Buffer(`---\nlayout: typedoc\ntitle: \'${convertHTML(title)}\'\ncategory: docs\n---\n`),
+                file.contents
+            ]);
+        }))
         .pipe(rmLines({
             'filters': [
                 /<script\s+src=['"]/i,
                 /<link\s+rel=['"]stylesheet['"]/i,
                 /<meta/,
-                /<title/,
                 /<head/,
+                /<title/,
                 /<\/head/,
                 /<body/,
                 /<\/body/,
@@ -43,7 +66,7 @@ gulp.task('typedoc', function () {
                 /<\/html/
             ]
         }))
-        .pipe(concat.header('---\nlayout: typedoc\n---\n'))
+        // .pipe(concat.header('---\nlayout: typedoc\n---\n'))
         .pipe(gulp.dest('../api/typedoc'));
 })
 
