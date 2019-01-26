@@ -19,17 +19,8 @@ git config --global user.name "AnyMessage CI"
 cd api
 npm install
 
-cd ../docs
-
-# cleanup "_site"
-rm -rf _site
-mkdir _site
-
-cd _build
+cd ../docs/_build
 npm install
 npm run build
-
-cd ..
-jekyll build
 
 sh -c "npm $*"
