@@ -24,17 +24,6 @@ cd ../docs/_build
 npm install
 npm run build
 
-# build jekyll into _site
-cd ..
-bundle install
-bundle exec jekyll build
-
-# copy custom CNAME into _site
-cp ./CNAME ./_site/CNAME
-
-# prevent jekyll build once published
-touch ./_site/.nojekyll
-
 # get ready for deploy
 cd _build
 sh -c "npm $*"
