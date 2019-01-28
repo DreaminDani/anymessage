@@ -11,6 +11,8 @@ url: "https://docs.anymessage.io" # the base hostname & protocol for your site
 twitter_username: d3sandoval
 github_username:  d3sandoval/anymessage
 
+primary_color: "#1976D2"
+
 # Layout settings
 header_type: default  # values [ drawer, default ]
 pagination_type: default  # values [ ops, default ]
