@@ -25,5 +25,4 @@ npm install
 npm run build
 
 # get ready for deploy
-cd _build
 sh -c "npm $*"
