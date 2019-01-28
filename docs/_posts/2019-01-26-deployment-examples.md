@@ -42,4 +42,4 @@ sudo systemctl enable anymessage-app.service
 sudy systemctl start anymessage-app.service
 ```
 
-[You can download these examples here](/deployment-examples/docker/)
+[You can download these examples here](https://github.com/d3sandoval/anymessage/tree/master/docs/deployment-examples/docker)

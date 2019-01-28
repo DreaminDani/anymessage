@@ -1,6 +1,16 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png" />
+<link rel="manifest" href="/img/site.webmanifest" />
+<link rel="mask-icon" href="/img/safari-pinned-tab.svg" color={{ site.primary_color }} />
+<link rel="shortcut icon" href="/img/favicon.ico" />
+<meta name="msapplication-TileColor" content={{ site.primary_color }} />
+<meta name="msapplication-config" content="/img/browserconfig.xml" />
+<meta name="theme-color" content={{ site.primary_color }} />
+<meta name="theme-color" content={{ site.primary_color }} />
 
 <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
 <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">

@@ -74,6 +74,10 @@ gulp.task('assets', function () {
     return gulp.src('./temp/assets/**').pipe(gulp.dest('../api/typedoc/assets'));
 })
 
+gulp.task('favicons', function () {
+    return gulp.src('../../ui/static/*').pipe(gulp.dest('../img'));
+})
+
 gulp.task('cleanup', function (callback) {
     // see https://stackoverflow.com/a/25069828
     function removeFolder(location, next) {
@@ -106,4 +110,4 @@ gulp.task('cleanup', function (callback) {
     removeFolder('./temp', callback);
 })
 
-gulp.task('default', gulp.series(gulp.parallel('swagger', 'typedoc', 'assets'), 'cleanup')); // gulp.series('clean', gulp.parallel('scripts', 'styles')));
+gulp.task('default', gulp.series(gulp.parallel('swagger', 'typedoc', 'assets', 'favicons'), 'cleanup'));
