@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM bretfisher/jekyll
 
 LABEL "com.github.actions.name"="Build AnyMessage docs"
 LABEL "com.github.actions.description"="Builds anymesage docs"
@@ -10,7 +10,7 @@ LABEL "homepage"="http://www.anymessage.io"
 LABEL "maintainer"="Daniel Sandoval <daniel@anymessage.io>"
 
 RUN set -xe \
-    && apk add --no-cache bash git openssh
+    && apk add --no-cache bash git openssh nodejs
 
 ADD entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

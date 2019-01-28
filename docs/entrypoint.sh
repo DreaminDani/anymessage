@@ -19,8 +19,15 @@ git config --global user.name "AnyMessage CI"
 cd api
 npm install
 
+# run pre-build steps
 cd ../docs/_build
 npm install
 npm run build
 
+# build jekyll into _site
+cd ..
+jekyll build
+
+# get ready for deploy
+cd _build
 sh -c "npm $*"
