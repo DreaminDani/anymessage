@@ -1,0 +1,17 @@
+[Unit]
+Description=Docker Compose Anymessage Service
+Requires=docker.service
+After=docker.service
+
+[Service]
+User=anymessage
+Group=anymessage
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/your/anymessage/directory
+ExecStart=/usr/local/bin/docker-compose -f docker-compose.prod-ssl.yml up -d
+ExecStop=/usr/local/bin/docker-compose -f docker-compose.prod-ssl.yml down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

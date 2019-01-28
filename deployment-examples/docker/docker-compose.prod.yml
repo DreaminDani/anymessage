@@ -1,0 +1,50 @@
+# copy this to your root directory along with the sample nginx directory
+# .gitingore will ignore them to prevent you from accidentally committing
+# then run docker-compose -f docker-compose.prod.yml up to pull the images
+version: '3.1'
+services:
+  ui:
+    image: us.gcr.io/anymessage-219921/ui:latest
+    restart: always
+    environment:
+      - API_ENDPOINT=http://api.anymessage.io # replace with your api domain
+    expose:
+      - "3000"
+    env_file: .env
+  api:
+    image: us.gcr.io/anymessage-219921/api:latest
+    restart: always
+    expose:
+      - ${API_PORT}
+    depends_on:
+      - db
+    env_file: .env
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+    env_file: .env
+  db-migrate:
+    image: us.gcr.io/anymessage-219921/db-migrate:latest
+    restart: on-failure
+    environment:
+      - TARGET_URI=db:postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DATABASE}
+      - SQITCH_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./db:/work
+    depends_on:
+      - db
+    env_file: .env
+  nginx:
+    build: nginx/
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - ui
+      - api
+  redis:
+    image: redis
+    expose:
+      - 6379

@@ -1,0 +1,21 @@
+---
+layout: post
+title: Deployment
+image: "/img/deployment.png"
+excerpt: Examples for deploying anymessage on your own infrastructure
+permalink: /deployment/
+---
+
+AnyMessage is open source and free to use on your own servers. If you need help deploying it, you can use these guides
+below. If you would like help managing an instance of AnyMessage, support contracts are available. Contact <a href="mailto:daniel@anymessage.io">daniel@anymessage.io</a>
+for more info.
+
+<ul class="mdl-list">
+    {% for post in site.categories.deployment %}
+    {% include post_list_item.html
+    image=post.image
+    title=post.title
+    excerpt=post.excerpt
+    url=post.url %}
+    {% endfor %}
+</ul>

@@ -1,0 +1,28 @@
+---
+layout: default
+---
+<div class="page-content">
+  <div class="mdl-grid home-highlights">
+
+    {% for page in site.pages %}
+    {% if page.title and page.category != "docs" and page.highlight == true %}
+    {% include page_highlight.html
+    image=page.image
+    title=page.title
+    excerpt=page.excerpt
+    url=page.url %}
+    {% endif %}
+    {% endfor %}
+
+    {% for page in site.pages %}
+    {% if page.title and page.category != "docs" and page.highlight != true %}
+    {% include page_card.html
+    image=page.image
+    title=page.title
+    excerpt=page.excerpt
+    url=page.url %}
+    {% endif %}
+    {% endfor %}
+
+  </div>
+</div>

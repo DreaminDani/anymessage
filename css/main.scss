@@ -1,0 +1,83 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+//
+// Main sass file, to import all styles
+//
+
+@charset "utf-8";
+
+$spacing-unit:     30px;
+$super-search:     rgba(0, 191, 255, 0.85);
+$grey-color:       #828282;
+$grey-color-light: lighten($grey-color, 40%);
+$grey-color-dark:  darken($grey-color, 25%);
+
+
+// Import partials from `sass_dir` (defaults to `_sass`)
+@import
+        "base",
+        "layout",
+        "syntax-highlighting",
+        "post",
+        "search"
+;
+
+@media (min-width: 900px) {
+        .home-highlights {
+                min-width: 800px;
+        }
+}
+
+@media (max-width: 899px) {
+        .home-highlights {
+                min-width: 400px; // fallback
+                min-width: 90vw;
+        }
+}
+
+.menu-home {
+        text-align: left;
+        cursor: pointer;
+        i {
+                vertical-align: middle;
+                padding-bottom: 6px;
+        }
+}
+
+.post_list_item {
+        a {
+                text-decoration: none;
+                color: inherit;
+
+                &:hover {
+                        background-color: #e0e0e0;
+                }
+        }
+        
+        .action {
+                text-align: right;
+                i {
+                        font-size: 40px;
+                        position: relative;
+                        top: 36%;
+                }
+        }
+}
+
+.developers-grid {
+        text-align: center;
+        img {
+                max-height: 250px;
+                height: 100% !important;
+                width: auto !important;
+        }
+        a {
+                text-decoration: none;
+                color: inherit;
+
+                &:hover {
+                        background-color: #e0e0e0;
+                }
+        }
+}

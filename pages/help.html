@@ -1,0 +1,19 @@
+---
+layout: post
+highlight: true
+title: Getting Started
+image: "/img/getstarted.png"
+excerpt: Learn more about AnyMessage's features with step-by-step tutorials.
+permalink: /help/
+---
+Learn more about AnyMessage's features with step-by-step tutorials.
+
+<ul class="mdl-list">
+    {% for post in site.categories.help %}
+    {% include post_list_item.html
+    image=post.image
+    title=post.title
+    excerpt=post.excerpt
+    url=post.url %}
+    {% endfor %}
+</ul>
