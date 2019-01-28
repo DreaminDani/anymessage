@@ -29,7 +29,11 @@ cd ..
 bundle install
 bundle exec jekyll build
 
-cp ./CNAME ./_build/CNAME
+# copy custom CNAME into _site
+cp ./CNAME ./_site/CNAME
+
+# prevent jekyll build once published
+touch ./_site/.nojekyll
 
 # get ready for deploy
 cd _build
