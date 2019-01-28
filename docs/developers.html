@@ -22,3 +22,6 @@ If you're interested in contributing to AnyMessage, use the links below to explo
         <h4>Typedoc (API internals)</h4>
     </a>
 </div>
+
+{% capture my_include %}{% include_relative README.md %}{% endcapture %}
+{{ my_include | markdownify }}
