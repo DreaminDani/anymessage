@@ -29,6 +29,8 @@ cd ..
 bundle install
 bundle exec jekyll build
 
+cp ./CNAME ./_build/CNAME
+
 # get ready for deploy
 cd _build
 sh -c "npm $*"
