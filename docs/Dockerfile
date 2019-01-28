@@ -10,7 +10,7 @@ LABEL "homepage"="http://www.anymessage.io"
 LABEL "maintainer"="Daniel Sandoval <daniel@anymessage.io>"
 
 RUN set -xe \
-    && apk add --no-cache bash git openssh nodejs
+    && apk add --no-cache bash git openssh nodejs-current nodejs-current-npm
 
 ADD entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
