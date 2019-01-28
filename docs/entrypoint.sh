@@ -26,8 +26,7 @@ npm run build
 
 # build jekyll into _site
 cd ..
-bundle install
-jekyll build
+bundle exec jekyll build
 
 # get ready for deploy
 cd _build
