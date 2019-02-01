@@ -20,13 +20,17 @@ export default class AuthService {
     this.clientId = AUTH0_CLIENTID;
     this.domain = AUTH0_DOMAIN;
 
+    let protocol = 'http:';
+    if (typeof window !== 'undefined') {
+      protocol = window.location.protocol ? window.location.protocol : 'http:';
+    }
+
     this.auth0 = new auth0.WebAuth({
       domain: this.domain,
       clientID: this.clientId,
       scope: 'openid email profile',
       responseType: 'token id_token',
-      redirectUri: `http://www.${UI_HOSTNAME}/callback`,
-      // if using SSL, all http traffic must be redirected to https
+      redirectUri: `${protocol}//www.${UI_HOSTNAME}/callback`,
     });
   }
 
