@@ -17,6 +17,9 @@ const styles = {
   username: {
     marginLeft: 8,
     textTransform: 'none',
+    maxWidth: 180,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
 }; // @todo decide on a bg-color for the initials
 

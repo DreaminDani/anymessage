@@ -26,6 +26,9 @@ const styles = {
     cursor: 'pointer',
     marginBottom: 16,
   },
+  menuItem: {
+    width: '100%',
+  },
 };
 
 class UserMenuOptions extends React.Component {
@@ -39,7 +42,6 @@ class UserMenuOptions extends React.Component {
     return (
       <Grid
         container
-        direction="column"
         justify="flex-start"
         alignItems="stretch"
         className={classes.root}
@@ -57,8 +59,9 @@ class UserMenuOptions extends React.Component {
             rightIcon={<ChevronRight className={classes.collapseIcon} />}
           />
         </Grid>
-        <UserMenuItem title="Settings" link="/settings" active={this.isCurrentPage('settings')} />
-        <Button onClick={authLink}>Logout</Button>
+        <UserMenuItem className={classes.menuItem} title="Settings" link="/settings" active={this.isCurrentPage('settings')} />
+        <Button className={classes.menuItem} href="https://docs.anymessage.io" target="_blank">Support &amp; Docs</Button>
+        <Button className={classes.menuItem} onClick={authLink}>Logout</Button>
       </Grid>
     );
   }

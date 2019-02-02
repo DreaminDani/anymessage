@@ -14,28 +14,30 @@ import {
 
 const styles = theme => ({
   active: {
+    width: '100%',
     color: theme.palette.primary.light,
   },
   inactive: {
+    width: '100%',
     paddingTop: 8,
     paddingBottom: 8,
   },
 });
 
 class UserMenuItem extends React.Component {
-    onClickHandler = () => {
-      const { link } = this.props;
-      Router.push(link);
-    }
+  onClickHandler = () => {
+    const { link } = this.props;
+    Router.push(link);
+  }
 
-    render() {
-      const { classes, title, active } = this.props;
-      return (
-        <Button onClick={this.onClickHandler} className={active ? classes.active : classes.inactive}>
-          {title}
-        </Button>
-      );
-    }
+  render() {
+    const { classes, title, active } = this.props;
+    return (
+      <Button onClick={this.onClickHandler} className={active ? classes.active : classes.inactive}>
+        {title}
+      </Button>
+    );
+  }
 }
 
 UserMenuItem.defaultProps = {

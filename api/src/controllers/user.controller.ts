@@ -16,12 +16,12 @@ const router: Router = Router();
  * /user/login:
  *   get:
  *     summary: Login user
- *     description: Look up thing, return thing
+ *     description: Logs user into their team subdomain
  *     tags:
  *       - user
  *     responses:
  *       200:
- *         description: Logs in user
+ *         description: Returns user subdomain. If no subdomain exists, returns setup URL
  *         schema:
  *           type: object
  *           properties:
@@ -54,12 +54,12 @@ router.get("/login",
                     }
                 }
                 res.status(200);
-                res.json(result || { redirectURI: "/settings" });
+                res.json(result || { redirectURI: "/setup" });
             } else {
                 const newUser = await user.create(req.user);
                 if (newUser) {
                     res.status(200);
-                    res.json({ redirectURI: "/settings" });
+                    res.json({ redirectURI: "/setup" });
                 } else {
                     throw new Error(newUser as unknown as string); // unknown error, throw the object
                 }
@@ -71,6 +71,40 @@ router.get("/login",
         }
     });
 
+/**
+ * @swagger
+ * /user/details:
+ *   get:
+ *     summary: Get details for user
+ *     description: Get a client-side copy of the user record
+ *     tags:
+ *       - user
+ *     responses:
+ *       200:
+ *         description: Returns JSON of user record
+ *         schema:
+ *           type: object
+ *           properties:
+ *             redirectURI:
+ *               type: string
+ *               default: `{ given_name: 'First',
+ *                            family_name: 'Last',
+ *                            nickname: 'some_nickname',
+ *                            name: 'First Last',
+ *                            picture: 'https://some.url',
+ *                            gender: 'male',
+ *                            locale: 'en',
+ *                            updated_at: '2019-02-01T13:45:20.523Z',
+ *                            email: 'email@example.com',
+ *                            email_verified: true,
+ *                            iss: 'https://oauth.url',
+ *                            sub: 'oauth|sub',
+ *                            aud: 'hAsH',
+ *                            iat: 1549028720,
+ *                            exp: 1549064720,
+ *                            at_hash: 'hAsH',
+ *                            nonce: 'NoNcE' }`
+ */
 router.get("/details",
     checkJwt,
     (req: Request, res: Response) => {
