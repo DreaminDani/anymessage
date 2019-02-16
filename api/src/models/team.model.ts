@@ -53,7 +53,7 @@ export class TeamModel {
             if (team.subdomain) {
                 this.subdomain = team.subdomain;
             } else {
-                throw new ModelError("Cannot find team with passed \"id\"");
+                console.warn("Cannot find team with passed \"id\"");
             }
 
             this.initialized = true;

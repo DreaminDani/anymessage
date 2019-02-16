@@ -22,9 +22,6 @@ import Check from '@material-ui/icons/Check';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { post, get, withAuth } from '../../util';
 
-
-const fieldID = 'twilioSettings';
-
 const styles = theme => ({
   root: {
     width: '94%',
@@ -98,7 +95,7 @@ class TwilioSettings extends React.Component {
   };
 
   componentDidMount = async () => {
-    const { submitHandler, user } = this.props;
+    const { submitHandler, user, fieldID } = this.props;
     submitHandler(fieldID, this.submit.bind(this));
 
     // get twilio integration details from API
@@ -116,7 +113,7 @@ class TwilioSettings extends React.Component {
   }
 
   submit = () => {
-    const { user, handleUnchanged } = this.props;
+    const { user, handleUnchanged, fieldID } = this.props;
     const {
       accountSID, authToken, savedaccountSID, savedauthToken, phoneNumbers,
     } = this.state;
@@ -151,7 +148,7 @@ class TwilioSettings extends React.Component {
   };
 
   handleChange = name => (event) => {
-    const { handleChanged, handleUnchanged } = this.props;
+    const { handleChanged, handleUnchanged, fieldID } = this.props;
     this.setState({
       [name]: event.target.value,
     });
@@ -166,7 +163,7 @@ class TwilioSettings extends React.Component {
 
   handlePhoneNumberChange = index => (event) => {
     const { phoneNumbers } = this.state;
-    const { handleChanged } = this.props;
+    const { handleChanged, fieldID } = this.props;
     const newNumbers = phoneNumbers;
     newNumbers[index] = parseInt(event.target.value, 10)
       ? parseInt(event.target.value, 10)
@@ -292,9 +289,17 @@ class TwilioSettings extends React.Component {
   }
 }
 
-TwilioSettings.defaultProps = {};
+TwilioSettings.defaultProps = {
+  fieldID: 'twilioSettings',
+  handleChanged: (fieldID) => { },
+  handleUnchanged: (fieldID) => { },
+};
+
 TwilioSettings.propTypes = {
   classes: PropTypes.object.isRequired,
+  fieldID: PropTypes.string,
+  handleChanged: PropTypes.func,
+  handleUnchanged: PropTypes.func,
 };
 
 export default withAuth(withStyles(styles)(TwilioSettings));

@@ -46,6 +46,7 @@ export default class AuthService {
   parseHash = (callback) => {
     this.auth0.parseHash((err, result) => {
       if (err || !result) {
+        console.log(err);
         callback(false);
         this.logout();
         return;

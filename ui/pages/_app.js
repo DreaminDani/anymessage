@@ -56,13 +56,12 @@ class MyApp extends App {
     const { pageProps } = this.props;
     const { user } = pageProps;
 
-    if (user) {
+    if (user && user.teamURL) {
       // fetch initial conversations for user
       get('/conversation/list', user.id_token).then((data) => {
         this.setState({
           loaded: true,
           conversationList: data, // update conversation list
-          // todo go directly to conversation based on hash/route
         });
       }).catch((error) => {
         console.error(error); // todo pretty error message
@@ -90,7 +89,9 @@ class MyApp extends App {
   }
 
   componentWillUnmount() {
-    this.sse.close();
+    if (this.sse) {
+      this.sse.close();
+    }
   }
 
   updateConversationList = (newConversation) => {

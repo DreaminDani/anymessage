@@ -41,19 +41,12 @@ class Settings extends React.Component {
     this.save = [];
   }
 
+  // redirect unauthed user to "/"
   componentDidMount = () => {
     const { user } = this.props;
-
     if (!user) {
       Router.push('/');
-      return false;
     }
-
-    if (window.location.hostname !== user.teamURL) {
-      window.location = `${window.location.protocol}//${user.teamURL}/settings`;
-    }
-
-    return true;
   }
 
   registerSubmitHandler = (fieldID, submitHandler) => {

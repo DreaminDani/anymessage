@@ -9,16 +9,14 @@ import React from 'react';
 
 export const Auth = React.createContext({
   auth: null,
-  logout: () => {},
-  login: () => {},
+  logout: () => { },
+  login: () => { },
 });
 
 // This function takes a component...
 export function withAuth(Component) {
   // ...and returns another component...
   return function AuthComponent(props) {
-    // ... and renders the wrapped component with the context theme!
-    // Notice that we pass through any additional props as well
     return (
       <Auth.Consumer>
         {({ user }) => (
