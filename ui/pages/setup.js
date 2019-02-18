@@ -69,7 +69,7 @@ class Setup extends React.Component {
   componentDidMount = () => {
     const { user } = this.props;
     if (!user) {
-      Router.push('/');
+      Router.push('/?needsauth');
       return false;
     }
     let initialStep = 0;

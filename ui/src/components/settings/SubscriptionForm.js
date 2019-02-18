@@ -4,7 +4,7 @@ import {
   injectStripe, CardNumberElement, CardExpiryElement, CardCVCElement,
 } from 'react-stripe-elements';
 import { Grid, Typography } from '@material-ui/core';
-import { post, withAuth } from '../../util';
+import { post, get, withAuth } from '../../util';
 
 import StripeElementWrapper from './Stripe/StripeElementWrapper';
 
@@ -16,7 +16,7 @@ const internalFields = new Set([
 
 const isSetsEqual = (a, b) => a.size === b.size && [...a].every(value => b.has(value));
 
-class CheckoutForm extends React.Component {
+class SubscriptionForm extends React.Component {
   state = {
     changedSettings: new Set(),
     currentErrors: new Set(),
@@ -26,14 +26,17 @@ class CheckoutForm extends React.Component {
     const { submitHandler, user, fieldID } = this.props;
     submitHandler(fieldID, this.submit.bind(this));
 
-    // TODO get subscription status from API
+    const subscription = await get('/team/subscription', user.id_token);
   }
 
 
   submit = async (ev) => {
     const { user, stripe } = this.props;
     const { token } = await stripe.createToken({ user });
-    const response = await post('/team/subscription', user.id_token, token);
+    const response = await post('/team/subscription', user.id_token, {
+      cus_source_id: token.id,
+      team_url: user.teamURL,
+    });
 
     if (response.ok) console.log('Purchase Complete!');
   }
@@ -125,15 +128,15 @@ class CheckoutForm extends React.Component {
   }
 }
 
-CheckoutForm.defaultProps = {
+SubscriptionForm.defaultProps = {
   user: null,
-  fieldID: 'checkoutForm',
+  fieldID: 'subscriptionForm',
   handleChanged: (fieldID) => { },
   handleUnchanged: (fieldID) => { }, // unused
   handleError: (fieldID) => { },
 };
 
-CheckoutForm.propTypes = {
+SubscriptionForm.propTypes = {
   submitHandler: PropTypes.func.isRequired,
   fieldID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   handleChanged: PropTypes.func,
@@ -142,4 +145,4 @@ CheckoutForm.propTypes = {
   user: PropTypes.object,
 };
 
-export default withAuth(injectStripe(CheckoutForm));
+export default withAuth(injectStripe(SubscriptionForm));

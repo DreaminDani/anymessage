@@ -8,50 +8,73 @@
 import { json, Request, Response, Router } from "express";
 import * as Stripe from "stripe";
 import { checkJwt } from "../helpers";
-import { ITeamRequest, verifySubdomain } from "../models";
-import { TeamModel } from "../models";
-import { UserModel } from "../models";
+import { ITeamRequest, ModelError, TeamModel, UserModel, verifySubdomain } from "../models";
 
 const stripe = new Stripe(process.env.STRIPE_SECRETKEY);
 
 const router: Router = Router();
 
-// router.get("/subscription", async (req, res) => {
-//     // return exising customer ID, if it exists
-//     console.log("here");
-//     res.status(200).end();
-// });
-router.post("/subscription", json(), async (req, res) => {
-    const { cus_id, id } = req.body;
-    try {
-        // use passed customer ID OR create a new one
-        let customer = cus_id;
-        if (!customer) {
-            const newCustomer = await stripe.customers.create({
-                description: "subdomain", // todo use real subdomain
-                metadata: { team_id: 1 }, // todo use real team ID
-                source: id, // id from stripe token
-            });
-            if (newCustomer) {
-                customer = newCustomer.id;
-                // todo store customer in team record
-            }
-        }
-
-        // todo check if subscription already exists
-        const subscription = await stripe.subscriptions.create({
-            customer,
-            items: [{ plan: "plan_EXbfs8rrU8AnPQ" }], // todo extract this to an env file
-        });
-
-        // todo attach webhooks
-        res.status(200).end();
-    } catch (err) {
-        // todo more specific error messages
-        console.error(err);
-        res.status(500).end();
-    }
+// returns customer ID for existing subscriber
+router.get("/subscription", async (req, res) => {
+    // return exising customer ID, if it exists
+    console.log("here");
+    res.status(200).end();
 });
+
+router.post("/subscription",
+    checkJwt,
+    json(),
+    async (req, res) => {
+        const { cus_id, cus_source_id, team_url } = req.body;
+        try {
+            // use passed customer ID OR create a new one
+            let customer = cus_id;
+            if (!customer) {
+                // check user has access to subdomain and get back ID
+                if (team_url) {
+                    const user = new UserModel(req.app.get("db"), req.user.email);
+                    await user.init();
+
+                    // TODO extract this boolean to User Model
+                    const teamId = user.getTeamId();
+                    const requestedTeam = await TeamModel.findTeamByURL(req.app.get("db"), team_url);
+
+                    // TODO support multiple teams here
+                    if (teamId === requestedTeam.id) {
+                        const newCustomer = await stripe.customers.create({
+                            description: requestedTeam.subdomain,
+                            metadata: { team_id: requestedTeam.id },
+                            source: cus_source_id,
+                        });
+                        if (newCustomer && newCustomer.id) {
+                            customer = newCustomer.id;
+                            // store customer in team record
+                        } else {
+                            throw new Error("stripe did not return a valid customer id");
+                        }
+                    } else {
+                        throw new ModelError("You do not have access to the requested team", 403);
+                    }
+                } else {
+                    // TODO more declarative validation
+                    throw new ModelError("team_url required if cus_id not passed", 400);
+                }
+            }
+
+            // todo check if subscription already exists
+            const subscription = await stripe.subscriptions.create({
+                customer,
+                items: [{ plan: "plan_EXbfs8rrU8AnPQ" }], // todo extract this to an env file
+            });
+
+            // todo attach webhooks
+            res.status(200).end();
+        } catch (e) {
+            console.error(e);
+            res.status(e.status || 500);
+            (e.status && e.message) ? res.json({ error: e.message }) : res.send();
+        }
+    });
 
 // get users's team URL
 router.get("/url",

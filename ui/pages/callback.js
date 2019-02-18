@@ -39,7 +39,7 @@ class Callback extends React.Component {
         }
       });
     } else {
-      Router.push('/');
+      Router.push('/?needsauth');
     }
   }
 

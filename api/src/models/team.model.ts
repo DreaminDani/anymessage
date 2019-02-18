@@ -29,6 +29,18 @@ export class TeamModel {
         }
     }
 
+    public static async findTeamByURL(db: Database, url: string) {
+        // get subdomain from URL
+        const subdomain = url.split(".")[0];
+        // find by subdomain
+        try {
+            const found = await db.teams.findOne({ subdomain });
+            return found;
+        } catch (e) {
+            throw new ModelError(e);
+        }
+    }
+
     private initialized: boolean;
     private db: Database;
     private id: number;
