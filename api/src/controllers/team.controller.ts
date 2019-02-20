@@ -35,22 +35,33 @@ router.post("/subscription",
                     const user = new UserModel(req.app.get("db"), req.user.email);
                     await user.init();
 
-                    // TODO extract this boolean to User Model
+                    // TODO extract this boolean to User Model (including thrown error)
                     const teamId = user.getTeamId();
                     const requestedTeam = await TeamModel.findTeamByURL(req.app.get("db"), team_url);
 
                     // TODO support multiple teams here
                     if (teamId === requestedTeam.id) {
-                        const newCustomer = await stripe.customers.create({
-                            description: requestedTeam.subdomain,
-                            metadata: { team_id: requestedTeam.id },
-                            source: cus_source_id,
-                        });
-                        if (newCustomer && newCustomer.id) {
-                            customer = newCustomer.id;
-                            // store customer in team record
-                        } else {
-                            throw new Error("stripe did not return a valid customer id");
+                        const team = new TeamModel(req.app.get("db"), teamId);
+                        await team.init();
+
+                        customer = team.getCustomerID(); // fallback in case customer_id is in db but not in request
+                        if (!customer) {
+                            // if customer doesn't already exist, create one!
+                            // TODO extract to stripe service
+                            const newCustomer = await stripe.customers.create({
+                                description: requestedTeam.subdomain,
+                                metadata: { team_id: requestedTeam.id },
+                                source: cus_source_id,
+                            });
+                            if (newCustomer && newCustomer.id) {
+                                // associate customer id with team
+                                await team.setCustomerID(newCustomer.id);
+
+                                // will use this to update/create the subscription
+                                customer = newCustomer.id;
+                            } else {
+                                throw new Error("stripe did not return a valid customer id");
+                            }
                         }
                     } else {
                         throw new ModelError("You do not have access to the requested team", 403);
@@ -61,7 +72,8 @@ router.post("/subscription",
                 }
             }
 
-            // todo check if subscription already exists
+            // TODO check if subscription already exists
+            // TODO extract to stripe service
             const subscription = await stripe.subscriptions.create({
                 customer,
                 items: [{ plan: "plan_EXbfs8rrU8AnPQ" }], // todo extract this to an env file
