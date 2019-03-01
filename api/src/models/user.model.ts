@@ -6,7 +6,7 @@
  * LICENSE.md file.
  */
 import { Database } from "massive";
-import { ModelError } from "./index";
+import { ModelError, TeamModel } from "./index";
 
 interface IUserInfo {
     iss: string;
@@ -105,6 +105,21 @@ export class UserModel {
         throw new ModelError(ModelError.NO_INIT);
     }
 
+    public async inTeam(team_url: string) {
+        if (this.initialized) {
+            const requestedTeam = await TeamModel.findTeamByURL(this.db, team_url);
+
+            // TODO support multiple teams here
+            if (this.teamId === requestedTeam.id) {
+                return this.teamId;
+            } else {
+                throw new ModelError("You do not have access to the requested team", 403);
+            }
+        }
+
+        throw new ModelError(ModelError.NO_INIT);
+    }
+
     public getTeamId() {
         if (this.initialized) {
             return this.teamId;
@@ -118,8 +133,8 @@ export class UserModel {
             this.teamId = teamId;
             try {
                 return await this.db.users.update(
-                    {id: this.id},
-                    {team_id: teamId},
+                    { id: this.id },
+                    { team_id: teamId },
                 );
             } catch (e) {
                 throw new ModelError(e);

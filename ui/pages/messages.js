@@ -107,7 +107,10 @@ class Messages extends React.Component {
 
     let messagesTitle = 'Messages';
     if (currentConversation) {
-      messagesTitle = `Messages: ${this.findConversationByID(currentConversation).to}`;
+      const conversation = this.findConversationByID(currentConversation);
+      if (conversation.to) {
+        messagesTitle = `Messages: ${conversation.to}`;
+      }
     }
     if (newConversation) {
       messagesTitle = 'Messages: New';

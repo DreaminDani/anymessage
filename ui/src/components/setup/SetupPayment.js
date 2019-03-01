@@ -9,6 +9,7 @@
 import React from 'react';
 import getConfig from 'next/config';
 import { Elements, StripeProvider } from 'react-stripe-elements';
+import { Typography } from '@material-ui/core';
 import SubscriptionForm from '../settings/SubscriptionForm';
 
 const { publicRuntimeConfig } = getConfig();
@@ -42,18 +43,27 @@ class SetupPayment extends React.Component {
 
   render() {
     const { registerSubmitHandler } = this.props;
+    if (STRIPE_PUBLICKEY) {
+      return (
+        <StripeProvider apiKey={STRIPE_PUBLICKEY}>
+          <Elements>
+            <SubscriptionForm
+              fieldID={2}
+              submitHandler={registerSubmitHandler}
+              handleChanged={this.handleChanged}
+              handleUnchanged={this.handleUnchanged}
+              handleError={this.handleError}
+            />
+          </Elements>
+        </StripeProvider>
+      );
+    }
     return (
-      <StripeProvider apiKey={STRIPE_PUBLICKEY}>
-        <Elements>
-          <SubscriptionForm
-            fieldID={2}
-            submitHandler={registerSubmitHandler}
-            handleChanged={this.handleChanged}
-            handleUnchanged={this.handleUnchanged}
-            handleError={this.handleError}
-          />
-        </Elements>
-      </StripeProvider>
+      <React.Fragment>
+        <Typography variant="h5">
+          You are using a self-hosted version of AnyMessage.io. No payment is necessary to access all features.
+        </Typography>
+      </React.Fragment>
     );
   }
 }

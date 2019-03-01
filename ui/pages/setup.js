@@ -94,7 +94,15 @@ class Setup extends React.Component {
       case 2:
         return <SetupPayment registerSubmitHandler={this.registerSubmitHandler} setValid={this.setValid} />;
       default:
-        return 'Unknown step';
+        return (
+          <Typography variant="h5">
+            Not sure how you got here! Head back to
+            {' '}
+            {<a href="/setup">/setup</a>}
+            {' '}
+            to complete the setup process...
+          </Typography>
+        );
     }
   }
 
@@ -121,12 +129,19 @@ class Setup extends React.Component {
         console.error(e); // todo pretty error
       }
     }
-    window.location.hash = `step=${activeStep + 1}`;
-    this.setState({
-      activeStep: activeStep + 1,
-      skipped,
-      isValid: false,
-    });
+
+    // navigate to next step
+    if (activeStep < 2) {
+      window.location.hash = `step=${activeStep + 1}`;
+      this.setState({
+        activeStep: activeStep + 1,
+        skipped,
+        isValid: false,
+      });
+    } else {
+      // if done with setup, navigate to messages
+      window.location = '/messages';
+    }
   };
 
   handleBack = () => {
@@ -144,22 +159,21 @@ class Setup extends React.Component {
       throw new Error("You can't skip a step that isn't optional.");
     }
 
-    window.location.hash = `step=${activeStep + 1}`;
-
-    this.setState((state) => {
-      const skipped = new Set(state.skipped.values());
-      skipped.add(activeStep);
-      return {
-        activeStep: state.activeStep + 1,
-        skipped,
-      };
-    });
-  };
-
-  handleReset = () => {
-    this.setState({
-      activeStep: 0,
-    });
+    // navigate to next step
+    if (activeStep < 2) {
+      window.location.hash = `step=${activeStep + 1}`;
+      this.setState((state) => {
+        const skipped = new Set(state.skipped.values());
+        skipped.add(activeStep);
+        return {
+          activeStep: state.activeStep + 1,
+          skipped,
+        };
+      });
+    } else {
+      // if done with setup, navigate to messages
+      window.location = '/messages';
+    }
   };
 
   isStepSkipped(step) {
@@ -204,50 +218,37 @@ class Setup extends React.Component {
                   })}
                 </Stepper>
                 <div>
-                  {activeStep === steps.length ? (
-                    <div>
-                      <Typography className={classes.instructions}>
-                        All steps completed - you&apos;re finished
-                      </Typography>
-                      <Button onClick={this.handleReset} className={classes.button}>
-                        Reset
+                  {this.getStepContent(activeStep)}
+                  <div className={classes.actions}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      disabled={activeStep === 0}
+                      onClick={this.handleBack}
+                      className={classes.button}
+                    >
+                      Back
+                    </Button>
+                    <span className={classes.nextButtons}>
+                      {this.isStepOptional(activeStep) && (
+                        <Button
+                          onClick={this.handleSkip}
+                          className={classes.button}
+                        >
+                          Skip
+                        </Button>
+                      )}
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        disabled={!isValid}
+                        onClick={this.handleNext}
+                        className={classes.button}
+                      >
+                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                       </Button>
-                    </div>
-                  ) : (
-                      <div>
-                        {this.getStepContent(activeStep)}
-                        <div className={classes.actions}>
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            disabled={activeStep === 0}
-                            onClick={this.handleBack}
-                            className={classes.button}
-                          >
-                            Back
-                          </Button>
-                          <span className={classes.nextButtons}>
-                            {this.isStepOptional(activeStep) && (
-                              <Button
-                                onClick={this.handleSkip}
-                                className={classes.button}
-                              >
-                                Skip
-                              </Button>
-                            )}
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              disabled={!isValid}
-                              onClick={this.handleNext}
-                              className={classes.button}
-                            >
-                              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                            </Button>
-                          </span>
-                        </div>
-                      </div>
-                  )}
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>
             )}

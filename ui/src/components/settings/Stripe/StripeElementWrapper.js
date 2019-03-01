@@ -29,6 +29,7 @@ export default class extends PureComponent {
 
   state = {
     focused: false,
+    hasFocused: false,
     empty: true,
     error: false,
   }
@@ -38,7 +39,7 @@ export default class extends PureComponent {
   }
 
   handleFocus = () => {
-    this.setState({ focused: true });
+    this.setState({ focused: true, hasFocused: true });
   }
 
   handleChange = (changeObj) => {
@@ -62,12 +63,19 @@ export default class extends PureComponent {
   }
 
   render() {
-    const { component, label } = this.props;
-    const { focused, empty, error } = this.state;
+    const { component, label, disabled } = this.props;
+    const {
+      focused, hasFocused, empty, error,
+    } = this.state;
 
     return (
       <div>
-        <FormControl fullWidth margin="normal" variant="outlined">
+        <FormControl
+          fullWidth
+          margin="normal"
+          variant="outlined"
+          disabled={disabled}
+        >
           <InputLabel
             focused={focused}
             shrink={focused || !empty}

@@ -6,80 +6,59 @@
  * LICENSE.md file.
  */
 import { json, Request, Response, Router } from "express";
-import * as Stripe from "stripe";
 import { checkJwt } from "../helpers";
+import { createCustomer, getFundingSource, updateSubscription } from "../lib/StripeService";
 import { ITeamRequest, ModelError, TeamModel, UserModel, verifySubdomain } from "../models";
-
-const stripe = new Stripe(process.env.STRIPE_SECRETKEY);
 
 const router: Router = Router();
 
-// returns customer ID for existing subscriber
-router.get("/subscription", async (req, res) => {
-    // return exising customer ID, if it exists
-    console.log("here");
-    res.status(200).end();
-});
+// returns CC info for existing subscriber
+router.get("/subscription",
+    checkJwt,
+    verifySubdomain,
+    json(),
+    async (req: ITeamRequest, res) => {
+        const team = new TeamModel(req.app.get("db"), req.team.id);
+        await team.init();
+
+        const customer = team.getCustomerID();
+        if (customer) {
+            const source = await getFundingSource(customer);
+            res.status(200);
+            res.json(source);
+        } else {
+            res.status(200);
+            res.json({});
+        }
+    });
 
 router.post("/subscription",
     checkJwt,
     json(),
     async (req, res) => {
-        const { cus_id, cus_source_id, team_url } = req.body;
+        const { cus_id, token, team_url } = req.body;
         try {
-            // use passed customer ID OR create a new one
             let customer = cus_id;
-            if (!customer) {
-                // check user has access to subdomain and get back ID
-                if (team_url) {
-                    const user = new UserModel(req.app.get("db"), req.user.email);
-                    await user.init();
+            if (!customer && !team_url) {
+                throw new ModelError("team_url required if cus_id not passed", 400);
+            } else if (!customer) {
+                const user = new UserModel(req.app.get("db"), req.user.email);
+                await user.init();
+                const teamId = await user.inTeam(team_url); // will throw 403 if user does not have access
+                const team = new TeamModel(req.app.get("db"), teamId);
+                await team.init();
+                customer = team.getCustomerID();
 
-                    // TODO extract this boolean to User Model (including thrown error)
-                    const teamId = user.getTeamId();
-                    const requestedTeam = await TeamModel.findTeamByURL(req.app.get("db"), team_url);
-
-                    // TODO support multiple teams here
-                    if (teamId === requestedTeam.id) {
-                        const team = new TeamModel(req.app.get("db"), teamId);
-                        await team.init();
-
-                        customer = team.getCustomerID(); // fallback in case customer_id is in db but not in request
-                        if (!customer) {
-                            // if customer doesn't already exist, create one!
-                            // TODO extract to stripe service
-                            const newCustomer = await stripe.customers.create({
-                                description: requestedTeam.subdomain,
-                                metadata: { team_id: requestedTeam.id },
-                                source: cus_source_id,
-                            });
-                            if (newCustomer && newCustomer.id) {
-                                // associate customer id with team
-                                await team.setCustomerID(newCustomer.id);
-
-                                // will use this to update/create the subscription
-                                customer = newCustomer.id;
-                            } else {
-                                throw new Error("stripe did not return a valid customer id");
-                            }
-                        }
-                    } else {
-                        throw new ModelError("You do not have access to the requested team", 403);
-                    }
-                } else {
-                    // TODO more declarative validation
-                    throw new ModelError("team_url required if cus_id not passed", 400);
+                if (!customer) {
+                    // if customer doesn't already exist, create one!
+                    customer = await createCustomer(team.getSubdomain(), teamId, token);
+                    // associate customer id with team
+                    await team.setCustomerID(customer);
                 }
             }
 
-            // TODO check if subscription already exists
-            // TODO extract to stripe service
-            const subscription = await stripe.subscriptions.create({
-                customer,
-                items: [{ plan: "plan_EXbfs8rrU8AnPQ" }], // todo extract this to an env file
-            });
-
-            // todo attach webhooks
+            // TODO attach webhooks?
+            await updateSubscription(customer, token);
             res.status(200).end();
         } catch (e) {
             console.error(e);
