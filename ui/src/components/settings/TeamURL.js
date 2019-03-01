@@ -16,8 +16,6 @@ import {
   post, get, AuthService, withAuth,
 } from '../../util';
 
-const fieldID = 'teamURL';
-
 const styles = theme => ({
   urlInput: {
     margin: 0,
@@ -48,7 +46,7 @@ class TeamURL extends React.Component {
   }
 
   componentDidMount = async () => {
-    const { submitHandler, user } = this.props;
+    const { submitHandler, user, fieldID } = this.props;
     submitHandler(fieldID, this.submit.bind(this));
 
     // get team URL from API
@@ -57,14 +55,18 @@ class TeamURL extends React.Component {
   }
 
   submit = async () => {
-    const { user } = this.props;
+    const { user, setup } = this.props;
     const { newURL } = this.state;
     try {
       const res = await post('/team/url/set', user.id_token, { newURL });
       if (res.redirectHost) {
         const auth = new AuthService();
         auth.setTeamURL(newURL);
-        window.location = res.redirectHost + window.location.pathname;
+        let redirectURL = res.redirectHost + window.location.pathname;
+        if (setup) {
+          redirectURL += '#step=1'; // direct user to next step, if in setup
+        }
+        window.location = redirectURL;
       }
     } catch (e) {
       console.error(e);
@@ -91,7 +93,7 @@ class TeamURL extends React.Component {
   }
 
   checkAvailable = async () => {
-    const { user } = this.props;
+    const { user, handleError, fieldID } = this.props;
     const { teamURL, newURL } = this.state;
 
     if (newURL !== teamURL) {
@@ -100,9 +102,11 @@ class TeamURL extends React.Component {
         if (res.available) {
           this.setState({ available: res.available, error: null });
         } else {
+          handleError(fieldID);
           this.setState({ available: res.available, error: 'Not Available' });
         }
       } else {
+        handleError(fieldID);
         this.setState({ available: null, error: 'Cannot be empty' });
       }
     } else {
@@ -111,7 +115,7 @@ class TeamURL extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, fieldID } = this.props;
     const {
       teamURL, loaded, error, available,
     } = this.state;
@@ -170,11 +174,20 @@ class TeamURL extends React.Component {
 
 TeamURL.defaultProps = {
   user: null,
+  setup: false,
+  fieldID: 'teamURL',
+  handleChanged: (fieldID) => { },
+  handleUnchanged: (fieldID) => { },
+  handleError: (fieldID) => { },
 };
+
 TeamURL.propTypes = {
   submitHandler: PropTypes.func.isRequired,
-  handleChanged: PropTypes.func.isRequired,
-  handleUnchanged: PropTypes.func.isRequired,
+  setup: PropTypes.bool,
+  fieldID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  handleChanged: PropTypes.func,
+  handleUnchanged: PropTypes.func,
+  handleError: PropTypes.func,
   classes: PropTypes.object.isRequired,
   user: PropTypes.object,
 };

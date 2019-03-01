@@ -25,3 +25,17 @@ export function getHashAsObject(windowHash) {
 
   return hashObject;
 }
+
+export const urlSearchData = (searchString) => {
+  if (!searchString) return false;
+
+  return searchString
+    .substring(1)
+    .split('&')
+    .reduce((result, next) => {
+      const pair = next.split('=');
+      result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+
+      return result;
+    }, {});
+};

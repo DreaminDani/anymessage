@@ -29,10 +29,23 @@ export class TeamModel {
         }
     }
 
+    public static async findTeamByURL(db: Database, url: string) {
+        // get subdomain from URL
+        const subdomain = url.split(".")[0];
+        // find by subdomain
+        try {
+            const found = await db.teams.findOne({ subdomain });
+            return found;
+        } catch (e) {
+            throw new ModelError(e);
+        }
+    }
+
     private initialized: boolean;
     private db: Database;
     private id: number;
     private subdomain: string;
+    private customer_id: string;
 
     constructor(db: Database, id?: number) {
         this.db = db;
@@ -52,8 +65,9 @@ export class TeamModel {
             });
             if (team.subdomain) {
                 this.subdomain = team.subdomain;
+                this.customer_id = team.customer_id; // can be null
             } else {
-                throw new ModelError("Cannot find team with passed \"id\"");
+                console.warn("Cannot find team with passed \"id\"");
             }
 
             this.initialized = true;
@@ -99,6 +113,31 @@ export class TeamModel {
                     id: this.id,
                 }, {
                         subdomain: newURL,
+                    });
+            } catch (e) {
+                throw new ModelError(e);
+            }
+        }
+
+        throw new ModelError(ModelError.NO_INIT);
+    }
+
+    public getCustomerID(): string {
+        if (this.initialized) {
+            return this.customer_id;
+        }
+
+        throw new ModelError(ModelError.NO_INIT);
+    }
+
+    public async setCustomerID(customer_id: string) {
+        if (this.initialized) {
+            this.customer_id = customer_id;
+            try {
+                return await this.db.teams.update({
+                    id: this.id,
+                }, {
+                        customer_id,
                     });
             } catch (e) {
                 throw new ModelError(e);

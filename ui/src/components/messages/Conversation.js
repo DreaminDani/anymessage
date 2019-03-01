@@ -71,14 +71,18 @@ class Conversation extends React.Component {
 
   componentDidMount = () => {
     const { user } = this.props;
-    get('/integration/providers', user.id_token).then((data) => {
-      if (data) {
-        this.setState({
-          loaded: true,
-          providers: data,
-        });
-      }
-    }).catch(err => console.error(err));
+    if (user) {
+      get('/integration/providers', user.id_token).then((data) => {
+        if (data) {
+          this.setState({
+            loaded: true,
+            providers: data,
+          });
+        } else {
+          this.setState({ loaded: true });
+        }
+      }).catch(err => console.error(err));
+    }
   }
 
   handleChange = name => (event) => {
@@ -190,13 +194,13 @@ class Conversation extends React.Component {
           </div>
         ) : (
           <div className={classes.placeholder}>
-            <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 Select a conversation or create a new one
-            </Typography>
-            <div className={classes.waitingConversation}>
-              <WaitingConversation width="100%" height="100%" />
+              </Typography>
+              <div className={classes.waitingConversation}>
+                <WaitingConversation width="100%" height="100%" />
+              </div>
             </div>
-          </div>
         )}
       </div>
     );

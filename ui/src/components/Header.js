@@ -33,6 +33,11 @@ const styles = theme => ({
     marginLeft: -12,
     marginRight: 12,
   },
+  logo: {
+    width: 24,
+    height: 24,
+    marginRight: 16,
+  }
 });
 
 function goToMessages() {
@@ -54,16 +59,21 @@ class Header extends React.Component {
       return (
         <AppBar position="static" className={classes.root}>
           <Toolbar style={onMenuClick ? null : { marginLeft: 48 }} disableGutters>
-            <IconButton
-              className={classes.menuButton}
-              style={(currentPage !== 'messages') ? { display: 'block' } : {}}
-              color="inherit"
-              aria-label="Menu"
-              onClick={onMenuClick}
-            >
-              {/* TODO make this actually show messages (and # unread) */}
-              <CommentIcon />
-            </IconButton>
+            {(currentPage === 'setup')
+              ? <img className={classes.logo} src="/static/android-chrome-192x192.png" /> : (
+                <IconButton
+                  className={classes.menuButton}
+                  style={(currentPage !== 'messages') ? { display: 'block' } : {}}
+                  color="inherit"
+                  aria-label="Menu"
+                  onClick={onMenuClick}
+                >
+                  {/* TODO make this actually show messages (and # unread) */}
+                  <CommentIcon />
+                </IconButton>
+              )
+            }
+
             <Typography variant="h6" color="inherit" className={classes.grow}>
               {headerTitle}
             </Typography>

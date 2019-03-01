@@ -39,26 +39,12 @@ class Messages extends React.Component {
     mobileOpen: false,
   }
 
-  // get conversations or redirect unauthed user to "/"
+  // redirect unauthed user to "/"
   componentDidMount = () => {
     const { user } = this.props;
-
-    if (user) {
-      // make sure user has a team url
-      if (!user.teamURL) {
-        window.location = `${window.location.protocol}//${user.teamURL}/settings`; // todo, navigate user to setup instead
-      }
-
-      // make sure user is accessing messages from their team url
-      if (window.location.hostname !== user.teamURL) {
-        window.location = `${window.location.protocol}//${user.teamURL}/messages`;
-      }
-
-      return true;
+    if (!user) {
+      Router.push('/?needsauth');
     }
-
-    Router.push('/');
-    return false;
   }
 
   componentDidUpdate = () => {
@@ -121,7 +107,10 @@ class Messages extends React.Component {
 
     let messagesTitle = 'Messages';
     if (currentConversation) {
-      messagesTitle = `Messages: ${this.findConversationByID(currentConversation).to}`;
+      const conversation = this.findConversationByID(currentConversation);
+      if (conversation.to) {
+        messagesTitle = `Messages: ${conversation.to}`;
+      }
     }
     if (newConversation) {
       messagesTitle = 'Messages: New';

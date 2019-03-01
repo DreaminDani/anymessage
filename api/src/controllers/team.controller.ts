@@ -7,86 +7,147 @@
  */
 import { json, Request, Response, Router } from "express";
 import { checkJwt } from "../helpers";
-import { ITeamRequest, verifySubdomain } from "../models";
-import { TeamModel } from "../models";
-import { UserModel } from "../models";
+import { createCustomer, getFundingSource, updateSubscription } from "../lib/StripeService";
+import { ITeamRequest, ModelError, TeamModel, UserModel, verifySubdomain } from "../models";
 
 const router: Router = Router();
 
+// returns CC info for existing subscriber
+router.get("/subscription",
+    checkJwt,
+    verifySubdomain,
+    json(),
+    async (req: ITeamRequest, res) => {
+        const team = new TeamModel(req.app.get("db"), req.team.id);
+        await team.init();
+
+        const customer = team.getCustomerID();
+        if (customer) {
+            const source = await getFundingSource(customer);
+            res.status(200);
+            res.json(source);
+        } else {
+            res.status(200);
+            res.json({});
+        }
+    });
+
+router.post("/subscription",
+    checkJwt,
+    json(),
+    async (req, res) => {
+        const { cus_id, token, team_url } = req.body;
+        try {
+            let customer = cus_id;
+            if (!customer && !team_url) {
+                throw new ModelError("team_url required if cus_id not passed", 400);
+            } else if (!customer) {
+                const user = new UserModel(req.app.get("db"), req.user.email);
+                await user.init();
+                const teamId = await user.inTeam(team_url); // will throw 403 if user does not have access
+                const team = new TeamModel(req.app.get("db"), teamId);
+                await team.init();
+                customer = team.getCustomerID();
+
+                if (!customer) {
+                    // if customer doesn't already exist, create one!
+                    customer = await createCustomer(team.getSubdomain(), teamId, token);
+                    // associate customer id with team
+                    await team.setCustomerID(customer);
+                }
+            }
+
+            // TODO attach webhooks?
+            await updateSubscription(customer, token);
+            res.status(200).end();
+        } catch (e) {
+            console.error(e);
+            res.status(e.status || 500);
+            (e.status && e.message) ? res.json({ error: e.message }) : res.send();
+        }
+    });
+
 // get users's team URL
 router.get("/url",
-checkJwt,
-verifySubdomain,
-async (req: ITeamRequest, res: Response) => {
-    try {
-        const user = new UserModel(req.app.get("db"), req.user.email);
-        await user.init();
-        const teamId = user.getTeamId();
+    checkJwt,
+    verifySubdomain,
+    async (req: ITeamRequest, res: Response) => {
+        try {
+            const user = new UserModel(req.app.get("db"), req.user.email);
+            await user.init();
+            const teamId = user.getTeamId();
 
-        let subdomain: string;
-        if (teamId) {
-            const team = new TeamModel(req.app.get("db"), teamId);
-            await team.init();
+            let subdomain: string;
+            if (teamId) {
+                const team = new TeamModel(req.app.get("db"), teamId);
+                await team.init();
 
-            subdomain = team.getSubdomain();
+                subdomain = team.getSubdomain();
+            }
+
+            res.status(200);
+            res.send({ teamURL: subdomain || "" });
+        } catch (e) {
+            console.error(e);
+            res.status(e.status || 500);
+            (e.status && e.message) ? res.json({ error: e.message }) : res.send();
         }
-
-        res.status(200);
-        res.send({teamURL: subdomain || ""});
-    } catch (e) {
-        console.error(e);
-        res.status(e.status || 500);
-        (e.status && e.message) ? res.json({error: e.message}) : res.send();
-    }
-});
+    });
 
 router.post("/url/available",
-checkJwt,
-json(),
-async (req: Request, res: Response) => {
-    try {
-        const available = await TeamModel.available(req.app.get("db"), req.body.newURL);
-        res.status(200);
-        res.send({available});
-    } catch (e) {
-        console.error(e);
-        res.status(e.status || 500);
-        (e.status && e.message) ? res.json({error: e.message}) : res.send();
-    }
-});
+    checkJwt,
+    json(),
+    async (req: Request, res: Response) => {
+        try {
+            const available = await TeamModel.available(req.app.get("db"), req.body.newURL);
+            res.status(200);
+            res.send({ available });
+        } catch (e) {
+            console.error(e);
+            res.status(e.status || 500);
+            (e.status && e.message) ? res.json({ error: e.message }) : res.send();
+        }
+    });
 
 router.post("/url/set",
-checkJwt,
-json(),
-async (req: Request, res: Response) => {
-    try {
-        // look up user by email (TODO generalize to more than auth0)
-        const user = new UserModel(req.app.get("db"), req.user.email);
-        await user.init();
-        const teamId = user.getTeamId();
+    checkJwt,
+    json(),
+    async (req: Request, res: Response) => {
+        if (req.body.newURL) {
+            try {
+                // look up user by email (TODO generalize to more than auth0)
+                const user = new UserModel(req.app.get("db"), req.user.email);
+                await user.init();
+                const teamId = user.getTeamId();
 
-        if (teamId) {
-            // if user has team_id, update its URL
-            const team = new TeamModel(req.app.get("db"), teamId);
-            await team.init();
+                if (teamId) {
+                    // if user has team_id, update its URL
+                    const team = new TeamModel(req.app.get("db"), teamId);
+                    await team.init();
 
-            await team.setSubdomain(req.body.newURL);
+                    await team.setSubdomain(req.body.newURL);
+                } else {
+                    // create a new team with URL
+                    const team = new TeamModel(req.app.get("db"));
+                    const newTeamId = await team.create(req.body.newURL);
+                    await user.setTeamId(newTeamId);
+                }
+
+                res.status(200);
+                res.send({
+                    redirectHost: `//${req.body.newURL}.${process.env.UI_HOSTNAME}`,
+                });
+            } catch (e) {
+                console.error(e);
+                res.status(e.status || 500);
+                (e.status && e.message) ? res.json({ error: e.message }) : res.send();
+            }
         } else {
-            // create a new team with URL
-            const team = new TeamModel(req.app.get("db"));
-            const newTeamId = await team.create(req.body.newURL);
-            await user.setTeamId(newTeamId);
+            res.status(200);
+            res.send({
+                message: "No newURL sent",
+            });
         }
-
-        res.status(200);
-        res.send({
-            redirectHost: `//${req.body.newURL}.${process.env.UI_HOSTNAME}`,
-        });
-    } catch (e) {
-        console.error(e);
-        res.status(e.status || 500);
-        (e.status && e.message) ? res.json({error: e.message}) : res.send();
-    }
-});
+    });
 
 export const TeamController: Router = router;
