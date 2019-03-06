@@ -6,6 +6,9 @@
  * LICENSE.md file.
  */
 import React from 'react';
+import getConfig from 'next/config';
+import { Elements, StripeProvider } from 'react-stripe-elements';
+
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import { Divider, Typography, withStyles } from '@material-ui/core';
@@ -14,8 +17,12 @@ import Head from 'next/head';
 import Header from '../src/components/Header';
 
 import TeamURL from '../src/components/settings/TeamURL';
+import SubscriptionForm from '../src/components/settings/SubscriptionForm';
 import TwilioSettings from '../src/components/settings/TwilioSettings';
 import UnsavedBar from '../src/components/settings/UnsavedBar';
+
+const { publicRuntimeConfig } = getConfig();
+const { STRIPE_PUBLICKEY } = publicRuntimeConfig;
 
 const styles = {
   container: {
@@ -28,6 +35,10 @@ const styles = {
   nextHeading: {
     marginTop: 32,
   },
+  billingInfo: {
+    width: '100%',
+    maxWidth: 600,
+  },
 };
 
 class Settings extends React.Component {
@@ -36,6 +47,7 @@ class Settings extends React.Component {
 
     this.state = {
       changedSettings: new Set(),
+      canSetBilling: false,
     };
 
     this.save = [];
@@ -46,6 +58,10 @@ class Settings extends React.Component {
     const { user } = this.props;
     if (!user) {
       Router.push('/?needsauth');
+    }
+
+    if (STRIPE_PUBLICKEY) {
+      this.setState({ canSetBilling: true });
     }
   }
 
@@ -60,6 +76,7 @@ class Settings extends React.Component {
       for (let i = 0; i < changedFields.length; i += 1) {
         this.save[changedFields[i]]();
       }
+      this.setState({ changedSettings: new Set() });
     }
   }
 
@@ -83,11 +100,12 @@ class Settings extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { changedSettings } = this.state;
+    const { changedSettings, canSetBilling } = this.state;
     return (
       <React.Fragment>
         <Head>
           <title>Settings</title>
+          <script src="https://js.stripe.com/v3/" />
         </Head>
         <Header currentPage="settings" />
         <UnsavedBar
@@ -105,6 +123,22 @@ class Settings extends React.Component {
             handleChanged={this.handleChanged}
             handleUnchanged={this.handleUnchanged}
           />
+          {canSetBilling && (
+            // only render client-side when stripe is in use
+            <div className={classes.billingInfo}>
+              <StripeProvider apiKey={STRIPE_PUBLICKEY}>
+                <Elements>
+                  <SubscriptionForm
+                    fieldID={2}
+                    submitHandler={this.registerSubmitHandler}
+                    handleChanged={this.handleChanged}
+                    handleUnchanged={this.handleUnchanged}
+                    handleError={this.handleError}
+                  />
+                </Elements>
+              </StripeProvider>
+            </div>
+          )}
           <Typography variant="h3" className={classes.nextHeading} gutterBottom>
             Integrations
           </Typography>

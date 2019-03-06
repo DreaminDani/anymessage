@@ -56,7 +56,9 @@ class SubscriptionForm extends React.Component {
       team_url: user.teamURL,
     });
 
-    if (response.ok) console.log('Purchase Complete!');
+    this.setState({ disabled: true });
+
+    if (response.ok) console.log('Updated Subscription!');
   }
 
   internalChangeHandler = (label) => {
