@@ -7,6 +7,7 @@
  */
 import { NextFunction, Request, Response } from "express";
 import { Database } from "massive";
+import { hasActiveSubscription } from "../lib/StripeService";
 import { ModelError } from "./index";
 
 /**
@@ -142,6 +143,14 @@ export class TeamModel {
             } catch (e) {
                 throw new ModelError(e);
             }
+        }
+
+        throw new ModelError(ModelError.NO_INIT);
+    }
+
+    public async hasActiveSubscription() {
+        if (this.initialized) {
+            return await hasActiveSubscription(this.customer_id);
         }
 
         throw new ModelError(ModelError.NO_INIT);

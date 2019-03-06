@@ -38,3 +38,22 @@ export async function getFundingSource(customer: string) {
 
     return {};
 }
+
+export async function hasActiveSubscription(customer: string) {
+    const stripeCustomer = await stripe.customers.retrieve(customer);
+    const latestSubscription = stripeCustomer.subscriptions.data[0];
+    if (latestSubscription) {
+        switch (latestSubscription.status) {
+            case "active":
+                return true;
+            case "canceled":
+            case "past_due":
+            case "trialing":
+            case "unpaid":
+            default:
+                return false;
+        }
+    } else {
+        return false;
+    }
+}

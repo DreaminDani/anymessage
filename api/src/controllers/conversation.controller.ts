@@ -14,6 +14,7 @@ import {
     IConversationRequest,
     ITeamRequest,
     ProviderModel,
+    TeamModel,
     UserModel,
     verifyOutboundMessage,
     verifySubdomain,
@@ -57,17 +58,35 @@ router.post("/add",
 
         if (user.exists()) {
             try {
+                // check if user team has subscription
+                // TODO getTeamId() should actually get ACTIVE teamId
+                const team = new TeamModel(req.app.get("db"), user.getTeamId());
+                await team.init();
+                let outboundMessage = req.body.message;
+
+                // only check for subscription if running with stripe
+                let isSubscriber = true;
+                if (process.env.STRIPE_SECRETKEY) {
+                    isSubscriber = await team.hasActiveSubscription();
+                }
+
+                if (!isSubscriber) {
+                    outboundMessage += " ~ sent with AnyMessage.io";
+                }
+
+                // init provider
                 // TODO make client send integration name with provider
                 const provider = new ProviderModel(req.app.get("db"), req.body.provider, "twilio", req.team.id);
                 await provider.init();
 
                 // send message via provider
-                await provider.outbound(req.body.phoneNumber.toString(), req.body.message);
+                await provider.outbound(req.body.phoneNumber.toString(), outboundMessage);
 
+                // init conversation model
                 const conversation = new ConversationModel(req.app.get("db"), req.body.phoneNumber.toString(), req.team.id);
                 await conversation.init();
 
-                // update conversation
+                // update/create conversation in database
                 let updatedConversation = [];
                 if (conversation.exists()) {
                     updatedConversation = await conversation.update(req.body.message, provider.getType(), userId);
