@@ -1,6 +1,6 @@
 ---
 layout: typedoc
-title: '&quot;lib/redis-connection&quot; | &#64;anymessage/api'
+title: '&quot;lib/StripeService&quot; | &#64;anymessage/api'
 category: docs
 ---
 	<div class="tsd-page-toolbar">
@@ -49,10 +49,10 @@ category: docs
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_lib_redis_connection_.html">&quot;lib/redis-connection&quot;</a>
+					<a href="_lib_stripeservice_.html">&quot;lib/StripeService&quot;</a>
 				</li>
 			</ul>
-			<h1>External module &quot;lib/redis-connection&quot;</h1>
+			<h1>External module &quot;lib/StripeService&quot;</h1>
 		</div>
 	</div>
 <div class="container container-main">
@@ -62,36 +62,44 @@ category: docs
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_lib_redis_connection_.html#publisherclient" class="tsd-kind-icon">publisher<wbr>Client</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_lib_stripeservice_.html#stripe" class="tsd-kind-icon">stripe</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_lib_stripeservice_.html#subscriptionplan" class="tsd-kind-icon">subscription<wbr>Plan</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_redis_connection_.html#eventsubscription" class="tsd-kind-icon">event<wbr>Subscription</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Object literals</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported"><a href="_lib_redis_connection_.html#redisoptions" class="tsd-kind-icon">redis<wbr>Options</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_stripeservice_.html#createcustomer" class="tsd-kind-icon">create<wbr>Customer</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_stripeservice_.html#getfundingsource" class="tsd-kind-icon">get<wbr>Funding<wbr>Source</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_stripeservice_.html#hasactivesubscription" class="tsd-kind-icon">has<wbr>Active<wbr>Subscription</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_stripeservice_.html#updatesubscription" class="tsd-kind-icon">update<wbr>Subscription</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Variables</h2>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
-					<a name="publisherclient" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> publisher<wbr>Client</h3>
-					<div class="tsd-signature tsd-kind-icon">publisher<wbr>Client<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RedisClient</span><span class="tsd-signature-symbol"> =&nbsp;redis.createClient(redisOptions)</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="stripe" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> stripe</h3>
+					<div class="tsd-signature tsd-kind-icon">stripe<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Stripe</span><span class="tsd-signature-symbol"> =&nbsp;new Stripe(process.env.STRIPE_SECRETKEY)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/d3sandoval/anymessage/blob/33b4476/api/src/lib/redis-connection.ts#L9">lib/redis-connection.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/d3sandoval/anymessage/blob/33b4476/api/src/lib/StripeService.ts#L2">lib/StripeService.ts:2</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="subscriptionplan" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> subscription<wbr>Plan</h3>
+					<div class="tsd-signature tsd-kind-icon">subscription<wbr>Plan<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;process.env.STRIPE_PLAN</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/d3sandoval/anymessage/blob/33b4476/api/src/lib/StripeService.ts#L3">lib/StripeService.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -99,66 +107,105 @@ category: docs
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="eventsubscription" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> event<wbr>Subscription</h3>
+					<a name="createcustomer" class="tsd-anchor"></a>
+					<h3>create<wbr>Customer</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">event<wbr>Subscription<span class="tsd-signature-symbol">(</span>channel<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Customer<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, team_id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/d3sandoval/anymessage/blob/33b4476/api/src/lib/redis-connection.ts#L11">lib/redis-connection.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/d3sandoval/anymessage/blob/33b4476/api/src/lib/StripeService.ts#L6">lib/StripeService.ts:6</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>channel: <span class="tsd-signature-type">string</span></h5>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>req: <span class="tsd-signature-type">any</span></h5>
+									<h5>team_id: <span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li>
-									<h5>res: <span class="tsd-signature-type">any</span></h5>
+									<h5>token: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
-				<h2>Object literals</h2>
-				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="redisoptions" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> redis<wbr>Options</h3>
-					<div class="tsd-signature tsd-kind-icon">redis<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/d3sandoval/anymessage/blob/33b4476/api/src/lib/redis-connection.ts#L4">lib/redis-connection.ts:4</a></li>
-						</ul>
-					</aside>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
-						<a name="redisoptions.host" class="tsd-anchor"></a>
-						<h3>host</h3>
-						<div class="tsd-signature tsd-kind-icon">host<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;redis&quot;</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/d3sandoval/anymessage/blob/33b4476/api/src/lib/redis-connection.ts#L5">lib/redis-connection.ts:5</a></li>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="getfundingsource" class="tsd-anchor"></a>
+					<h3>get<wbr>Funding<wbr>Source</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Funding<wbr>Source<span class="tsd-signature-symbol">(</span>customer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/d3sandoval/anymessage/blob/33b4476/api/src/lib/StripeService.ts#L33">lib/StripeService.ts:33</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>customer: <span class="tsd-signature-type">string</span></h5>
+								</li>
 							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
-						<a name="redisoptions.port" class="tsd-anchor"></a>
-						<h3>port</h3>
-						<div class="tsd-signature tsd-kind-icon">port<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;6379</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/d3sandoval/anymessage/blob/33b4476/api/src/lib/redis-connection.ts#L6">lib/redis-connection.ts:6</a></li>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="hasactivesubscription" class="tsd-anchor"></a>
+					<h3>has<wbr>Active<wbr>Subscription</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">has<wbr>Active<wbr>Subscription<span class="tsd-signature-symbol">(</span>customer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/d3sandoval/anymessage/blob/33b4476/api/src/lib/StripeService.ts#L42">lib/StripeService.ts:42</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>customer: <span class="tsd-signature-type">string</span></h5>
+								</li>
 							</ul>
-						</aside>
-					</section>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="updatesubscription" class="tsd-anchor"></a>
+					<h3>update<wbr>Subscription</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">update<wbr>Subscription<span class="tsd-signature-symbol">(</span>customer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/d3sandoval/anymessage/blob/33b4476/api/src/lib/StripeService.ts#L20">lib/StripeService.ts:20</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>customer: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>token: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -189,10 +236,10 @@ category: docs
 					<li class=" tsd-kind-external-module">
 						<a href="_helpers_.html">"helpers"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="_lib_stripeservice_.html">"lib/<wbr>Stripe<wbr>Service"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="_lib_redis_connection_.html">"lib/redis-<wbr>connection"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -223,14 +270,23 @@ category: docs
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="_lib_redis_connection_.html#publisherclient" class="tsd-kind-icon">publisher<wbr>Client</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_lib_stripeservice_.html#stripe" class="tsd-kind-icon">stripe</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_lib_stripeservice_.html#subscriptionplan" class="tsd-kind-icon">subscription<wbr>Plan</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_lib_redis_connection_.html#eventsubscription" class="tsd-kind-icon">event<wbr>Subscription</a>
+						<a href="_lib_stripeservice_.html#createcustomer" class="tsd-kind-icon">create<wbr>Customer</a>
 					</li>
-					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_lib_redis_connection_.html#redisoptions" class="tsd-kind-icon">redis<wbr>Options</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_lib_stripeservice_.html#getfundingsource" class="tsd-kind-icon">get<wbr>Funding<wbr>Source</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_lib_stripeservice_.html#hasactivesubscription" class="tsd-kind-icon">has<wbr>Active<wbr>Subscription</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_lib_stripeservice_.html#updatesubscription" class="tsd-kind-icon">update<wbr>Subscription</a>
 					</li>
 				</ul>
 			</nav>

@@ -8,10 +8,10 @@ To contribute to the docs, simply add a post to /docs/_posts. The following cate
 - help
 - deployment
 
-If you are only changing markdown files or site pages, you can make a PR directly to the `docs` branch for review. If you are changing documentation within the code (using swagger or typescript), please make a PR into `master` sot he code can be reviewed alongside the documentation updates.
+If you are only changing markdown files or site pages, you can make a PR directly to the `docs` branch for review. If you are changing documentation within the code (using swagger or typescript), please make a PR into `master` so the code can be reviewed alongside the documentation updates.
 
 #### Running locally
 
-To see your changes to docs locally, simply run `docker-compose up` from the `/docs` directory. This will startup a jekyll server on `localhost:8080` to work with.
+To see your changes to docs locally, simply run `docker-compose up` from the `/docs` directory. This will startup a jekyll server on `localhost:7000` to work with.
 
 To generate the `swagger` and `typedoc` documentation, run `npm run build` from the `/docs/_build` directory. The running jekyll container should detect this change and rebuild accordingly.

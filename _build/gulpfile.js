@@ -8,9 +8,9 @@ var tap = require('gulp-tap');
 const swaggerDefinition = {
     info: {
         // API informations (required)
-        title: 'Hello World', // Title (required)
-        version: '1.0.0', // Version (required)
-        description: 'A sample API', // Description (optional)
+        title: 'AnyMessage API', // Title (required)
+        version: 'pre-release', // Version (required)
+        description: 'Backend services for AnyMessage.io and self-hosted options', // Description (optional)
     },
     host: 'https://api.anymessage.io', // Host (optional)
     basePath: '/', // Base path (optional)

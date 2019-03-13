@@ -6,4 +6,4 @@ services:
     volumes:
       - .:/site
     ports:
-      - '8080:4000'
+      - '7000:4000'
