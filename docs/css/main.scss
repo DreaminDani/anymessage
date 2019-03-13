@@ -81,3 +81,19 @@ $grey-color-dark:  darken($grey-color, 25%);
                 }
         }
 }
+
+.swagger-ui {
+        .topbar {
+                display: none;
+        }
+
+        .version {
+                border: none;
+                background-color: transparent;
+                overflow: inherit;
+        }
+
+        .base-url {
+                overflow: inherit;
+        }
+}

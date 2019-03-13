@@ -100,7 +100,7 @@ class TwilioSettings extends React.Component {
 
     // get twilio integration details from API
     // todo get phone numbers in same query
-    const integrationData = await get('/integration?twilio', user.id_token);
+    const integrationData = await get('/integration?name=twilio', user.id_token);
     if (integrationData) {
       this.setState({
         loaded: true,

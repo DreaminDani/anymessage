@@ -21,7 +21,7 @@ const router: Router = Router();
  *       - user
  *     responses:
  *       200:
- *         description: Returns user subdomain. If no subdomain exists, returns setup URL
+ *         description: User subdomain. If no subdomain exists, Setup URL
  *         schema:
  *           type: object
  *           properties:
@@ -81,29 +81,55 @@ router.get("/login",
  *       - user
  *     responses:
  *       200:
- *         description: Returns JSON of user record
+ *         description: JSON of user record
  *         schema:
  *           type: object
  *           properties:
- *             redirectURI:
- *               type: string
- *               default: `{ given_name: 'First',
- *                            family_name: 'Last',
- *                            nickname: 'some_nickname',
- *                            name: 'First Last',
- *                            picture: 'https://some.url',
- *                            gender: 'male',
- *                            locale: 'en',
- *                            updated_at: '2019-02-01T13:45:20.523Z',
- *                            email: 'email@example.com',
- *                            email_verified: true,
- *                            iss: 'https://oauth.url',
- *                            sub: 'oauth|sub',
- *                            aud: 'hAsH',
- *                            iat: 1549028720,
- *                            exp: 1549064720,
- *                            at_hash: 'hAsH',
- *                            nonce: 'NoNcE' }`
+ *              given_name:
+ *                  type: string
+ *              family_name:
+ *                  type: string
+ *              nickname:
+ *                  type: string
+ *              name:
+ *                  type: string
+ *              picture:
+ *                  type: string
+ *                  format: uri
+ *              gender:
+ *                  type: string
+ *              locale:
+ *                  type: string
+ *                  format: iso2
+ *              updated_at:
+ *                  type: string
+ *                  format: date-time
+ *              email:
+ *                  type: string
+ *                  format: email
+ *              email_verified:
+ *                  type: boolean
+ *              iss:
+ *                  type: string
+ *                  format: uri
+ *              sub:
+ *                  type: string
+ *                  default: 'oauth|sub'
+ *              aud:
+ *                  type: string
+ *                  format: hash
+ *              iat:
+ *                  type: number
+ *                  format: date-time
+ *              exp:
+ *                  type: number
+ *                  format: date-time
+ *              at_hash:
+ *                  type: string
+ *                  format: hash
+ *              nonce:
+ *                  type: string
+ *                  format: nonce
  */
 router.get("/details",
     checkJwt,

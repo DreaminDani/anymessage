@@ -22,6 +22,32 @@ import {
 
 const router: Router = Router();
 
+/**
+ * @swagger
+ * /conversation/list:
+ *   get:
+ *     summary: Get list of all conversations for the current team/subdomain
+ *     tags:
+ *       - conversation
+ *     responses:
+ *       200:
+ *         description: Array of all conversations
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: object
+ *             description: IConversationsHistory (type)
+ *             properties:
+ *               who:
+ *                 type: number
+ *               type:
+ *                 type: string
+ *               message:
+ *                 type: string
+ *               timestamp:
+ *                 type: number
+ *                 format: date-time
+ */
 router.get("/list",
     checkJwt,
     verifySubdomain,
@@ -37,7 +63,17 @@ router.get("/list",
         }
     });
 
-router.get("/subscribe", cookieParser(), function(req, res) {
+/**
+ * @swagger
+ * /conversation/subscribe:
+ *   get:
+ *     summary: SSE subscription for all new messages for a team
+ *     description: requires team_url set in the user's cookies
+ *     tags:
+ *       - conversation
+ *     produces: ["text/event-stream"]
+ */
+router.get("/subscribe", cookieParser(), (req, res) => {
     if (req.cookies.id_token && req.cookies.team_url) {
         const subdomain = req.cookies.team_url.split(".")[0];
         eventSubscription(subdomain, req, res);
@@ -47,6 +83,34 @@ router.get("/subscribe", cookieParser(), function(req, res) {
     }
 });
 
+/**
+ * @swagger
+ * /conversation/add:
+ *   post:
+ *     summary: Create/update a conversation
+ *     tags:
+ *       - conversation
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - in: body
+ *         name: body
+ *         description: information about the message
+ *         schema:
+ *           type: object
+ *           properties:
+ *             phoneNumber:
+ *               type: number
+ *               descrpition: the number the user would like to send a message to
+ *             message:
+ *               type: string
+ *             provider:
+ *               type: string
+ *               description: A string matching the name of a provider the user has access to
+ *     responses:
+ *       200:
+ *         description: Responds with the updated conversation (array of message objects)
+ */
 router.post("/add",
     checkJwt,
     verifySubdomain,

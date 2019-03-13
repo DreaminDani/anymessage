@@ -11,65 +11,128 @@ import { IntegrationModel, ITeamRequest, ProviderModel, verifyIntegrationBody, v
 
 const router: Router = Router();
 
+/**
+ * @swagger
+ * /integration/providers:
+ *   get:
+ *     summary: Get list of providers for current subdomain/team
+ *     tags:
+ *       - integration
+ *     responses:
+ *       200:
+ *         description: Array of all providers
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ */
 router.get("/providers",
-checkJwt,
-verifySubdomain,
-async (req: ITeamRequest, res: Response) => {
-    try {
-        const providersList = await ProviderModel.findAllByTeam(req.app.get("db"), req.team.id);
-        res.status(200);
-        res.json(providersList);
-    } catch (e) {
-        console.error(e);
-        res.status(e.status || 500);
-        (e.status && e.message) ? res.json({error: e.message}) : res.send();
-    }
-});
-
-// get specific integration for a given team
-router.get("/",
-checkJwt,
-verifySubdomain,
-async (req: ITeamRequest, res: Response) => {
-    const parsedURL = req.url.split("?");
-    if (parsedURL.length > 1) {
-        const integrationName = parsedURL[1];
+    checkJwt,
+    verifySubdomain,
+    async (req: ITeamRequest, res: Response) => {
         try {
-            const integration = new IntegrationModel(req.app.get("db"), req.team.id, integrationName);
-            const info = await integration.init();
-            if (info) {
-                res.status(200);
-                res.send(info);
-            } else {
-                res.sendStatus(200);
-            }
+            // TODO respond with more provider info (like type, name, etc.)
+            const providersList = await ProviderModel.findAllByTeam(req.app.get("db"), req.team.id);
+            res.status(200);
+            res.json(providersList);
         } catch (e) {
             console.error(e);
             res.status(e.status || 500);
-            (e.status && e.message) ? res.json({error: e.message}) : res.send();
+            (e.status && e.message) ? res.json({ error: e.message }) : res.send();
         }
-    } else {
-        res.status(400);
-        res.send({error: "you must request a specific integration"});
-    }
-});
+    });
 
+/**
+ * @swagger
+ * /integration/save:
+ *   post:
+ *     summary: Create/update an integration
+ *     tags:
+ *       - integration
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - in: body
+ *         name: body
+ *         description: An integration contains some authentication, a name, and an array of providers
+ *         schema:
+ *           type: object
+ *           properties:
+ *             authentication:
+ *               type: object
+ *               properties:
+ *                 key: string
+ *                 description: required keys varies by integration type
+ *             name:
+ *               type: string
+ *             providers:
+ *               type: array
+ *               description: A list of providers that this integration enables
+ *               items:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Empty response if successful
+ */
 router.post("/save",
-checkJwt,
-verifySubdomain,
-json(),
-verifyIntegrationBody,
-async (req: ITeamRequest, res: Response) => {
-    try {
-        const integration = new IntegrationModel(req.app.get("db"), req.team.id, req.body.name);
-        await integration.init();
-        await integration.save(req.body.authentication, req.body.providers);
-        res.sendStatus(200);
-    } catch (e) {
-        console.error(e);
-        res.status(e.status || 500);
-        (e.status && e.message) ? res.json({error: e.message}) : res.send();
-    }
-});
+    checkJwt,
+    verifySubdomain,
+    json(),
+    verifyIntegrationBody,
+    async (req: ITeamRequest, res: Response) => {
+        try {
+            const integration = new IntegrationModel(req.app.get("db"), req.team.id, req.body.name);
+            await integration.init();
+            await integration.save(req.body.authentication, req.body.providers);
+            res.sendStatus(200);
+        } catch (e) {
+            console.error(e);
+            res.status(e.status || 500);
+            (e.status && e.message) ? res.json({ error: e.message }) : res.send();
+        }
+    });
+
+/**
+ * @swagger
+ * /integration:
+ *   get:
+ *     summary: Get information for specific integration
+ *     tags:
+ *       - integration
+ *     parameters:
+ *       - in: query
+ *         name: name
+ *     responses:
+ *       200:
+ *         description: Varies by integration
+ *         schema:
+ *           type: object
+ *           items:
+ *             type: string
+ */
+router.get("/",
+    checkJwt,
+    verifySubdomain,
+    async (req: ITeamRequest, res: Response) => {
+        if (req.query.name) {
+            try {
+                const integration = new IntegrationModel(req.app.get("db"), req.team.id, req.query.name);
+                const info = await integration.init();
+                if (info) {
+                    res.status(200);
+                    res.send(info);
+                } else {
+                    res.sendStatus(200);
+                }
+            } catch (e) {
+                console.error(e);
+                res.status(e.status || 500);
+                (e.status && e.message) ? res.json({ error: e.message }) : res.send();
+            }
+        } else {
+            res.status(400);
+            res.send({ error: "you must provide an integration 'name'" });
+        }
+    });
 
 export const IntegrationController: Router = router;

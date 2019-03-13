@@ -11,6 +11,38 @@ import { ConversationModel, ProviderModel } from "../models";
 
 const router: Router = Router();
 
+/**
+ * @swagger
+ * /inbound:
+ *   post:
+ *     summary: Receive messages from external providers/integrations and associate with team conversation(s)
+ *     description: application/x-www-form-urlencoded
+ *     tags:
+ *       - inbound
+ *     consumes:
+ *        - application/x-www-form-urlencoded
+ *     parameters:
+ *       - in: path
+ *         name: integration
+ *         required: true
+ *         type: string
+ *         description: name of the integration (e.g. "twilio")
+ *       - in: To
+ *         name: To
+ *         type: string
+ *         description: Provider (number) to whom the message is being sent
+ *       - in: From
+ *         name: From
+ *         type: string
+ *         description: The (number) of the sender
+ *       - in: Body
+ *         name: Body
+ *         type: string
+ *         description: The message being sent
+ *     responses:
+ *       200:
+ *         description: Will vary by sender integration
+ */
 router.post("/:integration",
     urlencoded(),
     async (req: Request, res: Response) => {
@@ -42,9 +74,11 @@ router.post("/:integration",
 
                     publisherClient.publish(team.subdomain, JSON.stringify(updatedConversation[0]));
 
+                    // TODO vary response based on provider.getSuccess()
                     res.writeHead(200, { "Content-Type": "text/xml" });
                     res.end("<Response></Response>"); // respond with no message
                 } else {
+                    // TODO vary response based on provider.getFailure()
                     res.writeHead(200, { "Content-Type": "text/xml" });
                     res.end(`<Response>
                         This provider has not yet been set up. Please try again later.
