@@ -5,7 +5,7 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.md file.
  */
-export * from "./conversation.controller";
+export * from "./conversation.controller/";
 export * from "./integration.controller";
 export * from "./inbound.controller";
 export * from "./team.controller";

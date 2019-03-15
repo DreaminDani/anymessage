@@ -191,7 +191,7 @@ export function verifyTeamName(req: ITeamURLRequest, res: Response, next: NextFu
     }
 }
 
-interface ITeam {
+export interface ITeam {
     id: number;
     subdomain: string;
 }

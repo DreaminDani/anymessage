@@ -1,16 +1,23 @@
-
 import redis = require("redis");
 
 const redisOptions = {
-    host: "redis",
+    host: `${(process.env.NODE_ENV === "test") ? "localhost" : "redis"}`,
     port: 6379,
 };
 
-export const publisherClient = redis.createClient(redisOptions);
+function createClient() {
+    return redis.createClient(redisOptions);
+}
+
+export const publisherClient = createClient();
+
+export const closeAll = (callback?: any) => {
+    publisherClient.quit(callback);
+};
 
 export const eventSubscription = (channel: string, req: any, res: any) => {
     let messageCount = 0;
-    let subscriber = redis.createClient(redisOptions);
+    const subscriber = createClient();
 
     subscriber.subscribe(channel);
     subscriber.on("error", function(err) {

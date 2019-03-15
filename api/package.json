@@ -42,8 +42,17 @@
   },
   "devDependencies": {
     "@types/jest": "^23.3.13",
-    "jest": "^24.1.0",
+    "@types/redis-mock": "^0.17.0",
+    "@types/rewire": "^2.5.28",
+    "@types/sinon-express-mock": "^1.3.7",
+    "jest": "^24.5.0",
     "nodemon": "^1.18.9",
+    "redis-mock": "^0.43.0",
+    "redmock": "^1.0.0",
+    "rewire": "^4.0.1",
+    "rewiremock": "^3.13.0",
+    "sinon": "^7.2.7",
+    "sinon-express-mock": "^2.1.0",
     "ts-jest": "^23.10.5",
     "ts-node": "^7.0.1",
     "typescript": "^3.2.4"
