@@ -1,17 +1,25 @@
+import redis = require("redis-mock");
+import * as sinon from "sinon";
 import { mockReq, mockRes } from "sinon-express-mock";
-import { closeAll, publisherClient } from "../../lib/redis-connection";
+import { closeAll, injectClient, publisherClient } from "../../lib/redis-connection";
 import { ProviderModel } from "../../models/provider.model";
 import { postAdd } from "./add.post";
 
 jest.mock("../../models/provider.model");
 
+const fakeCreatedTime = 234;
+const fakeUpdatedTime = 123;
+
 const mockDB = {
     conversations: {
         findOne: jest.fn((criteria: any, options: any) => {
-            return [];
+            return {}; // TODO change this depending on if it exists already
         }),
         insert: jest.fn((criteria: any, options: any) => {
-            return { ...criteria, created: 123, updated: 123 };
+            return { ...criteria, created: fakeUpdatedTime, updated: fakeUpdatedTime };
+        }),
+        update: jest.fn((criteria: any, options: any) => {
+            return { ...criteria, created: fakeCreatedTime, updated: fakeUpdatedTime };
         }),
     },
     teams: {
@@ -58,19 +66,47 @@ const response = {
 
 const req = mockReq(request);
 const res = mockRes(response);
+let expectedResponse: any[];
+
+beforeAll(() => {
+    injectClient(redis);
+});
+
+beforeEach(() => {
+    expectedResponse = [{
+        from: request.body.provider,
+        history: expect.stringContaining(request.body.message),
+        team_id: request.team.id,
+        to: request.body.phoneNumber.toString(),
+        updated: fakeUpdatedTime,
+    }];
+});
 
 afterAll(() => {
     closeAll();
 });
 
 test("should respond with new message in new conversation", async () => {
+    expectedResponse[0].created = fakeUpdatedTime;
     await postAdd(req, res);
 
     expect(res.status).toBeCalledWith(200);
+    expect(res.json).toBeCalledWith(expect.arrayContaining(expectedResponse));
 });
 
-test("should update existing conversation with new message", () => {
+test("should send message to outbound provider", async () => {
+    await postAdd(req, res);
 
+    const outbound = sinon.spy(ProviderModel.prototype, "outbound");
+    expect(outbound).toBeCalledWith(request.body.phoneNumber.toString(), request.body.message);
+});
+
+test("should respond with updated conversation, if it already exists", async () => {
+    expectedResponse[0].created = fakeCreatedTime;
+    await postAdd(req, res);
+
+    expect(res.status).toBeCalledWith(200);
+    expect(res.json).toBeCalledWith(expect.arrayContaining(expectedResponse));
 });
 
 test("should throw specific error if create fails", () => {

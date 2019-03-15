@@ -39,7 +39,7 @@ UI_HOSTNAME=[myapp.dev]
 
 Currently, there are very few tests. You can run them via `npm run test` in the relevant subdirectories.
 
-Some of the tests for the `api` require redis running on `localhost:6379` or else they'll throw an uncaught error.
+Some of the tests for the `api` require redis running on `localhost:6379` or else they'll throw an uncaught error. All calls to redis are mocked during testing, so these errors shouldn't affect the tests outcome.
 
 More info will be updated in this section as the testing strategy is built out.
 

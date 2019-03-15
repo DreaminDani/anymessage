@@ -1,5 +1,6 @@
+import redis = require("redis-mock");
 import { mockReq, mockRes } from "sinon-express-mock";
-import { closeAll, eventSubscription } from "../../lib/redis-connection";
+import { closeAll, eventSubscription, injectClient } from "../../lib/redis-connection";
 import { getSubscribe } from "./subscribe.get";
 
 jest.mock("../../lib/redis-connection");
@@ -18,13 +19,16 @@ const response = {
 const req = mockReq(request);
 const res = mockRes(response);
 
+beforeAll(() => {
+    injectClient(redis);
+});
+
 afterAll(() => {
     closeAll();
 });
 
 test("should start an event subscription on the provided key", async () => {
     await getSubscribe(req, res);
-
     const subdomain = req.cookies.team_url.split(".")[0];
     expect(eventSubscription).toBeCalledWith(subdomain, req, res);
 });

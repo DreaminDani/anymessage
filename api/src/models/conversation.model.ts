@@ -26,7 +26,7 @@ export class ConversationModel {
 
     public static async getConversationsByTeam(db: Database, teamId: number) {
         try {
-            return await db.conversations.find({team_id: teamId}, {
+            return await db.conversations.find({ team_id: teamId }, {
                 order: [{
                     direction: "desc",
                     field: "updated_at",
@@ -117,7 +117,7 @@ export class ConversationModel {
             });
 
             try {
-                return await this.db.conversations.update({id: this.id}, {
+                return await this.db.conversations.update({ id: this.id }, {
                     history: JSON.stringify(this.history),
                 });
             } catch (e) {
@@ -161,21 +161,21 @@ export function verifyOutboundMessage(req: IConversationRequest, res: Response, 
     if (!req.body.phoneNumber || req.body.phoneNumber.length < 1) {
         passed = false;
         res.status(400);
-        res.json({error: "phoneNumber is required"});
+        res.json({ error: "phoneNumber is required" });
     }
 
     // check if message is formatted correctly
     if (!req.body.message || req.body.message.length < 1) {
         passed = false;
         res.status(400);
-        res.json({error: "message is required"});
+        res.json({ error: "message is required" });
     }
 
     // check that phone number is a number
     if (!/^\d+$/.test(req.body.phoneNumber)) {
         passed = false;
         res.status(400);
-        res.json({error: "phoneNumber must only contain numbers [0-9]"});
+        res.json({ error: "phoneNumber must only contain numbers [0-9]" });
     }
 
     // check if provider exists and user has access to it
@@ -184,7 +184,7 @@ export function verifyOutboundMessage(req: IConversationRequest, res: Response, 
     } else {
         passed = false;
         res.status(400);
-        res.json({error: "provider is required"});
+        res.json({ error: "provider is required" });
     }
 
     if (passed) {
