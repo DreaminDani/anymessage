@@ -90,7 +90,7 @@ export class ConversationModel {
                 to: this.recipient,
             });
 
-            if (newConversation) {
+            if (newConversation && newConversation.id) {
                 this.id = newConversation.id;
                 this.initialized = true;
 
