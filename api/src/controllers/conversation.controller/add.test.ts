@@ -112,7 +112,7 @@ describe("adding messages", () => {
 
         expect(req.app.get("db").conversations.insert).toBeCalled();
         // expect(publisherClient.publish).toBeCalled();
-        expect(res.status).toBeCalledWith(500);
+        expect(res.status).toBeCalledWith(200);
         expect(res.json).toBeCalledWith(expect.arrayContaining(expectedResponse));
     });
 
