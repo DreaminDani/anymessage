@@ -53,7 +53,7 @@ docker-compose pull
 docker-compose up
 ```
 
-AnyMessage.io runs on Google Kubernetes Engine but should work anywhere docker containers are supported. If you need help with deployment, feel free to reach out!
+AnyMessage works anywhere docker containers are supported. If you need help with deployment, feel free to reach out! Deployment examples can be found in the `/docs` (and on [docs.anymessage.io](https://docs.anymessage.io))
 
 ## Built With
 
