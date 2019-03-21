@@ -1,7 +1,7 @@
 workflow "New workflow" {
   on = "push"
   resolves = [
-    "Build and deploy docs"
+    "Build and deploy docs",
   ]
 }
 
@@ -19,5 +19,5 @@ action "Build and deploy docs" {
 
 action "Run API Tests" {
   uses = "actions/docker/cli@8cdf801b322af5f369e00d85e9cf3a7122f49108"
-  args = "build . -f=\"./test/api.Dockerfile"
+  args = "build . -f=\"./test/api.Dockerfile\""
 }
