@@ -1,8 +1,7 @@
 workflow "New workflow" {
   on = "push"
   resolves = [
-    "Build and deploy docs",
-    "Run API Tests",
+    "Build and deploy docs"
   ]
 }
 
