@@ -8,6 +8,7 @@ workflow "New workflow" {
 
 action "Master Branch Filter" {
   uses = "actions/bin/filter@db72a46c8ce298e5d2c3a51861e20c455581524f"
+  needs = ["Run API Tests"]
   args = "branch master"
 }
 
