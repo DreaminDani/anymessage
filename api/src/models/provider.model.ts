@@ -47,7 +47,7 @@ export class ProviderModel {
     }
 
     /**
-     * @return a teamId for a given integration provider.
+     * @return all team columns for a given integration provider.
      * @return null, if not found
      */
     public static async findTeamByProvider(db: Database, integrationName: string, provider: string) {

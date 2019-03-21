@@ -6,7 +6,7 @@
  * LICENSE.md file.
  */
 export * from "./conversation.controller/";
+export * from "./inbound.controller/";
 export * from "./integration.controller";
-export * from "./inbound.controller";
 export * from "./team.controller";
 export * from "./user.controller";
