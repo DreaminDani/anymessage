@@ -7,10 +7,10 @@
  */
 import redis = require("redis-mock");
 import { mockReq, mockRes } from "sinon-express-mock";
-import { closeAll, eventSubscription, injectClient } from "../../lib/redis-connection";
-import { getSubscribe } from "./subscribe.get";
 
 jest.mock("../../lib/redis-connection");
+import { eventSubscription, injectClient } from "../../lib/redis-connection";
+import { getSubscribe } from "./subscribe.get";
 
 const request = {
     cookies: {
@@ -23,15 +23,16 @@ const response = {
     send: jest.fn(),
 };
 
-const req = mockReq(request);
-const res = mockRes(response);
+let req: any;
+let res: any;
 
 beforeAll(() => {
     injectClient(redis);
 });
 
-afterAll(() => {
-    closeAll();
+beforeEach(() => {
+    req = mockReq(request);
+    res = mockRes(response);
 });
 
 test("should start an event subscription on the provided key", async () => {

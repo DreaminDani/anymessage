@@ -6,7 +6,7 @@
  * LICENSE.md file.
  */
 import { Response } from "express";
-import { publisherClient } from "../../lib/redis-connection";
+import { createPublisherClient } from "../../lib/redis-connection";
 import {
     ConversationModel,
     IConversationRequest,
@@ -63,7 +63,9 @@ export const postAdd = async (req: IConversationRequest, res: Response) => {
                 );
             }
 
+            const publisherClient = createPublisherClient();
             publisherClient.publish(req.team.subdomain, JSON.stringify(updatedConversation[0]));
+            publisherClient.end();
 
             res.status(200);
             res.json(updatedConversation);

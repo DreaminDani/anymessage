@@ -37,11 +37,9 @@ UI_HOSTNAME=[myapp.dev]
 
 ## Running the tests
 
-Currently, there are very few tests. You can run them via `npm run test` in the relevant subdirectories.
+Tests can be run by running `npm run test` in the relevant subdirectories.
 
-Some of the tests for the `api` require redis running on `localhost:6379` or else they'll throw an uncaught error. All calls to redis are mocked during testing, so these errors shouldn't affect the tests outcome.
-
-More info will be updated in this section as the testing strategy is built out.
+They can also be run via their associated Dockerfiles. More info in the [test README](./test/README.md)
 
 ### Linting
 

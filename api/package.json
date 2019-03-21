@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest --silent --detectOpenHandles --forceExit",
+    "test": "jest --silent",
     "test:watch": "jest --watch --silent",
     "start": "node ./dist/server.js",
     "start-dev": "ts-node src/server.ts",

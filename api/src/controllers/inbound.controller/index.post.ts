@@ -6,7 +6,7 @@
  * LICENSE.md file.
  */
 import { Request, Response } from "express";
-import { publisherClient } from "../../lib/redis-connection";
+import { createPublisherClient } from "../../lib/redis-connection";
 import { ConversationModel, ProviderModel } from "../../models";
 
 export const postIndex = async (req: Request, res: Response) => {
@@ -36,7 +36,9 @@ export const postIndex = async (req: Request, res: Response) => {
                     );
                 }
 
+                const publisherClient = createPublisherClient();
                 publisherClient.publish(team.subdomain, JSON.stringify(updatedConversation[0]));
+                publisherClient.end();
 
                 // TODO vary response based on provider.getSuccess()
                 res.writeHead(200, { "Content-Type": "text/xml" });

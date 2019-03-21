@@ -11,10 +11,8 @@ export function injectClient(redisMock: any) {
     redisConnection = redisMock;
 }
 
-export const publisherClient = redisConnection.createClient(redisOptions);
-
-export const closeAll = (callback?: any) => {
-    publisherClient.quit(callback);
+export const createPublisherClient = () => {
+    return redisConnection.createClient(redisOptions);
 };
 
 export const eventSubscription = (channel: string, req: any, res: any) => {
