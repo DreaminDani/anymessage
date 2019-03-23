@@ -65,7 +65,7 @@ export const postAdd = async (req: IConversationRequest, res: Response) => {
 
             const publisherClient = createPublisherClient();
             publisherClient.publish(req.team.subdomain, JSON.stringify(updatedConversation[0]));
-            publisherClient.end();
+            publisherClient.quit();
 
             res.status(200);
             res.json(updatedConversation);

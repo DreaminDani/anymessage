@@ -38,7 +38,7 @@ export const postIndex = async (req: Request, res: Response) => {
 
                 const publisherClient = createPublisherClient();
                 publisherClient.publish(team.subdomain, JSON.stringify(updatedConversation[0]));
-                publisherClient.end();
+                publisherClient.quit();
 
                 // TODO vary response based on provider.getSuccess()
                 res.writeHead(200, { "Content-Type": "text/xml" });
