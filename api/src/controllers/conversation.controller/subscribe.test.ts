@@ -12,17 +12,6 @@ jest.mock("../../lib/redis-connection");
 import { eventSubscription, injectClient } from "../../lib/redis-connection";
 import { getSubscribe } from "./subscribe.get";
 
-const request = {
-    cookies: {
-        id_token: "anything",
-        team_url: "example.anymessage.io",
-    },
-};
-
-const response = {
-    send: jest.fn(),
-};
-
 let req: any;
 let res: any;
 
@@ -31,8 +20,15 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-    req = mockReq(request);
-    res = mockRes(response);
+    req = mockReq({
+        cookies: {
+            id_token: "anything",
+            team_url: "example.anymessage.io",
+        },
+    });
+    res = mockRes({
+        send: jest.fn(),
+    });
 });
 
 test("should start an event subscription on the provided key", async () => {

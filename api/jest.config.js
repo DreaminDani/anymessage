@@ -9,7 +9,6 @@ module.exports = {
 		"js",
 		"json"
 	],
-	"collectCoverage": true,
 	"collectCoverageFrom": [
 		"src/**/*.ts",
 		"!**/*.d.ts",

@@ -6,7 +6,7 @@
  * LICENSE.md file.
  */
 import { mockReq, mockRes } from "sinon-express-mock";
-import { getList } from "./list.get";
+import { getProviders } from "./providers.get";
 
 let mockDB: any;
 let req: any;
@@ -14,11 +14,9 @@ let res: any;
 
 beforeEach(() => {
     mockDB = {
-        conversations: {
-            find: jest.fn((criteria: any, options: any) => {
-                return { success: true };
-            }),
-        },
+        query: jest.fn((criteria: any, options: any) => {
+            return [];
+        }),
     };
 
     req = mockReq({
@@ -32,22 +30,16 @@ beforeEach(() => {
             subdomain: "example",
         },
     });
-
     res = mockRes({
-        json: jest.fn(),
         status: jest.fn(),
+        json: jest.fn(),
     });
 });
 
-test("should return the result of a find on conversations", async () => {
-    await getList(req, res);
+test("should return providers list (empty in this test)", async () => {
+    await getProviders(req, res);
     expect(res.status).toBeCalledWith(200);
-    expect(res.json).toBeCalledWith({ success: true });
-});
-
-test("should return filtered result by given team id", async () => {
-    await getList(req, res);
-    expect(req.app.get("db").conversations.find).toBeCalledWith({ team_id: req.team.id }, expect.any(Object));
+    expect(res.json).toBeCalledWith([]);
 });
 
 test("should catch internal error", async () => {
@@ -55,6 +47,6 @@ test("should catch internal error", async () => {
         throw new Error("Some error");
     };
 
-    await getList(req, res);
+    await getProviders(req, res);
     expect(res.status).toBeCalledWith(500);
 });

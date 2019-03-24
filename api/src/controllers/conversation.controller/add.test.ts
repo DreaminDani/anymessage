@@ -24,8 +24,6 @@ const fakeUpdatedTime = 123;
 const outbound = sinon.spy(ProviderModel.prototype, "outbound");
 
 let mockDB: any;
-let request: any;
-let response: any;
 let req: any;
 let res: any;
 let expectedResponse: any[];
@@ -66,7 +64,8 @@ beforeEach(() => {
             }),
         },
     };
-    request = {
+
+    req = mockReq({
         app: {
             get: (name: string) => {
                 return mockDB;
@@ -84,22 +83,19 @@ beforeEach(() => {
         user: {
             email: "joe@example.com",
         },
-    };
+    });
 
-    response = {
+    res = mockRes({
         json: jest.fn(),
         status: jest.fn(),
-    };
-
-    req = mockReq(request);
-    res = mockRes(response);
+    });
 
     expectedResponse = [{
-        from: request.body.provider,
-        history: expect.stringContaining(request.body.message),
+        from: req.body.provider,
+        history: expect.stringContaining(req.body.message),
         id: 1,
-        team_id: request.team.id,
-        to: request.body.phoneNumber.toString(),
+        team_id: req.team.id,
+        to: req.body.phoneNumber.toString(),
         updated: fakeUpdatedTime,
     }];
 });
@@ -119,8 +115,8 @@ describe("adding messages", () => {
     test("should send message to outbound provider", async () => {
         await postAdd(req, res);
         // expect(publisherClient.publish).toBeCalled();
-        expect(outbound.lastCall.args[0]).toBe(request.body.phoneNumber.toString());
-        expect(outbound.lastCall.args[1]).toBe(request.body.message);
+        expect(outbound.lastCall.args[0]).toBe(req.body.phoneNumber.toString());
+        expect(outbound.lastCall.args[1]).toBe(req.body.message);
     });
 
     test("should update an existing conversation, if it already exists", async () => {
@@ -130,9 +126,8 @@ describe("adding messages", () => {
                 id: 0,
             };
         });
-        request.app.get = (name: string) => mockDB;
 
-        await postAdd(mockReq(request), res);
+        await postAdd(req, res);
 
         expect(req.app.get("db").conversations.update).toBeCalled();
         // expect(publisherClient.publish).toBeCalled();
@@ -153,13 +148,13 @@ describe("stripe integration", () => {
     test("should append anymessage text to message if no active subscription", async () => {
         const extraMessage = " ~ sent with AnyMessage.io";
         await postAdd(req, res);
-        expect(outbound.lastCall.args[1]).toBe(request.body.message + extraMessage);
+        expect(outbound.lastCall.args[1]).toBe(req.body.message + extraMessage);
     });
 
     test("should append anymessage text to message if no active subscription", async () => {
         Object.defineProperty(StripeService, "hasActiveSubscription", { value: jest.fn(() => true) });
         await postAdd(req, res);
-        expect(outbound.lastCall.args[1]).toBe(request.body.message);
+        expect(outbound.lastCall.args[1]).toBe(req.body.message);
     });
 
     afterAll(() => {
@@ -172,9 +167,8 @@ describe("errors", () => {
         mockDB.conversations.insert = jest.fn((criteria: any, options: any) => {
             return {};
         });
-        request.app.get = (name: string) => mockDB;
 
-        await postAdd(mockReq(request), res);
+        await postAdd(req, res);
         expect(res.status).toBeCalledWith(500);
     });
 
@@ -182,16 +176,15 @@ describe("errors", () => {
         mockDB.conversations.insert = jest.fn((criteria: any, options: any) => {
             throw new Error("some error");
         });
-        request.app.get = (name: string) => mockDB;
 
-        await postAdd(mockReq(request), res);
+        await postAdd(req, res);
         expect(res.status).toBeCalledWith(500);
     });
 
     test("should throw a 400 error if user does not exist", async () => {
-        request.user.email = "sally@example.com";
+        req.user.email = "sally@example.com";
 
-        await postAdd(mockReq(request), res);
+        await postAdd(req, res);
         expect(res.status).toBeCalledWith(400);
         expect(res.json).toBeCalledWith(expect.any(Object));
     });

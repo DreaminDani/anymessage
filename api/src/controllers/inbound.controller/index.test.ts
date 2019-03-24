@@ -16,8 +16,6 @@ const fakeCreatedTime = 234;
 const fakeUpdatedTime = 123;
 
 let mockDB: any;
-let request: any;
-let response: any;
 let req: any;
 let res: any;
 
@@ -49,13 +47,13 @@ beforeEach(() => {
         integrations: {
             findOne: jest.fn((criteria: any, options: any) => {
                 return {
-                    name: "testint",
-                    team_id: 0, // This will always match query response, above
+                    authentication: { someKey: "some value" },
                 }; // TODO change this to test error case
             }),
         },
     };
-    request = {
+
+    req = mockReq({
         app: {
             get: (name: string) => {
                 return mockDB;
@@ -67,16 +65,13 @@ beforeEach(() => {
             From: "987654321",
             Body: "test message",
         },
-    };
+    });
 
-    response = {
+    res = mockRes({
         writeHead: jest.fn(),
         end: jest.fn(),
         sendStatus: jest.fn(),
-    };
-
-    req = mockReq(request);
-    res = mockRes(response);
+    });
 });
 
 describe("adding messages", () => {
@@ -99,9 +94,8 @@ describe("adding messages", () => {
                 id: 0,
             };
         });
-        request.app.get = (name: string) => mockDB;
 
-        await postIndex(mockReq(request), res);
+        await postIndex(req, res);
 
         expect(req.app.get("db").conversations.update).toBeCalled();
         // expect(createPublisherClient).toBeCalled();
@@ -118,9 +112,8 @@ describe("errors", () => {
         mockDB.conversations.insert = jest.fn((criteria: any, options: any) => {
             return {};
         });
-        request.app.get = (name: string) => mockDB;
 
-        await postIndex(mockReq(request), res);
+        await postIndex(req, res);
         expect(res.sendStatus).toBeCalledWith(500);
     });
 
@@ -128,9 +121,8 @@ describe("errors", () => {
         mockDB.conversations.insert = jest.fn((criteria: any, options: any) => {
             throw new Error("some error");
         });
-        request.app.get = (name: string) => mockDB;
 
-        await postIndex(mockReq(request), res);
+        await postIndex(req, res);
         expect(res.sendStatus).toBeCalledWith(500);
     });
 
@@ -138,9 +130,8 @@ describe("errors", () => {
         mockDB.query = jest.fn((criteria: any, options: any) => {
             return {};
         });
-        request.app.get = (name: string) => mockDB;
 
-        await postIndex(mockReq(request), res);
+        await postIndex(req, res);
 
         // todo split this between passed /:integration
         expect(res.writeHead).toBeCalledWith(200, { "Content-Type": "text/xml" });
