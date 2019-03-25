@@ -37,7 +37,7 @@ UI_HOSTNAME=[myapp.dev]
 
 ## Running the tests
 
-Tests can be run by running `npm run test` in the relevant subdirectories.
+Tests can be run by running `npm run test` in the relevant subdirectories or using the Jest launch configurations in `.vscode/launch.json`.
 
 They can also be run via their associated Dockerfiles. More info in the [test README](./test/README.md)
 
