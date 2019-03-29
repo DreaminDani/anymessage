@@ -37,9 +37,15 @@ UI_HOSTNAME=[myapp.dev]
 
 ## Running the tests
 
-Currently, there are very few tests. You can run them via `npm run test` in the relevant subdirectories.
+Tests can be run by running `npm run test` in the relevant subdirectories or using the Jest launch configurations in `.vscode/launch.json`.
 
-More info will be updated in this section as the testing strategy is built out.
+They can also be run via their associated Dockerfiles. More info in the [test README](./test/README.md)
+
+### Testing strategy
+Backend tests are written vertically - focused on integration of components rather than unit tests. Unit tests are welcome but should be reserved for helper/utility functions. Controller and model tests should focus on an endpoint's ability to:
+- handle various input cases
+- handle expected data from a mocked database
+- handle unexpected errors in the underlying model or dependencies
 
 ### Linting
 
@@ -53,15 +59,15 @@ docker-compose pull
 docker-compose up
 ```
 
-AnyMessage.io runs on Google Kubernetes Engine but should work anywhere docker containers are supported. If you need help with deployment, feel free to reach out!
+AnyMessage works anywhere docker containers are supported. If you need help with deployment, feel free to reach out! Deployment examples can be found in the `/docs` (and on [docs.anymessage.io](https://docs.anymessage.io))
 
 ## Built With
 
-* [Next.js](https://nextjs.org/)
-* [Express](https://expressjs.com/)
-* [TypeScript](https://www.typescriptlang.org/)
-* [PostgreSQL](https://www.postgresql.org/)
-* [Sqitch](https://sqitch.org/)
+* [Next.js](https://nextjs.org/) on the frontend
+* [Express](https://expressjs.com/) on the backend
+* [TypeScript](https://www.typescriptlang.org/) on the backend
+* [PostgreSQL](https://www.postgresql.org/) for the database
+* [Sqitch](https://sqitch.org/) for the migrations
 
 ## Contributing
 
@@ -82,6 +88,8 @@ See also the list of [contributors](https://github.com/d3sandoval/anymessage/con
 ## License
 
 AnyMessage is distributed under the Common Public Attribution License Version 1.0 (CPAL) and is also available under alternative licenses negotiated directly with AnyMessage.io. If you obtained AnyMessage under the CPAL, then the CPAL applies to all running versions of AnyMessage on your local computer or network distribution. The CPAL is included in this source tree in the file [LICENSE.md](LICENSE.md).
+
+**TL;DR: AnyMessage is free to self-host but you're not allowed to resell it.**
 
 This software also includes various components that are not part of AnyMessage itself; these components are specified in `package.json` and `docker-compose` files and are distributed in accordance with their individual licensing terms.
 

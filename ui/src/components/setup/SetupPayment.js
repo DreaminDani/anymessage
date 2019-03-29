@@ -18,6 +18,13 @@ const { STRIPE_PUBLICKEY } = publicRuntimeConfig;
 class SetupPayment extends React.Component {
   state = {
     hasError: false,
+    stripe: null,
+  }
+
+  componentDidMount() {
+    // Create Stripe instance in componentDidMount
+    // (componentDidMount only fires in browser/DOM environment)
+    this.setState({ stripe: window.Stripe(STRIPE_PUBLICKEY) });
   }
 
   handleChanged = (fieldID) => {
@@ -43,9 +50,10 @@ class SetupPayment extends React.Component {
 
   render() {
     const { registerSubmitHandler } = this.props;
+    const { stripe } = this.state;
     if (STRIPE_PUBLICKEY) {
       return (
-        <StripeProvider apiKey={STRIPE_PUBLICKEY}>
+        <StripeProvider stripe={stripe}>
           <Elements>
             <SubscriptionForm
               fieldID={2}

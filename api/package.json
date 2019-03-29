@@ -5,11 +5,12 @@
   "main": "server.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "jest --silent --coverage --ci",
+    "test:logs": "jest --watch",
+    "test:watch": "jest --watch --silent",
+    "dev": "nodemon -e js,ts --watch src --ignore \"*.test.*\" --exec \"npm run build && npm run start-dev\"",
     "start": "node ./dist/server.js",
-    "start-dev": "ts-node src/server.ts",
-    "dev": "./node_modules/nodemon/bin/nodemon.js",
+    "start-dev": "node --inspect=0.0.0.0:9223 ./dist/server.js",
     "lint": "tslint --project tsconfig.json",
     "lint:fix": "tslint --project tsconfig.json --fix",
     "build:docs": "typedoc --out ../docs/api/typedoc --module system --tsconfig tdconfig.json",
@@ -42,10 +43,14 @@
   },
   "devDependencies": {
     "@types/jest": "^23.3.13",
-    "jest": "^24.1.0",
+    "@types/redis-mock": "^0.17.0",
+    "@types/sinon-express-mock": "^1.3.7",
+    "jest": "^23.6.0",
     "nodemon": "^1.18.9",
+    "redis-mock": "^0.43.0",
+    "sinon": "^7.2.7",
+    "sinon-express-mock": "^2.1.0",
     "ts-jest": "^23.10.5",
-    "ts-node": "^7.0.1",
     "typescript": "^3.2.4"
   }
 }

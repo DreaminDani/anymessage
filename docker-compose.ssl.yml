@@ -31,6 +31,8 @@ services:
       - API_ENDPOINT=https://api.anymessage.io # replace with your api domain
     expose:
       - 3000
+    ports:
+      - "9229:9229"
     env_file: .env
   api:
     image: us.gcr.io/anymessage-219921/api:latest
@@ -41,6 +43,7 @@ services:
       - /usr/api/node_modules
     ports:
       - "1337:1337"
+      - "9223:9223"
     depends_on:
       - db
     env_file: .env

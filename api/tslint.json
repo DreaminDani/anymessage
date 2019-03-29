@@ -5,8 +5,9 @@
     ],
     "jsRules": {},
     "rules": {
-        "arrow-parens":false,
-        "no-console":false
+        "arrow-parens": false,
+        "no-console": false,
+        "object-literal-sort-keys": false
     },
     "rulesDirectory": [],
     "include": [

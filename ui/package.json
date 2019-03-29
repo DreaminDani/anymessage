@@ -32,8 +32,7 @@
     "nodemon": "^1.18.9"
   },
   "scripts": {
-    "dev": "nodemon -w ./server.js server.js",
-    "dev:80": "PORT=80 nodemon -w ./server.js server.js",
+    "dev": "nodemon --inspect=0.0.0.0:9229 -w ./server.js server.js",
     "build": "next build",
     "start": "NODE_ENV=production node server.js",
     "lint": "eslint --ext .js ./",

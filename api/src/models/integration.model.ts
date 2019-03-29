@@ -51,11 +51,11 @@ export class IntegrationModel {
                 team_id: this.teamId,
             });
 
-            if (integration && integration.id) {
+            if (integration && typeof integration.id !== "undefined") {
                 this.id = integration.id;
 
                 if (integration.authentication) {
-                    this.authentication = {...integration.authentication};
+                    this.authentication = { ...integration.authentication };
                 }
 
                 if (integration.providers) {
@@ -115,10 +115,10 @@ export class IntegrationModel {
      * Convert integration info into an easy to consume format
      */
     private formatIntegration() {
-        if (this.authentication && this.providers) {
+        if (this.authentication) {
             return {
                 authentication: this.authentication,
-                providers: this.providers,
+                providers: this.providers, // can be null
             };
         } else {
             return null;
@@ -133,7 +133,7 @@ interface IIntegrationRequestBody {
 }
 
 export interface IIntegrationRequest extends ITeamRequest {
-  body: IIntegrationRequestBody;
+    body: IIntegrationRequestBody;
 }
 
 /**
@@ -145,15 +145,15 @@ export function verifyIntegrationBody(req: IIntegrationRequest, res: Response, n
     if (!req.body.authentication) {
         passed = false;
         res.status(400);
-        res.json({error: "authentication object is required"});
+        res.json({ error: "authentication object is required" });
     }
 
     for (const key in req.body.authentication) {
         if (req.body.authentication[key].length > 0
-                && !/^[A-Za-z0-9\-\_]+$/.test(req.body.authentication[key])) {
-                passed = false;
-                res.status(400);
-                res.json({error: `authentication.${key} can only contain letters, numbers, dashes and underscores`});
+            && !/^[A-Za-z0-9\-\_]+$/.test(req.body.authentication[key])) {
+            passed = false;
+            res.status(400);
+            res.json({ error: `authentication.${key} can only contain letters, numbers, dashes and underscores` });
         }
     }
 
@@ -163,7 +163,7 @@ export function verifyIntegrationBody(req: IIntegrationRequest, res: Response, n
             if (!/^[A-Za-z0-9\-\_]+$/.test(provider)) {
                 passed = false;
                 res.status(400);
-                res.json({error: `"${provider}" can only contain letters, numbers, dashes and underscores`});
+                res.json({ error: `"${provider}" can only contain letters, numbers, dashes and underscores` });
             }
         }
     }

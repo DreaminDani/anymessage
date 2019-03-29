@@ -48,6 +48,7 @@ class Settings extends React.Component {
     this.state = {
       changedSettings: new Set(),
       canSetBilling: false,
+      stripe: null,
     };
 
     this.save = [];
@@ -61,7 +62,10 @@ class Settings extends React.Component {
     }
 
     if (STRIPE_PUBLICKEY) {
-      this.setState({ canSetBilling: true });
+      this.setState({
+        canSetBilling: true,
+        stripe: window.Stripe(STRIPE_PUBLICKEY),
+      });
     }
   }
 
@@ -100,12 +104,12 @@ class Settings extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { changedSettings, canSetBilling } = this.state;
+    const { changedSettings, canSetBilling, stripe } = this.state;
     return (
       <React.Fragment>
         <Head>
           <title>Settings</title>
-          <script src="https://js.stripe.com/v3/" />
+          {STRIPE_PUBLICKEY && <script src="https://js.stripe.com/v3/" />}
         </Head>
         <Header currentPage="settings" />
         <UnsavedBar
@@ -126,7 +130,7 @@ class Settings extends React.Component {
           {canSetBilling && (
             // only render client-side when stripe is in use
             <div className={classes.billingInfo}>
-              <StripeProvider apiKey={STRIPE_PUBLICKEY}>
+              <StripeProvider stripe={stripe}>
                 <Elements>
                   <SubscriptionForm
                     fieldID={2}

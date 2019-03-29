@@ -4,6 +4,7 @@ ui/out
 api/dist
 api/coverage
 *node_modules*
+DevProfile
 
 # ignore prod-stuff
 *.env

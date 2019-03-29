@@ -1,24 +1,31 @@
-
 import redis = require("redis");
+let redisConnection = redis; // use redis by default
 
 const redisOptions = {
-    host: "redis",
+    host: `${(process.env.NODE_ENV === "test") ? "localhost" : "redis"}`,
     port: 6379,
 };
 
-export const publisherClient = redis.createClient(redisOptions);
+// used for testing to shim real redis
+export function injectClient(redisMock: any) {
+    redisConnection = redisMock;
+}
+
+export const createPublisherClient = () => {
+    return redisConnection.createClient(redisOptions);
+};
 
 export const eventSubscription = (channel: string, req: any, res: any) => {
     let messageCount = 0;
-    let subscriber = redis.createClient(redisOptions);
+    const subscriber = redisConnection.createClient(redisOptions);
 
     subscriber.subscribe(channel);
-    subscriber.on("error", function(err) {
+    subscriber.on("error", (err) => {
         console.error("Redis " + err);
     });
 
     // When we receive a message from the redis connection
-    subscriber.on("message", function(channel, message) {
+    subscriber.on("message", (channel, message) => {
         messageCount += 1; // Increment our message count
 
         res.write("id: " + messageCount + "\n");
@@ -27,10 +34,10 @@ export const eventSubscription = (channel: string, req: any, res: any) => {
 
     // send headers for event-stream connection
     res.writeHead(200, {
-        "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
-        "X-Accel-Buffering": "no",
         "Connection": "keep-alive",
+        "Content-Type": "text/event-stream",
+        "X-Accel-Buffering": "no",
     });
     res.write("\n");
 
@@ -44,7 +51,7 @@ export const eventSubscription = (channel: string, req: any, res: any) => {
     // In that situation we want to make sure our redis channel subscription
     // is properly shut down to prevent memory leaks...and incorrect subscriber
     // counts to the channel.
-    req.on("close", function() {
+    req.on("close", () => {
         clearInterval(intervalId);
         subscriber.unsubscribe();
         subscriber.quit();
