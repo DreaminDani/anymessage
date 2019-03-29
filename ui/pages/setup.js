@@ -9,6 +9,7 @@
 /* eslint-disable react/jsx-indent-props */
 import React from 'react';
 import PropTypes from 'prop-types';
+import getConfig from 'next/config';
 import Router from 'next/router';
 import {
   withStyles, Stepper, Step, StepLabel, Button, Typography, Divider, LinearProgress,
@@ -19,6 +20,9 @@ import Header from '../src/components/Header';
 
 import { SetupTeamURL, SetupIntegrations, SetupPayment } from '../src/components/setup';
 import { urlSearchData } from '../src/util';
+
+const { publicRuntimeConfig } = getConfig();
+const { STRIPE_PUBLICKEY } = publicRuntimeConfig;
 
 const styles = {
   container: {
@@ -189,7 +193,7 @@ class Setup extends React.Component {
       <React.Fragment>
         <Head>
           <title>Setup</title>
-          <script src="https://js.stripe.com/v3/" />
+          {STRIPE_PUBLICKEY && <script src="https://js.stripe.com/v3/" />}
         </Head>
         <Header currentPage="setup" />
         <div className={classes.container}>
