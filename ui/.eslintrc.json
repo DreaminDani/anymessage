@@ -18,8 +18,30 @@
     ],
     "rules": {
         "react/jsx-filename-extension": 0,
+        "react/prefer-stateless-function": 0,
         "max-len": "off",
         "react/forbid-prop-types": "warn",
-        "no-unused-vars": "warn"
+        "no-unused-vars": "warn",
+        "indent": [
+            "error",
+            2,
+            {
+                "ignoredNodes": [
+                    "JSXElement",
+                    "JSXElement > *",
+                    "JSXAttribute",
+                    "JSXIdentifier",
+                    "JSXNamespacedName",
+                    "JSXMemberExpression",
+                    "JSXSpreadAttribute",
+                    "JSXExpressionContainer",
+                    "JSXOpeningElement",
+                    "JSXClosingElement",
+                    "JSXText",
+                    "JSXEmptyExpression",
+                    "JSXSpreadChild"
+                ]
+            }
+        ]
     }
 }

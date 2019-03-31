@@ -6,8 +6,6 @@
  * LICENSE.md file.
  */
 import React from 'react';
-import getConfig from 'next/config';
-import { Elements, StripeProvider } from 'react-stripe-elements';
 
 import PropTypes from 'prop-types';
 import Router from 'next/router';
@@ -16,13 +14,9 @@ import Head from 'next/head';
 
 import Header from '../src/components/Header';
 
-import TeamURL from '../src/components/settings/TeamURL';
-import SubscriptionForm from '../src/components/settings/SubscriptionForm';
+import TeamSettings from '../src/components/settings/TeamSettings';
 import TwilioSettings from '../src/components/settings/TwilioSettings';
 import UnsavedBar from '../src/components/settings/UnsavedBar';
-
-const { publicRuntimeConfig } = getConfig();
-const { STRIPE_PUBLICKEY } = publicRuntimeConfig;
 
 const styles = {
   container: {
@@ -47,8 +41,6 @@ class Settings extends React.Component {
 
     this.state = {
       changedSettings: new Set(),
-      canSetBilling: false,
-      stripe: null,
     };
 
     this.save = [];
@@ -59,13 +51,6 @@ class Settings extends React.Component {
     const { user } = this.props;
     if (!user) {
       Router.push('/?needsauth');
-    }
-
-    if (STRIPE_PUBLICKEY) {
-      this.setState({
-        canSetBilling: true,
-        stripe: window.Stripe(STRIPE_PUBLICKEY),
-      });
     }
   }
 
@@ -104,7 +89,7 @@ class Settings extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { changedSettings, canSetBilling, stripe } = this.state;
+    const { changedSettings } = this.state;
     return (
       <React.Fragment>
         <Head>
@@ -121,27 +106,12 @@ class Settings extends React.Component {
             Team Settings
           </Typography>
           <Divider className={classes.divider} />
-          <TeamURL
-            submitHandler={this.registerSubmitHandler}
+          <TeamSettings
+            registerSubmitHandler={this.registerSubmitHandler}
             handleChanged={this.handleChanged}
             handleUnchanged={this.handleUnchanged}
+            handleError={this.handleError}
           />
-          {canSetBilling && (
-            // only render client-side when stripe is in use
-            <div className={classes.billingInfo}>
-              <StripeProvider stripe={stripe}>
-                <Elements>
-                  <SubscriptionForm
-                    fieldID={2}
-                    submitHandler={this.registerSubmitHandler}
-                    handleChanged={this.handleChanged}
-                    handleUnchanged={this.handleUnchanged}
-                    handleError={this.handleError}
-                  />
-                </Elements>
-              </StripeProvider>
-            </div>
-          )}
           <Typography variant="h3" className={classes.nextHeading} gutterBottom>
             Integrations
           </Typography>

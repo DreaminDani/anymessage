@@ -10,7 +10,7 @@ import React from 'react';
 import getConfig from 'next/config';
 import { Elements, StripeProvider } from 'react-stripe-elements';
 import { Typography } from '@material-ui/core';
-import SubscriptionForm from '../settings/SubscriptionForm';
+import SubscriptionForm from '../settings/TeamSettings/SubscriptionForm';
 
 const { publicRuntimeConfig } = getConfig();
 const { STRIPE_PUBLICKEY } = publicRuntimeConfig;

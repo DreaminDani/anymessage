@@ -4,9 +4,9 @@ import {
   injectStripe, CardNumberElement, CardExpiryElement, CardCVCElement,
 } from 'react-stripe-elements';
 import { Grid, Typography, Button } from '@material-ui/core';
-import { post, get, withAuth } from '../../util';
+import { post, get, withAuth } from '../../../util';
 
-import StripeElementWrapper from './Stripe/StripeElementWrapper';
+import StripeElementWrapper from '../Stripe/StripeElementWrapper';
 
 const internalFields = new Set([
   'Card Number',

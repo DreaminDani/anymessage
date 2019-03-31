@@ -9,7 +9,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Divider, Typography, withStyles } from '@material-ui/core';
 import { withAuth } from '../../util';
-import TeamURL from '../settings/TeamURL';
+import TeamURL from '../settings/TeamSettings/TeamURL';
 
 const styles = {
   helperText: {

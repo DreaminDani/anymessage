@@ -10,8 +10,9 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { withStyles, Button, Grid } from '@material-ui/core';
 import { ChevronRight, Settings } from '@material-ui/icons';
-import UserNameGroup from './UserNameGroup';
+import UserNameGroup from '../UserNameGroup';
 import UserMenuItem from './UserMenuItem';
+import { withAuth } from '../../util';
 
 const styles = {
   root: {
@@ -38,7 +39,9 @@ class UserMenuOptions extends React.Component {
   }
 
   render() {
-    const { classes, authLink, closeLink } = this.props;
+    const {
+      classes, authLink, closeLink, user,
+    } = this.props;
     return (
       <Grid
         container
@@ -56,6 +59,7 @@ class UserMenuOptions extends React.Component {
           onKeyDown={closeLink}
         >
           <UserNameGroup
+            user={user}
             rightIcon={<ChevronRight className={classes.collapseIcon} />}
           />
         </Grid>
@@ -68,6 +72,7 @@ class UserMenuOptions extends React.Component {
 }
 
 UserMenuOptions.defaultProps = {
+  user: null,
   currentPage: null,
 };
 
@@ -76,6 +81,7 @@ UserMenuOptions.propTypes = {
   authLink: PropTypes.func.isRequired,
   closeLink: PropTypes.func.isRequired,
   currentPage: PropTypes.string,
+  user: PropTypes.object,
 };
 
-export default withStyles(styles)(UserMenuOptions);
+export default withAuth(withStyles(styles)(UserMenuOptions));

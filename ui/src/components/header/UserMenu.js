@@ -14,7 +14,7 @@ import { ExpandMore, Menu } from '@material-ui/icons';
 
 import { AuthService, withAuth } from '../../util';
 
-import UserNameGroup from './UserNameGroup';
+import UserNameGroup from '../UserNameGroup';
 import UserMenuOptions from './UserMenuOptions';
 
 const styles = theme => ({
@@ -60,10 +60,10 @@ class UserMenu extends React.Component {
               ? <Menu />
               : (
                 <UserNameGroup
+                  user={user}
                   rightIcon={<ExpandMore />}
                 />
               )}
-
           </Button>
           <Drawer anchor="right" open={open} onClose={this.handleMenuClose}>
             <UserMenuOptions

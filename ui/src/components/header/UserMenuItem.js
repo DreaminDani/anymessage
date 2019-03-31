@@ -9,7 +9,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import {
-  withStyles, Typography, Grid, Button,
+  withStyles, Button,
 } from '@material-ui/core';
 
 const styles = theme => ({

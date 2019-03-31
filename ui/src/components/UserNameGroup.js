@@ -11,8 +11,6 @@ import {
   withStyles, Avatar, Typography, Grid,
 } from '@material-ui/core';
 
-import { withAuth } from '../../util';
-
 const styles = {
   username: {
     marginLeft: 8,
@@ -26,24 +24,35 @@ const styles = {
 class UserNameGroup extends React.Component {
   getInitials = () => {
     const { user } = this.props;
-    const { given_name, family_name } = user;
-    const initials = given_name.charAt(0) + family_name.charAt(0);
+    const {
+      given_name, family_name, name, email,
+    } = user;
+    let initials;
+    if (given_name && family_name) {
+      initials = given_name.charAt(0) + family_name.charAt(0);
+    } else if (name) {
+      initials = name.charAt(0);
+    } else {
+      initials = email.charAt(0);
+    }
     return initials.toUpperCase();
   }
 
   render() {
-    const { classes, user, rightIcon } = this.props;
+    const {
+      classes, user, rightIcon, justify,
+    } = this.props;
     return (
       <Grid
         container
         direction="row"
-        justify="center"
+        justify={justify}
         alignItems="center"
       >
 
         {user.picture
-          ? <Avatar alt={user.name} src={user.picture} />
-          : <Avatar alt={user.name}>{this.getInitials()}</Avatar>}
+          ? <Avatar alt={user.name || user.email} src={user.picture} />
+          : <Avatar alt={user.name || user.email}>{this.getInitials()}</Avatar>}
         <Typography variant="body2" color="inherit" className={classes.username}>{user.email}</Typography>
         {rightIcon}
       </Grid>
@@ -54,11 +63,13 @@ class UserNameGroup extends React.Component {
 UserNameGroup.defaultProps = {
   user: null,
   rightIcon: null,
+  justify: 'center',
 };
 UserNameGroup.propTypes = {
   classes: PropTypes.object.isRequired,
-  user: PropTypes.object,
+  user: PropTypes.object, // name, email, picture (optional), family_name & given_name req. if picture not provided
   rightIcon: PropTypes.element,
+  justify: PropTypes.string,
 };
 
-export default withAuth(withStyles(styles)(UserNameGroup));
+export default withStyles(styles)(UserNameGroup);
