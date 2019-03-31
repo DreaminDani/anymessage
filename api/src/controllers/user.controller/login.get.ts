@@ -15,8 +15,10 @@ export const getLogin = async (req: Request, res: Response) => {
         if (user.exists()) {
             // update stored metadata
             await user.updateMetadata(req.user);
-            // get team_id to return it
+            // get the first team_id to return it
             let result: {};
+
+            // todo get the team the user attempted to login into, if they were trying to go directly to their subdomain
             const teamId = user.getTeamId();
             if (teamId) {
                 const team = new TeamModel(req.app.get("db"), teamId);

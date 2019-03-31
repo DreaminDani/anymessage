@@ -49,7 +49,6 @@ class UserNameGroup extends React.Component {
         justify={justify}
         alignItems="center"
       >
-
         {user.picture
           ? <Avatar alt={user.name || user.email} src={user.picture} />
           : <Avatar alt={user.name || user.email}>{this.getInitials()}</Avatar>}

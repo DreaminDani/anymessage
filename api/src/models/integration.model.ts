@@ -23,7 +23,6 @@ interface IIntegrationAuthentication {
  * @class IntegrationsModel
  */
 export class IntegrationModel {
-    // public static async getTeamFromProvider()
     private initialized: boolean;
     private db: Database;
     private id: number;

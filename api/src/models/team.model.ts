@@ -209,11 +209,11 @@ export async function verifySubdomain(req: ITeamRequest, res: Response, next: Ne
         // look up subdomain and check if id matches user team_id
         try {
             const data = await req.app.get("db").query(
-                `SELECT teams.id FROM users
-                    LEFT JOIN teams
-                    ON users.team_id = teams.id
-                    WHERE teams.subdomain = $1
-                    AND users.email = $2`,
+                `SELECT teams_by_user.id FROM teams_by_user
+                    LEFT OUTER JOIN users ON (user_id = users.id)
+                    LEFT OUTER JOIN teams ON (team_id = teams.id)
+                    WHERE subdomain = $1
+                    AND email = $2`,
                 [subdomain, req.user.email],
             );
 

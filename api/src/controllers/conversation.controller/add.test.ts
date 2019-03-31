@@ -63,6 +63,11 @@ beforeEach(() => {
                 return {};
             }),
         },
+        teams_by_user: {
+            find: jest.fn((criteria: any, options: any) => {
+                return [{ "team_id": 0 }]
+            })
+        }
     };
 
     req = mockReq({
@@ -179,13 +184,5 @@ describe("errors", () => {
 
         await postAdd(req, res);
         expect(res.status).toBeCalledWith(500);
-    });
-
-    test("should throw a 400 error if user does not exist", async () => {
-        req.user.email = "sally@example.com";
-
-        await postAdd(req, res);
-        expect(res.status).toBeCalledWith(400);
-        expect(res.json).toBeCalledWith(expect.any(Object));
     });
 });

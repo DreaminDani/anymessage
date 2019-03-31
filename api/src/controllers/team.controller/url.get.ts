@@ -10,13 +10,9 @@ import { ITeamRequest, TeamModel, UserModel } from "../../models";
 
 export const getUrl = async (req: ITeamRequest, res: Response) => {
     try {
-        const user = new UserModel(req.app.get("db"), req.user.email);
-        await user.init();
-        const teamId = user.getTeamId();
-
         let subdomain: string;
-        if (teamId) {
-            const team = new TeamModel(req.app.get("db"), teamId);
+        if (req.team.id) {
+            const team = new TeamModel(req.app.get("db"), req.team.id);
             await team.init();
 
             subdomain = team.getSubdomain();

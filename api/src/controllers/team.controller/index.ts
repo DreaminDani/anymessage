@@ -144,6 +144,6 @@ router.post("/url/available", checkJwt, json(), postUrlAvailable);
  *               type: string
  *               default: '//{subdomain}.UI_HOSTNAME/messages'
  */
-router.post("/url/set", checkJwt, json(), postUrlSet);
+router.post("/url/set", checkJwt, verifySubdomain, json(), postUrlSet);
 
 export const TeamController: Router = router;

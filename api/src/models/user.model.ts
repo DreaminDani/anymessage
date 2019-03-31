@@ -24,7 +24,7 @@ export class UserModel {
     private db: Database;
     private id: number;
     private email: string;
-    private teamId: number;
+    private teams: number[];
 
     constructor(db: Database, email: string) {
         this.db = db;
@@ -39,12 +39,21 @@ export class UserModel {
      */
     public async init() {
         try {
+            // todo join query to look up team ids
             const user = await this.db.users.findOne({
                 email: this.email,
             });
             if (user) {
+                const teams = await this.db.teams_by_user.find({
+                    user_id: user.id,
+                }, {
+                        fields: ["team_id"]
+                    });
+                const teamIDs = teams.map((team: any) => {
+                    return team.team_id;
+                });
+                this.teams = teamIDs;
                 this.id = user.id;
-                this.teamId = user.team_id;
             }
 
             this.initialized = true;
@@ -109,9 +118,8 @@ export class UserModel {
         if (this.initialized) {
             const requestedTeam = await TeamModel.findTeamByURL(this.db, team_url);
 
-            // TODO support multiple teams here
-            if (this.teamId === requestedTeam.id) {
-                return this.teamId;
+            if (this.teams.includes(requestedTeam.id)) {
+                return requestedTeam.id;
             } else {
                 throw new ModelError("You do not have access to the requested team", 403);
             }
@@ -122,7 +130,7 @@ export class UserModel {
 
     public getTeamId() {
         if (this.initialized) {
-            return this.teamId;
+            return this.teams[0]; // todo return current team?
         }
 
         throw new ModelError(ModelError.NO_INIT);
@@ -130,12 +138,14 @@ export class UserModel {
 
     public async setTeamId(teamId: number) {
         if (this.initialized) {
-            this.teamId = teamId;
+            if (!this.teams.includes(teamId)) {
+                this.teams.push(teamId);
+            }
             try {
-                return await this.db.users.update(
-                    { id: this.id },
-                    { team_id: teamId },
-                );
+                return await this.db.teams_by_user.save({
+                    user_id: this.id,
+                    team_id: teamId,
+                });
             } catch (e) {
                 throw new ModelError(e);
             }

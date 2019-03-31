@@ -6,7 +6,7 @@
  * LICENSE.md file.
  */
 import { Request, Response } from "express";
-import { TeamModel, UserModel } from "../../models";
+import { ITeamRequest, TeamModel, UserModel } from "../../models";
 
 export const postUrlAvailable = async (req: Request, res: Response) => {
     try {
@@ -20,24 +20,22 @@ export const postUrlAvailable = async (req: Request, res: Response) => {
     }
 }
 
-export const postUrlSet = async (req: Request, res: Response) => {
+export const postUrlSet = async (req: ITeamRequest, res: Response) => {
     if (req.body.newURL) {
         try {
-            // look up user by email (TODO generalize to more than auth0)
-            const user = new UserModel(req.app.get("db"), req.user.email);
-            await user.init();
-            const teamId = user.getTeamId();
-
-            if (teamId) {
+            if (req.team.id) {
                 // if user has team_id, update its URL
-                const team = new TeamModel(req.app.get("db"), teamId);
+                const team = new TeamModel(req.app.get("db"), req.team.id);
                 await team.init();
 
                 await team.setSubdomain(req.body.newURL);
             } else {
-                // create a new team with URL
+                // create a new team with URL 
                 const team = new TeamModel(req.app.get("db"));
                 const newTeamId = await team.create(req.body.newURL);
+
+                const user = new UserModel(req.app.get("db"), req.user.email);
+                await user.init();
                 await user.setTeamId(newTeamId);
             }
 
