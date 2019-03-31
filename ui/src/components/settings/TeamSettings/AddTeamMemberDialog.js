@@ -4,6 +4,8 @@ import {
   withStyles, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button,
 } from '@material-ui/core';
 
+import { withAuth, post } from '../../../util';
+
 const styles = {};
 
 class AddTeamMemberDialog extends React.Component {
@@ -18,8 +20,8 @@ class AddTeamMemberDialog extends React.Component {
     });
   }
 
-  handleSubmit = () => {
-    const { addMember, handleClose } = this.props;
+  handleSubmit = async () => {
+    const { addMember, handleClose, user } = this.props;
     const { newMember } = this.state;
     // todo add error if email address not valid
     handleClose();
@@ -28,6 +30,19 @@ class AddTeamMemberDialog extends React.Component {
       email: newMember,
     });
     // call endpoint
+    try {
+      const validMember = await post('/team/add', user.id_token, {
+        email: newMember,
+      });
+      console.log(validMember);
+      if (validMember) {
+        addMember(validMember);
+      }
+    } catch (e) {
+      // remove member
+      // show snackbar
+      console.error(e);
+    }
     // call parent updateMember with server sent info
   }
 
@@ -66,11 +81,15 @@ class AddTeamMemberDialog extends React.Component {
   }
 }
 
+AddTeamMemberDialog.defaultProps = {
+  user: null,
+};
 AddTeamMemberDialog.propTypes = {
   classes: PropTypes.object.isRequired,
+  user: PropTypes.object,
   addMember: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(AddTeamMemberDialog);
+export default withAuth(withStyles(styles)(AddTeamMemberDialog));

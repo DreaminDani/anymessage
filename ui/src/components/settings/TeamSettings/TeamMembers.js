@@ -36,21 +36,32 @@ const styles = {
 class TeamMembers extends React.Component {
   state = {
     addOpen: false,
-    members: new Set(),
+    members: [],
   }
 
   componentDidMount = () => {
     const { user } = this.props;
     // todo get members from endpoint here
     this.setState({
-      members: new Set([user]),
+      members: [user],
     });
   }
 
   addMember = (newMember) => {
-    this.setState(({ members }) => ({
-      members: new Set(members.add(newMember)),
-    }));
+    const { members } = this.state;
+    // this is broken :(
+    const found = this.findMemberInArray(newMember.email);
+    if (found === -1) {
+      this.setState({
+        members: members.push(newMember),
+      });
+    } else {
+      const newMembers = members;
+      newMembers[found] = newMember;
+      this.setState({
+        members: newMembers,
+      });
+    }
   }
 
   addTeamMemberOpen = () => {
@@ -63,6 +74,18 @@ class TeamMembers extends React.Component {
     this.setState({
       addOpen: false,
     });
+  }
+
+  findMemberInArray(memberEmail) {
+    const { members } = this.state;
+    let found = -1;
+    for (let i = 0; i < members.length; i++) {
+      if (members[i].email === memberEmail) {
+        found = i;
+        break;
+      }
+    }
+    return found;
   }
 
   render() {

@@ -97,7 +97,32 @@ export class UserModel {
             return await this.db.users.save({
                 id: this.id,
                 auth_metadata: userInfo,
+                auth_provider: userInfo.iss,
+                email: userInfo.email,
+                name: userInfo.name,
             });
+        }
+
+        throw new ModelError(ModelError.NO_INIT);
+    }
+
+    public async getMetadata() {
+        if (this.initialized) {
+            const userInfo = await this.db.users.findOne({
+                id: this.id,
+            }, {
+                    fields: ["auth_metadata", "name", "email"],
+                });
+            if (userInfo) {
+                // only grab important stuff
+                return {
+                    given_name: userInfo.auth_metadata.given_name || null,
+                    family_name: userInfo.auth_metadata.family_name || null,
+                    name: userInfo.name,
+                    email: userInfo.email,
+                    picture: userInfo.auth_metadata.picture || null,
+                };
+            }
         }
 
         throw new ModelError(ModelError.NO_INIT);
@@ -138,7 +163,7 @@ export class UserModel {
 
     public async setTeamId(teamId: number) {
         if (this.initialized) {
-            if (!this.teams.includes(teamId)) {
+            if (this.teams && !this.teams.includes(teamId)) {
                 this.teams.push(teamId);
             }
             try {

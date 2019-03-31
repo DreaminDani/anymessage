@@ -9,12 +9,55 @@ import { json, Router } from "express";
 import { checkJwt } from "../../helpers";
 import { verifySubdomain } from "../../models";
 
+import { postAdd } from "./add.post";
 import { getSubscription } from "./subscription.get";
 import { postSubscription } from "./subscription.post";
 import { getUrl } from "./url.get";
 import { postUrlAvailable, postUrlSet } from "./url.post";
 
 const router: Router = Router();
+
+/**
+ * @swagger
+ * /team/add:
+ *   post:
+ *     summary: Add user to team
+ *     description: Associates a new or exisiting user with a team
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - in: body
+ *         name: body
+ *         description: Information about the user to add
+ *         schema:
+ *           type: object
+ *           properties:
+ *             email:
+ *               type: string
+ *           example:
+ *             email: "joe@example.com"
+ *     tags:
+ *       - team
+ *     responses:
+ *       200:
+ *         description: Information about the user, if they already exist - otherwise, just the email back
+ *         schema:
+ *           type: object
+ *           properties:
+ *              given_name:
+ *                  type: string
+ *              family_name:
+ *                  type: string
+ *              name:
+ *                  type: string
+ *              email:
+ *                  type: string
+ *                  format: email
+ *              picture:
+ *                  type: string
+ *                  format: uri
+ */
+router.post("/add", checkJwt, verifySubdomain, json(), postAdd);
 
 /**
  * @swagger
