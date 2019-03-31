@@ -109,7 +109,6 @@ class Settings extends React.Component {
       <React.Fragment>
         <Head>
           <title>Settings</title>
-          {STRIPE_PUBLICKEY && <script src="https://js.stripe.com/v3/" />}
         </Head>
         <Header currentPage="settings" />
         <UnsavedBar

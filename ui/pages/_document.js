@@ -8,7 +8,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Document, { Head, Main, NextScript } from 'next/document';
+import getConfig from 'next/config';
 import flush from 'styled-jsx/server';
+
+const { publicRuntimeConfig } = getConfig();
+const { STRIPE_PUBLICKEY } = publicRuntimeConfig;
 
 class MyDocument extends Document {
   render() {
@@ -37,6 +41,7 @@ class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
           />
+          {STRIPE_PUBLICKEY && <script src="https://js.stripe.com/v3/" />}
         </Head>
         <body>
           <Main />
@@ -93,7 +98,7 @@ MyDocument.getInitialProps = (ctx) => {
       <React.Fragment>
         <style
           id="jss-server-side"
-        // eslint-disable-next-line react/no-danger
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: pageContext.sheetsRegistry.toString() }}
         />
         {flush() || null}
