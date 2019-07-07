@@ -33,7 +33,9 @@ UI_HOSTNAME=[myapp.dev]
 
 3. If you have not already, configure your Auth0 settings to allow connections from `*.mydev`.
 
-4. Run `docker-compose build && docker-compose up` from the repository's root.
+4. Install `docker-sync`: [https://docker-sync.readthedocs.io/en/latest/getting-started/installation.html](https://docker-sync.readthedocs.io/en/latest/getting-started/installation.html)
+
+5. Run `docker-sync-stack start` from the repository's root.
 
 ## Running the tests
 
