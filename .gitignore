@@ -5,6 +5,7 @@ api/dist
 api/coverage
 *node_modules*
 DevProfile
+.docker-sync
 
 # ignore prod-stuff
 *.env
@@ -12,3 +13,6 @@ DevProfile
 /*.prod*
 /nginx
 /postgres
+
+# ignore local configs
+.vscode

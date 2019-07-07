@@ -1,0 +1,22 @@
+version: "2"
+options:
+    verbose: true
+syncs:
+    ui-sync:
+        sync_args: ['-perms=0'] #required for two way sync ie generators, etc
+        sync_strategy: 'unison'
+        sync_host_ip: '127.0.0.1' #host ip isn't properly inferred
+        sync_excludes: ['.gitignore', '.vscode/*','.git/*']
+        src: './ui'
+    api-sync:
+        sync_args: ['-perms=0'] #required for two way sync ie generators, etc
+        sync_strategy: 'unison'
+        sync_host_ip: '127.0.0.1' #host ip isn't properly inferred
+        sync_excludes: ['.gitignore', '.vscode/*','.git/*']
+        src: './api'
+    db-sync:
+        sync_args: ['-perms=0'] #required for two way sync ie generators, etc
+        sync_strategy: 'unison'
+        sync_host_ip: '127.0.0.1' #host ip isn't properly inferred
+        sync_excludes: ['.gitignore', '.vscode/*','.git/*']
+        src: './db'

@@ -7,15 +7,15 @@ services:
   ui:
     image: us.gcr.io/anymessage-219921/ui:latest
     build: ./ui
-    command: npm run dev:80
+    command: npm run dev
     volumes:
-      - ./ui:/usr/ui/
-      - /usr/ui/node_modules
-      # - /usr/ui/.next # need this for non-dev
+      - /usr/ui/.next
+      - /usr/ui/node_modules/
+      - ui-sync:/usr/ui:nocopy
     environment:
       - API_ENDPOINT=http://localhost:${API_PORT}
     ports:
-      - "80:3000"
+      - "3000:3000"
       - "9229:9229"
     env_file: .env
   api:
@@ -23,8 +23,9 @@ services:
     build: ./api
     command: npm run dev
     volumes:
-      - ./api:/usr/api
-      - /usr/api/node_modules
+      - /usr/ui/dist
+      - /usr/ui/node_modules/
+      - api-sync:/usr/ui:nocopy
     ports:
       - "1337:1337"
       - "9223:9223"
@@ -45,7 +46,7 @@ services:
       - TARGET_URI=db:postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DATABASE}
       - SQITCH_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - ./db:/work
+      - db-sync:/work:nocopy
     depends_on:
       - db
     env_file: .env
@@ -56,3 +57,9 @@ services:
       - 8080:8080
 volumes:
   database:
+  ui-sync:
+    external: true
+  api-sync:
+    external: true
+  db-sync:
+    external: true
