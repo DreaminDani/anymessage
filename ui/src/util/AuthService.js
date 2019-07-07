@@ -6,7 +6,7 @@
  * LICENSE.md file.
  */
 /* eslint-disable class-methods-use-this */
-import auth0 from 'auth0-js';
+// import auth0 from 'auth0-js';
 import Cookie from 'js-cookie';
 import getConfig from 'next/config';
 import { get } from './api';
@@ -23,15 +23,14 @@ export default class AuthService {
     let protocol = 'http:';
     if (typeof window !== 'undefined') {
       protocol = window.location.protocol ? window.location.protocol : 'http:';
+      this.auth0 = new auth0.WebAuth({
+        domain: this.domain,
+        clientID: this.clientId,
+        scope: 'openid email profile',
+        responseType: 'token id_token',
+        redirectUri: `${protocol}//www.${UI_HOSTNAME}/callback`,
+      });
     }
-
-    this.auth0 = new auth0.WebAuth({
-      domain: this.domain,
-      clientID: this.clientId,
-      scope: 'openid email profile',
-      responseType: 'token id_token',
-      redirectUri: `${protocol}//www.${UI_HOSTNAME}/callback`,
-    });
   }
 
   parseCookie(cookie, needle) {
@@ -44,21 +43,27 @@ export default class AuthService {
   }
 
   parseHash = (callback) => {
-    this.auth0.parseHash((err, result) => {
-      if (err || !result) {
-        console.log(err);
-        callback(false);
-        this.logout();
-        return;
-      }
+    if (typeof window !== 'undefined') {
+      this.auth0.parseHash((err, result) => {
+        if (err || !result) {
+          console.log(err);
+          callback(false);
+          this.logout();
+          return;
+        }
 
-      this.setToken(result);
+        this.setToken(result);
+        callback(true);
+      });
+    } else {
       callback(true);
-    });
+    }
   }
 
   login = () => {
-    this.auth0.authorize();
+    if (typeof window !== 'undefined') {
+      this.auth0.authorize();
+    }
   }
 
   loggedIn = (cookie) => {

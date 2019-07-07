@@ -12,3 +12,6 @@ DevProfile
 /*.prod*
 /nginx
 /postgres
+
+# ignore local configs
+.vscode

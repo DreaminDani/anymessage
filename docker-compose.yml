@@ -7,15 +7,16 @@ services:
   ui:
     image: us.gcr.io/anymessage-219921/ui:latest
     build: ./ui
-    command: npm run dev:80
+    command: npm run dev
     volumes:
-      - ./ui:/usr/ui/
-      - /usr/ui/node_modules
-      # - /usr/ui/.next # need this for non-dev
+      - /c/Users/danie/projects/anymessage/ui/customization:/usr/ui/customization
+      - /c/Users/danie/projects/anymessage/ui/pages:/usr/ui/pages
+      - /c/Users/danie/projects/anymessage/ui/src:/usr/ui/src
+      - /c/Users/danie/projects/anymessage/ui/static:/usr/ui/static
     environment:
       - API_ENDPOINT=http://localhost:${API_PORT}
     ports:
-      - "80:3000"
+      - "3000:3000"
       - "9229:9229"
     env_file: .env
   api:
@@ -23,8 +24,7 @@ services:
     build: ./api
     command: npm run dev
     volumes:
-      - ./api:/usr/api
-      - /usr/api/node_modules
+      - /c/Users/danie/projects/anymessage/api/src:/usr/api/src
     ports:
       - "1337:1337"
       - "9223:9223"

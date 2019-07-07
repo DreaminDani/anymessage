@@ -41,6 +41,7 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
+          <script src="https://cdn.auth0.com/js/auth0/9.10/auth0.min.js" />
         </body>
       </html>
     );
