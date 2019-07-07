@@ -8,7 +8,7 @@
     "test": "jest --silent --coverage --ci",
     "test:logs": "jest --watch",
     "test:watch": "jest --watch --silent",
-    "dev": "nodemon -e js,ts --watch src --ignore \"*.test.*\" --exec \"npm run build && npm run start-dev\"",
+    "dev": "nodemon -e js,ts --legacy-watch src --ignore \"*.test.*\" --ignore dist/ --exec \"npm run build && npm run start-dev\"",
     "start": "node ./dist/server.js",
     "start-dev": "node --inspect=0.0.0.0:9223 ./dist/server.js",
     "lint": "tslint --project tsconfig.json",
