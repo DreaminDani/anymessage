@@ -31,7 +31,7 @@
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
-    "express-jwt": "^5.3.1",
+    "express-jwt": "^6.0.0",
     "express-jwt-authz": "^1.0.0",
     "helmet": "^3.15.0",
     "jwks-rsa": "^1.3.0",
